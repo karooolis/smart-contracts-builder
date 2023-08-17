@@ -67,10 +67,10 @@ contract MyToken is ERC20 {
 
         <input type="text" placeholder="Name" />
         <input type="text" placeholder="Symbol" />
-        <input type="text" placeholder="Decimals" value={18} />
+        <input type="text" placeholder="Decimals" />
 
         <div>
-          <input type="checkbox" id="scales" name="scales" checked />
+          <input type="checkbox" id="scales" name="scales" />
           <label htmlFor="scales">Scales</label>
         </div>
       </div>
