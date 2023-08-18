@@ -1,3 +1,4 @@
+export const ERC20 = `
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -13,7 +14,7 @@ contract <%= tokenName %> is ERC20<% if (mint || burn) { %>, ERC20Burnable<% } %
     <% } %>
     
     constructor() ERC20("<%= tokenName %>", "<%= tokenSymbol %>") <% if (permit) { %>ERC20Permit("<%= tokenName %>")<% } %> {
-        <% if (premint) { %>_mint(msg.sender, <%= initialSupply %>);<% } %>
+        <% if (premint) { %>_mint(msg.sender, <%= initialSupply %>  * 10 ** decimals());<% } %>
 
         <% if (roles) { %>
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -31,11 +32,11 @@ contract <%= tokenName %> is ERC20<% if (mint || burn) { %>, ERC20Burnable<% } %
     <% } %>
 
     <% if (pause) { %>
-    function pause() public <% if (roles) { %> onlyRole(PAUSER_ROLE) <% } %> <% if (ownable) { %> onlyOwner <% } %> {
+    function pause() public <% if (roles) { %> onlyRole(PAUSER_ROLE) <% } %><% if (!roles && ownable) { %> onlyOwner <% } %> {
         _pause();
     }
 
-    function unpause() public <% if (roles) { %> onlyRole(PAUSER_ROLE) <% } %> <% if (ownable) { %> onlyOwner <% } %> {
+    function unpause() public <% if (roles) { %> onlyRole(PAUSER_ROLE) <% } %><% if (!roles && ownable) { %> onlyOwner <% } %> {
         _unpause();
     }
 
@@ -48,3 +49,4 @@ contract <%= tokenName %> is ERC20<% if (mint || burn) { %>, ERC20Burnable<% } %
     }
     <% } %>
 }
+`;
