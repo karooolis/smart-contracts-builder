@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import _ from "lodash";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -35,7 +34,7 @@ const formSchema = z.object({
   features: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one item.",
   }),
-  accessControl: z.enum(["ownable", "roles"]),
+  accessControl: z.enum(["ownable", "roles", "none"]),
 });
 
 const features = [
@@ -66,10 +65,14 @@ const accessControl = [
     id: "roles",
     label: "Roles",
   },
+  {
+    id: "none",
+    label: "None",
+  },
 ] as const;
 
 export function ContractsForm() {
-  const [code, setCode] = useState("");
+  const [code, setCode] = React.useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -78,6 +81,7 @@ export function ContractsForm() {
       symbol: "TKN",
       premint: undefined,
       features: [],
+      accessControl: "none",
     },
   });
 
@@ -97,7 +101,6 @@ export function ContractsForm() {
     };
 
     const compiled_temp = _.template(ERC20)(data);
-
     setCode(compiled_temp);
   }
 
@@ -112,7 +115,7 @@ export function ContractsForm() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -126,7 +129,7 @@ export function ContractsForm() {
               <FormItem>
                 <FormLabel>Symbol</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Symbol" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -209,9 +212,9 @@ export function ContractsForm() {
                     defaultValue={field.value}
                     className="flex flex-col space-y-1"
                   >
-                    {accessControl.map(({ id, label }) => (
+                    {accessControl.map(({ id, label }, idx) => (
                       <FormItem
-                        key={id}
+                        key={idx}
                         className="flex items-center space-x-3 space-y-0"
                       >
                         <FormControl>
@@ -226,13 +229,8 @@ export function ContractsForm() {
               </FormItem>
             )}
           />
-
-          <Button type="submit">Submit</Button>
         </form>
       </Form>
-
-      {/* <textarea defaultValue={code} rows={100} cols={100}></textarea> */}
-
       <CodeDisplay value={code} />
     </>
   );
