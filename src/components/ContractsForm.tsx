@@ -22,6 +22,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { ERC20 } from "../templates/ERC20.js";
 
+import CodeDisplay from "./CodeDisplay";
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
@@ -229,7 +231,9 @@ export function ContractsForm() {
         </form>
       </Form>
 
-      <textarea defaultValue={code} rows={100} cols={100}></textarea>
+      {/* <textarea defaultValue={code} rows={100} cols={100}></textarea> */}
+
+      <CodeDisplay value={code} />
     </>
   );
 }
