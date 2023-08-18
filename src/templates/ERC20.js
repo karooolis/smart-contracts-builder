@@ -15,13 +15,9 @@ contract <%= tokenName %> is ERC20<% if (mint || burn) { %>, ERC20Burnable<% } %
     
     constructor() ERC20("<%= tokenName %>", "<%= tokenSymbol %>") <% if (permit) { %>ERC20Permit("<%= tokenName %>")<% } %> {
         <% if (premint) { %>_mint(msg.sender, <%= initialSupply %>  * 10 ** decimals());<% } %>
-
         <% if (roles) { %>
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-
-        <% if (roles) { %>
-        _grantRole(PAUSER_ROLE, msg.sender);
-        <% } %>
+        <% if (roles) { %>_grantRole(PAUSER_ROLE, msg.sender);<% } %>
         <% } %>
     }
 
