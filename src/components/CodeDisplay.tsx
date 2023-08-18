@@ -3,11 +3,11 @@ import CodeMirror from "@uiw/react-codemirror";
 import { solidity } from "@replit/codemirror-lang-solidity";
 import { okaidia } from "@uiw/codemirror-theme-okaidia";
 
-function CodeDisplay({ value }) {
-  // const onChange = React.useCallback((value, viewUpdate) => {
-  //   console.log("value:", value);
-  // }, []);
+type Props = {
+  value: string;
+}
 
+function CodeDisplay({ value }: Props) {
   return (
     <CodeMirror
       value={value}
@@ -15,7 +15,6 @@ function CodeDisplay({ value }) {
       theme={okaidia}
       extensions={[solidity]}
       readOnly
-      // onChange={onChange}
     />
   );
 }
