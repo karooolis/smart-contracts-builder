@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -81,8 +81,6 @@ export function ContractsForm() {
 
   function onChange() {
     const values = form.getValues();
-
-    // Define values for placeholders
     const data = {
       tokenName: values.name,
       tokenSymbol: values.symbol,
