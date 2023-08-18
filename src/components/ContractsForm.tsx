@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import _ from "lodash";
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -73,7 +72,7 @@ const accessControl = [
 ] as const;
 
 export function ContractsForm() {
-  const [code, setCode] = useState("");
+  const [code, setCode] = React.useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -101,10 +100,7 @@ export function ContractsForm() {
       roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions
     };
 
-    console.log(values);
-
     const compiled_temp = _.template(ERC20)(data);
-
     setCode(compiled_temp);
   }
 
@@ -119,7 +115,7 @@ export function ContractsForm() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -133,7 +129,7 @@ export function ContractsForm() {
               <FormItem>
                 <FormLabel>Symbol</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Symbol" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

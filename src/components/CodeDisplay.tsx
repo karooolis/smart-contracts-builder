@@ -3,6 +3,7 @@ import Script from "next/script";
 import CodeMirror from "@uiw/react-codemirror";
 import { solidity } from "@replit/codemirror-lang-solidity";
 import { okaidia } from "@uiw/codemirror-theme-okaidia";
+import _ from "lodash";
 
 type Props = {
   value: string;
@@ -13,9 +14,8 @@ function CodeDisplay({ value }: Props) {
 
   // format code on change
   useEffect(() => {
-    if (window.prettier) {
-      const originalCode = value;
-      const formattedCode = prettier.format(originalCode, {
+    if (window.prettier && value) {
+      const formattedCode = prettier.format(value, {
         parser: "solidity-parse",
         plugins: window.prettierPlugins,
       });
