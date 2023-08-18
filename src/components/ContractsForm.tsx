@@ -4,14 +4,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import _ from "lodash";
 
-// import ejs from "ejs";
-// import fs from "fs";
-
-// import * as ejs from "ejs";
-
-// const template = fs.readFileSync("ERC20.ejs", "utf-8");
-
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,6 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { ERC20 } from "../templates/ERC20.js";
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
@@ -32,89 +29,82 @@ const formSchema = z.object({
   symbol: z.string().min(1, {
     message: "symbol must be at least 1 characters.",
   }),
-  items: z.array(z.string()).refine((value) => value.some((item) => item), {
+  premint: z.coerce.number(),
+  features: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one item.",
   }),
+  accessControl: z.enum(["ownable", "roles"]),
 });
 
 const features = [
   {
-    id: "recents",
-    label: "Recents",
+    id: "mint",
+    label: "Mintable",
   },
   {
-    id: "home",
-    label: "Home",
+    id: "burn",
+    label: "Burnable",
   },
   {
-    id: "applications",
-    label: "Applications",
+    id: "pause",
+    label: "Pausable",
   },
   {
-    id: "desktop",
-    label: "Desktop",
+    id: "permit",
+    label: "Permit",
+  },
+] as const;
+
+const accessControl = [
+  {
+    id: "ownable",
+    label: "Ownable",
   },
   {
-    id: "downloads",
-    label: "Downloads",
-  },
-  {
-    id: "documents",
-    label: "Documents",
+    id: "roles",
+    label: "Roles",
   },
 ] as const;
 
 export function ContractsForm() {
   const [code, setCode] = useState("");
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "My Token",
+      name: "MyToken",
       symbol: "TKN",
-      items: ["recents", "home"],
+      premint: undefined,
+      features: [],
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  function onChange() {
+    const values = form.getValues();
 
     // Define values for placeholders
     const data = {
-      tokenName: "MyToken",
-      tokenSymbol: "MTK",
-      initialSupply: 1000000,
-      premint: true,
-      mint: true,
-      burn: true,
-      pause: true,
-      permit: true,
-      ownable: true, // Whether to make the contract ownable
-      roles: true, // Whether to incorporate roles for specific actions
+      tokenName: values.name,
+      tokenSymbol: values.symbol,
+      initialSupply: values.premint,
+      premint: values.premint > 0,
+      mint: values.features.includes("mint"),
+      burn: values.features.includes("burn"),
+      pause: values.features.includes("pause"),
+      permit: values.features.includes("permit"),
+      ownable: values.accessControl == "ownable", // Whether to make the contract ownable
+      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions
     };
 
-    fetch("/api/render", {
-      method: "POST",
-      body: JSON.stringify({
-        ...data,
-        tokenName: values.name,
-        tokenSymbol: values.symbol,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCode(data);
-      });
+    const compiled_temp = _.template(ERC20)(data);
+
+    setCode(compiled_temp);
   }
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onChange={onChange} className="space-y-8">
           <FormField
             control={form.control}
             name="name"
@@ -124,7 +114,6 @@ export function ContractsForm() {
                 <FormControl>
                   <Input placeholder="shadcn" {...field} />
                 </FormControl>
-                <FormDescription>Token name.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -139,7 +128,6 @@ export function ContractsForm() {
                 <FormControl>
                   <Input placeholder="shadcn" {...field} />
                 </FormControl>
-                <FormDescription>Symbol.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -147,20 +135,35 @@ export function ContractsForm() {
 
           <FormField
             control={form.control}
-            name="items"
+            name="premint"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Premint</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="0" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="features"
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel className="text-base">Sidebar</FormLabel>
+                  <FormLabel className="text-base">Features</FormLabel>
                   <FormDescription>
-                    Select the items you want to display in the sidebar.
+                    Select the additional features to add.
                   </FormDescription>
                 </div>
+
                 {features.map((item) => (
                   <FormField
                     key={item.id}
                     control={form.control}
-                    name="items"
+                    name="features"
                     render={({ field }) => {
                       return (
                         <FormItem
@@ -189,6 +192,36 @@ export function ContractsForm() {
                     }}
                   />
                 ))}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="accessControl"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Access Control</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    {accessControl.map(({ id, label }) => (
+                      <FormItem
+                        key={id}
+                        className="flex items-center space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <RadioGroupItem value={id} />
+                        </FormControl>
+                        <FormLabel className="font-normal">{label}</FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
