@@ -19,11 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { ERC20 } from "../templates/ERC20.js";
+import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
 
 import CodeDisplay from "./CodeDisplay";
 
 const formSchema = z.object({
+  library: z.enum(["openzeppelin", "solmate"]),
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
   }),
@@ -75,6 +76,17 @@ const accessControl = [
   },
 ] as const;
 
+const libraries = [
+  {
+    id: "openzeppelin",
+    label: "OpenZeppelin",
+  },
+  {
+    id: "solmate",
+    label: "Solmate",
+  },
+] as const;
+
 export function ContractsForm() {
   const [code, setCode] = React.useState(`// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -91,6 +103,7 @@ contract MyToken is ERC20 {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      library: "openzeppelin",
       name: "MyToken",
       symbol: "TKN",
       premint: 1000000,
@@ -102,7 +115,6 @@ contract MyToken is ERC20 {
 
   function onChange() {
     const values = form.getValues();
-
     const data = {
       tokenName: values.name,
       tokenSymbol: values.symbol,
@@ -117,7 +129,9 @@ contract MyToken is ERC20 {
       license: values.license,
     };
 
-    const compiled_temp = _.template(ERC20)(data);
+    const template =
+      values.library == "openzeppelin" ? ERC20_OpenZeppelin : ERC20_Solmate;
+    const compiled_temp = _.template(template)(data);
     setCode(compiled_temp);
   }
 
@@ -125,6 +139,40 @@ contract MyToken is ERC20 {
     <>
       <Form {...form}>
         <form onChange={onChange} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="library"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Library</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    {libraries.map(({ id, label }, idx) => (
+                      <FormItem
+                        key={idx}
+                        className="flex items-center space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <RadioGroupItem
+                            onClick={() => {
+                              form.setValue("library", id);
+                            }}
+                            value={id}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">{label}</FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="name"
