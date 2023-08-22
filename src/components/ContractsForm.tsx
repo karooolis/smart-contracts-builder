@@ -86,7 +86,8 @@ contract MyToken is ERC20 {
     constructor() ERC20("MyToken", "TKN") {
         _mint(msg.sender, 1000000 * 10 ** decimals());
     }
-}`);
+}
+`);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
