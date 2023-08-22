@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 <% if (ownable) { %>import "@openzeppelin/contracts/access/Ownable.sol";<% } %>
 <% if (roles) { %>import "@openzeppelin/contracts/access/AccessControl.sol";<% } %>
 
-contract <%= tokenName %> is ERC20<% if (mint || burn) { %>, ERC20Burnable<% } %><% if (pause) { %>, Pausable<% } %><% if (permit) { %>, ERC20Permit<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
+contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (pause) { %>, Pausable<% } %><% if (permit) { %>, ERC20Permit<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
     <% if (roles && pause) { %>
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     <% } %>
