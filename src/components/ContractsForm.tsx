@@ -77,7 +77,16 @@ const accessControl = [
 ] as const;
 
 export function ContractsForm() {
-  const [code, setCode] = React.useState("");
+  const [code, setCode] = React.useState(`// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract MyToken is ERC20 {
+    constructor() ERC20("MyToken", "TKN") {
+        _mint(msg.sender, 1000000 * 10 ** decimals());
+    }
+}`);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -111,8 +120,6 @@ export function ContractsForm() {
     const compiled_temp = _.template(ERC20)(data);
     setCode(compiled_temp);
   }
-
-  const debouncedOnChange = _.debounce(onChange, 50);
 
   return (
     <>
