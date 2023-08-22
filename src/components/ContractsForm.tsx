@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 import { ERC20 } from "../templates/ERC20.js";
 
@@ -31,10 +32,11 @@ const formSchema = z.object({
     message: "symbol must be at least 1 characters.",
   }),
   premint: z.coerce.number(),
-  features: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: "You have to select at least one item.",
-  }),
+  features: z.array(z.string()),
   accessControl: z.enum(["ownable", "roles", "none"]),
+  type: z.enum(["all", "mentions", "none"], {
+    required_error: "You need to select a notification type.",
+  }),
   license: z.string({
     required_error: "License is required",
   }),
@@ -82,7 +84,7 @@ export function ContractsForm() {
     defaultValues: {
       name: "MyToken",
       symbol: "TKN",
-      premint: undefined,
+      premint: 1000000,
       features: [],
       accessControl: "none",
       license: "MIT",
@@ -91,6 +93,7 @@ export function ContractsForm() {
 
   function onChange() {
     const values = form.getValues();
+
     const data = {
       tokenName: values.name,
       tokenSymbol: values.symbol,
@@ -105,11 +108,11 @@ export function ContractsForm() {
       license: values.license,
     };
 
-    console.log("values", values);
-
     const compiled_temp = _.template(ERC20)(data);
     setCode(compiled_temp);
   }
+
+  const debouncedOnChange = _.debounce(onChange, 50);
 
   return (
     <>
@@ -215,7 +218,6 @@ export function ContractsForm() {
                 <FormLabel>Access Control</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    onChange={field.onChange}
                     defaultValue={field.value}
                     className="flex flex-col space-y-1"
                   >
@@ -225,7 +227,12 @@ export function ContractsForm() {
                         className="flex items-center space-x-3 space-y-0"
                       >
                         <FormControl>
-                          <RadioGroupItem value={id} />
+                          <RadioGroupItem
+                            onClick={() => {
+                              form.setValue("accessControl", id);
+                            }}
+                            value={id}
+                          />
                         </FormControl>
                         <FormLabel className="font-normal">{label}</FormLabel>
                       </FormItem>
