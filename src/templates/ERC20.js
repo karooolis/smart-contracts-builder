@@ -1,6 +1,6 @@
 export const ERC20_OpenZeppelin = `
 // SPDX-License-Identifier: <%= license %>
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 <% if (burn) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";<% } %>
@@ -50,7 +50,7 @@ contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (
 
 export const ERC20_Solmate = `
 // SPDX-License-Identifier: <%= license %>
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.9;
 
 import "solmate/erc20/ERC20.sol";
 <% if (pause) { %>import "solmate/utils/Pausable.sol";<% } %>
