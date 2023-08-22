@@ -2,7 +2,7 @@ export const ERC20 = `
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-<% if (mint || burn) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";<% } %>
+<% if (burn) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";<% } %>
 <% if (pause) { %>import "@openzeppelin/contracts/security/Pausable.sol";<% } %>
 <% if (permit) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";<% } %>
 <% if (ownable) { %>import "@openzeppelin/contracts/access/Ownable.sol";<% } %>
