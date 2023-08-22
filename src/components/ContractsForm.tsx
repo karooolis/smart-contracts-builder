@@ -35,6 +35,9 @@ const formSchema = z.object({
     message: "You have to select at least one item.",
   }),
   accessControl: z.enum(["ownable", "roles", "none"]),
+  license: z.string({
+    required_error: "License is required",
+  }),
 });
 
 const features = [
@@ -82,6 +85,7 @@ export function ContractsForm() {
       premint: undefined,
       features: [],
       accessControl: "none",
+      license: "MIT",
     },
   });
 
@@ -97,8 +101,11 @@ export function ContractsForm() {
       pause: values.features.includes("pause"),
       permit: values.features.includes("permit"),
       ownable: values.accessControl == "ownable", // Whether to make the contract ownable
-      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions
+      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions,
+      license: values.license,
     };
+
+    console.log("values", values);
 
     const compiled_temp = _.template(ERC20)(data);
     setCode(compiled_temp);
@@ -229,8 +236,23 @@ export function ContractsForm() {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="license"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>License</FormLabel>
+                <FormControl>
+                  <Input placeholder="License" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </form>
       </Form>
+
       <CodeDisplay value={code} />
     </>
   );
