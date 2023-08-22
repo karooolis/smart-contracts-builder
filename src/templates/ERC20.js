@@ -1,4 +1,4 @@
-export const ERC20 = `
+export const ERC20_OpenZeppelin = `
 // SPDX-License-Identifier: <%= license %>
 pragma solidity ^0.8.0;
 
@@ -43,6 +43,59 @@ contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (
         override
     {
         super._beforeTokenTransfer(from, to, amount);
+    }
+    <% } %>
+}
+`;
+
+export const ERC20_Solmate = `
+// SPDX-License-Identifier: <%= license %>
+pragma solidity ^0.8.0;
+
+import "solmate/erc20/ERC20.sol";
+<% if (pause) { %>import "solmate/utils/Pausable.sol";<% } %>
+<% if (ownable) { %>import "solmate/utils/Ownable.sol";<% } %>
+<% if (roles) { %>import "solmate/access/AccessControl.sol";<% } %>
+
+contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
+    <% if (roles && pause) { %>
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    <% } %>
+
+    constructor() ERC20("<%= tokenName %>", "<%= tokenSymbol %>") {
+        <% if (premint) { %>_mint(msg.sender, <%= initialSupply %> * 10 ** decimals());<% } %>
+        <% if (roles) { %>
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        <% if (roles) { %>_grantRole(PAUSER_ROLE, msg.sender);<% } %>
+        <% } %>
+    }
+
+    <% if (mint) { %>
+    function mint(address to, uint256 amount) public <% if (ownable) { %> onlyOwner <% } %> {
+        _mint(to, amount);
+    }
+    <% } %>
+
+    <% if (burn) { %>
+    function burn(uint256 amount) public {
+        _burn(msg.sender, amount);
+    }
+
+    function burnFrom(address account, uint256 amount) public {
+        uint256 currentAllowance = allowance(account, msg.sender);
+        require(currentAllowance >= amount, "Burn amount exceeds allowance");
+        _approve(account, msg.sender, currentAllowance - amount);
+        _burn(account, amount);
+    }
+    <% } %>
+
+    <% if (pause) { %>
+    function pause() public <% if (roles) { %> onlyRole(PAUSER_ROLE) <% } %><% if (!roles && ownable) { %> onlyOwner <% } %> {
+        _pause();
+    }
+
+    function unpause() public <% if (roles) { %> onlyRole(PAUSER_ROLE) <% } %><% if (!roles && ownable) { %> onlyOwner <% } %> {
+        _unpause();
     }
     <% } %>
 }
