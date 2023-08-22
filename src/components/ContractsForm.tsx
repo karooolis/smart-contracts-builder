@@ -31,10 +31,14 @@ const formSchema = z.object({
     message: "symbol must be at least 1 characters.",
   }),
   premint: z.coerce.number(),
-  features: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: "You have to select at least one item.",
-  }),
+  features: z.array(z.string()),
   accessControl: z.enum(["ownable", "roles", "none"]),
+  type: z.enum(["all", "mentions", "none"], {
+    required_error: "You need to select a notification type.",
+  }),
+  license: z.string({
+    required_error: "License is required",
+  }),
 });
 
 const features = [
@@ -72,21 +76,33 @@ const accessControl = [
 ] as const;
 
 export function ContractsForm() {
-  const [code, setCode] = React.useState("");
+  const [code, setCode] = React.useState(`// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract MyToken is ERC20 {
+    constructor() ERC20("MyToken", "TKN") {
+        _mint(msg.sender, 1000000 * 10 ** decimals());
+    }
+}
+`);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "MyToken",
       symbol: "TKN",
-      premint: undefined,
+      premint: 1000000,
       features: [],
       accessControl: "none",
+      license: "MIT",
     },
   });
 
   function onChange() {
     const values = form.getValues();
+
     const data = {
       tokenName: values.name,
       tokenSymbol: values.symbol,
@@ -97,7 +113,8 @@ export function ContractsForm() {
       pause: values.features.includes("pause"),
       permit: values.features.includes("permit"),
       ownable: values.accessControl == "ownable", // Whether to make the contract ownable
-      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions
+      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions,
+      license: values.license,
     };
 
     const compiled_temp = _.template(ERC20)(data);
@@ -208,7 +225,6 @@ export function ContractsForm() {
                 <FormLabel>Access Control</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    onChange={field.onChange}
                     defaultValue={field.value}
                     className="flex flex-col space-y-1"
                   >
@@ -218,7 +234,12 @@ export function ContractsForm() {
                         className="flex items-center space-x-3 space-y-0"
                       >
                         <FormControl>
-                          <RadioGroupItem value={id} />
+                          <RadioGroupItem
+                            onClick={() => {
+                              form.setValue("accessControl", id);
+                            }}
+                            value={id}
+                          />
                         </FormControl>
                         <FormLabel className="font-normal">{label}</FormLabel>
                       </FormItem>
@@ -229,8 +250,23 @@ export function ContractsForm() {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="license"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>License</FormLabel>
+                <FormControl>
+                  <Input placeholder="License" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </form>
       </Form>
+
       <CodeDisplay value={code} />
     </>
   );

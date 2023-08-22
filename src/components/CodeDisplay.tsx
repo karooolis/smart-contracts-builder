@@ -10,7 +10,7 @@ type Props = {
 };
 
 function CodeDisplay({ value }: Props) {
-  const [formattedCode, setFormattedCode] = React.useState("");
+  const [formattedCode, setFormattedCode] = React.useState(value);
 
   // format code on change
   useEffect(() => {

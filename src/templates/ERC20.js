@@ -1,14 +1,15 @@
 export const ERC20 = `
+// SPDX-License-Identifier: <%= license %>
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-<% if (mint || burn) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";<% } %>
+<% if (burn) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";<% } %>
 <% if (pause) { %>import "@openzeppelin/contracts/security/Pausable.sol";<% } %>
 <% if (permit) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";<% } %>
 <% if (ownable) { %>import "@openzeppelin/contracts/access/Ownable.sol";<% } %>
 <% if (roles) { %>import "@openzeppelin/contracts/access/AccessControl.sol";<% } %>
 
-contract <%= tokenName %> is ERC20<% if (mint || burn) { %>, ERC20Burnable<% } %><% if (pause) { %>, Pausable<% } %><% if (permit) { %>, ERC20Permit<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
+contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (pause) { %>, Pausable<% } %><% if (permit) { %>, ERC20Permit<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
     <% if (roles && pause) { %>
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     <% } %>
