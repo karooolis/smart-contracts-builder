@@ -21,9 +21,9 @@ export function ContractSelect() {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Contract type:</SelectLabel>
-          {contracts.map(({ id, label }) => (
-            <SelectItem key={id} value={id}>
-              {label}
+          {contracts.map(({ id, label, isReady }) => (
+            <SelectItem key={id} value={id} disabled={!isReady}>
+              {label} {!isReady && "(coming soon)"}
             </SelectItem>
           ))}
         </SelectGroup>
