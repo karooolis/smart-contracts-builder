@@ -216,16 +216,6 @@ contract MyToken is ERC20 {
             <LibrarySelect />
           </div>
 
-          {/* <ul className="flex space-x-4">
-            {contracts.map(({ id, label }, idx) => (
-              <li key={idx}>
-                <a href="#" className="hover:underline">
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul> */}
-
           <ModeToggle />
         </div>
       </nav>
