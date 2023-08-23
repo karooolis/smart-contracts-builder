@@ -19,6 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ModeToggle } from "@/components/ModeToggle";
+import { Separator } from "@/components/ui/separator"
 
 import CodeDisplay from "./CodeDisplay";
 import { ContractSelect } from "./ContractSelect";
@@ -228,6 +229,8 @@ contract MyToken is ERC20 {
           <ModeToggle />
         </div>
       </nav>
+
+      <Separator />
 
       {/* Main content */}
       <div className="flex flex-grow overflow-hidden">
