@@ -20,6 +20,8 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import CodeDisplay from "./CodeDisplay";
+import { ContractSelect } from "./ContractSelect";
+import { LibrarySelect } from "./LibrarySelect";
 
 import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
 import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
@@ -53,7 +55,7 @@ const formSchema = z.object({
   }),
 });
 
-const contracts = [
+export const contracts = [
   {
     id: "erc20",
     label: "ERC20: Token",
@@ -118,7 +120,7 @@ const accessControl = [
   },
 ] as const;
 
-const libraries = [
+export const libraries = [
   {
     id: "openzeppelin",
     label: "OpenZeppelin",
@@ -192,9 +194,13 @@ contract MyToken is ERC20 {
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Navigation */}
       <nav className="p-4">
-        <div className="mx-auto flex items-center">
-          <div className="text-2xl font-semibold mr-6">Logo</div>
-          <ul className="flex space-x-4">
+        <div className="mx-auto flex items-center gap-8">
+          <div className="text-2xl font-semibold mr-4">🚧 SCB</div>
+
+          <ContractSelect />
+          <LibrarySelect />
+
+          {/* <ul className="flex space-x-4">
             {contracts.map(({ id, label }, idx) => (
               <li key={idx}>
                 <a href="#" className="hover:underline">
@@ -202,33 +208,14 @@ contract MyToken is ERC20 {
                 </a>
               </li>
             ))}
-
-            {/* // <li>
-            //   <a href="#" className="hover:underline">
-            //     ERC20: Token
-            //   </a>
-            // </li>
-            // <li>
-            //   <a href="#" className="hover:underline">
-            //     ERC721: NFT
-            //   </a>
-            // </li>
-            // <li>
-            //   <a href="#" className="hover:underline">
-            //     ERC1155: Multi-token
-            //   </a>
-            // </li> */}
-          </ul>
+          </ul> */}
         </div>
       </nav>
 
       {/* Main content */}
       <div className="flex flex-grow overflow-hidden">
         {/* Left Column */}
-        <div
-          className="p-4 overflow-y-auto"
-          style={{ width: "350px" }}
-        >
+        <div className="p-4 overflow-y-auto" style={{ width: "350px" }}>
           <Form {...form}>
             <form onChange={onChange} className="space-y-4">
               {/* <FormField
@@ -267,7 +254,7 @@ contract MyToken is ERC20 {
                 )}
               /> */}
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="library"
                 render={({ field }) => (
@@ -301,7 +288,7 @@ contract MyToken is ERC20 {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 control={form.control}
