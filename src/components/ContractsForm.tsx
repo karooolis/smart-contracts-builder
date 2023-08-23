@@ -25,7 +25,15 @@ import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
 import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
 
 const formSchema = z.object({
-  contract: z.enum(["erc20", "erc721"]),
+  contract: z.enum([
+    "erc20",
+    "erc721",
+    "erc1155",
+    "erc4626",
+    "vesting",
+    "crowdsale",
+    "flashloan",
+  ]),
   library: z.enum(["openzeppelin", "solmate"]),
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
@@ -73,7 +81,7 @@ const contracts = [
   {
     id: "flashloan",
     label: "Flashloan",
-  }
+  },
 ] as const;
 
 const features = [
