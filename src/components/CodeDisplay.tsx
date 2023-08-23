@@ -1,10 +1,14 @@
 import React, { useEffect } from "react";
 import Script from "next/script";
 import Editor, { useMonaco } from "@monaco-editor/react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import _ from "lodash";
 import { useTheme } from "next-themes";
 
+import { Clipboard } from "lucide-react";
+
 import nightOwl from "../themes/night-owl.json";
+import { Button } from "./ui/button";
 
 type Props = {
   value: string;
@@ -44,18 +48,27 @@ function CodeDisplay({ value }: Props) {
     <>
       <Script src="https://unpkg.com/prettier@latest" />
       <Script src="https://unpkg.com/prettier-plugin-solidity@latest" />
-      <Editor
-        options={{
-          fontSize: 14,
-          readOnly: true,
-        }}
-        defaultLanguage="sol"
-        value={formattedCode}
-        defaultValue={formattedCode}
-        theme={theme === "dark" ? "night-owl" : "vs-light"}
-        beforeMount={setEditorTheme}
-        onMount={handleEditorDidMount}
-      />
+
+      <div className="relative h-full">
+        <CopyToClipboard text={formattedCode}>
+          <Button size="sm" className="absolute bottom-5 right-10 z-10">
+            <Clipboard className="mr-2 h-4 w-4" /> Copy
+          </Button>
+        </CopyToClipboard>
+
+        <Editor
+          options={{
+            fontSize: 14,
+            readOnly: true,
+          }}
+          defaultLanguage="sol"
+          value={formattedCode}
+          defaultValue={formattedCode}
+          theme={theme === "dark" ? "night-owl" : "vs-light"}
+          beforeMount={setEditorTheme}
+          onMount={handleEditorDidMount}
+        />
+      </div>
     </>
   );
 }
