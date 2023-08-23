@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ModeToggle } from "@/components/ModeToggle";
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/components/ui/separator";
 
 import CodeDisplay from "./CodeDisplay";
 import { ContractSelect } from "./ContractSelect";
@@ -199,6 +199,15 @@ contract MyToken is ERC20 {
     setCode(compiled_temp);
   }
 
+  function setContract(contract: string) {
+    form.setValue("contract", contract);
+  }
+
+  function setLibrary(library: string) {
+    form.setValue("library", library);
+    onChange();
+  }
+
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Navigation */}
@@ -206,14 +215,12 @@ contract MyToken is ERC20 {
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
-            <div className="text-md font-semibold">
-              smart contracts builder
-            </div>
+            <div className="text-md font-semibold">smart contracts builder</div>
           </div>
 
           <div className="flex gap-4">
-            <ContractSelect />
-            <LibrarySelect />
+            <ContractSelect onValueChange={setContract} />
+            <LibrarySelect onValueChange={setLibrary} />
           </div>
 
           <ModeToggle />
@@ -358,6 +365,8 @@ contract MyToken is ERC20 {
                 )}
               />
 
+              <Separator />
+
               <FormField
                 control={form.control}
                 name="features"
@@ -411,6 +420,8 @@ contract MyToken is ERC20 {
                 )}
               />
 
+              <Separator />
+
               <FormField
                 control={form.control}
                 name="accessControl"
@@ -446,6 +457,8 @@ contract MyToken is ERC20 {
                   </FormItem>
                 )}
               />
+
+              <Separator />
 
               <FormField
                 control={form.control}

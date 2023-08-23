@@ -12,9 +12,9 @@ import {
 
 import { libraries } from "./ContractsForm";
 
-export function LibrarySelect() {
+export function LibrarySelect({ onValueChange }) {
   return (
-    <Select defaultValue={libraries[0].id}>
+    <Select defaultValue={libraries[0].id} onValueChange={onValueChange}>
       <SelectTrigger className="w-[220px]">
         <SelectValue placeholder="Select a library" />
       </SelectTrigger>
