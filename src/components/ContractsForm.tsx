@@ -237,7 +237,7 @@ contract MyToken is ERC20 {
         {/* Left Column */}
         <div className="p-4 overflow-y-auto" style={{ width: "350px" }}>
           <Form {...form}>
-            <form onChange={onChange} className="space-y-4">
+            <form onChange={onChange} className="space-y-6">
               {/* <FormField
                 control={form.control}
                 name="contract"

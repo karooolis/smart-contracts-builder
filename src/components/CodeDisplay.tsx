@@ -33,7 +33,9 @@ function CodeDisplay({ value }: Props) {
       <Script src="https://unpkg.com/prettier@latest" />
       <Script src="https://unpkg.com/prettier-plugin-solidity@latest" />
       <Editor
-        // height="100%"
+        options={{
+          fontSize: 14,
+        }}
         defaultLanguage="sol"
         value={formattedCode}
         defaultValue={formattedCode}
