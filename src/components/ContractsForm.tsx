@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import _ from "lodash";
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Form,
   FormControl,
@@ -16,14 +15,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
-
 import CodeDisplay from "./CodeDisplay";
 
+import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
+import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
+
 const formSchema = z.object({
+  contract: z.enum(["erc20", "erc721"]),
   library: z.enum(["openzeppelin", "solmate"]),
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
@@ -31,7 +33,8 @@ const formSchema = z.object({
   symbol: z.string().min(1, {
     message: "symbol must be at least 1 characters.",
   }),
-  premint: z.coerce.number(),
+  baseURI: z.string().optional(),
+  premint: z.coerce.number().optional(),
   features: z.array(z.string()),
   accessControl: z.enum(["ownable", "roles", "none"]),
   type: z.enum(["all", "mentions", "none"], {
@@ -41,6 +44,17 @@ const formSchema = z.object({
     required_error: "License is required",
   }),
 });
+
+const contracts = [
+  {
+    id: "erc20",
+    label: "ERC20",
+  },
+  {
+    id: "erc721",
+    label: "ERC721",
+  },
+] as const;
 
 const features = [
   {
@@ -103,7 +117,9 @@ contract MyToken is ERC20 {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      contract: "erc20",
       library: "openzeppelin",
+      baseURI: "",
       name: "MyToken",
       symbol: "TKN",
       premint: 1000000,
@@ -112,14 +128,16 @@ contract MyToken is ERC20 {
       license: "MIT",
     },
   });
+  const contract = form.watch("contract");
 
   function onChange() {
     const values = form.getValues();
     const data = {
       tokenName: values.name,
       tokenSymbol: values.symbol,
+      baseURI: values.baseURI,
       initialSupply: values.premint,
-      premint: values.premint > 0,
+      premint: values.premint && values.premint > 0,
       mint: values.features.includes("mint"),
       burn: values.features.includes("burn"),
       pause: values.features.includes("pause"),
@@ -130,7 +148,14 @@ contract MyToken is ERC20 {
     };
 
     const template =
-      values.library == "openzeppelin" ? ERC20_OpenZeppelin : ERC20_Solmate;
+      values.contract == "erc721"
+        ? values.library == "openzeppelin"
+          ? ERC721_OpenZeppelin
+          : ERC721_Solmate
+        : values.library == "openzeppelin"
+        ? ERC20_OpenZeppelin
+        : ERC20_Solmate;
+
     const compiled_temp = _.template(template)(data);
     setCode(compiled_temp);
   }
@@ -139,6 +164,40 @@ contract MyToken is ERC20 {
     <>
       <Form {...form}>
         <form onChange={onChange} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="contract"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Contract</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    {contracts.map(({ id, label }, idx) => (
+                      <FormItem
+                        key={idx}
+                        className="flex items-center space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <RadioGroupItem
+                            onClick={() => {
+                              form.setValue("contract", id);
+                            }}
+                            value={id}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">{label}</FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="library"
@@ -200,6 +259,22 @@ contract MyToken is ERC20 {
               </FormItem>
             )}
           />
+
+          {contract == "erc721" && (
+            <FormField
+              control={form.control}
+              name="baseURI"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Base URI</FormLabel>
+                  <FormControl>
+                    <Input placeholder="ipfs://..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           <FormField
             control={form.control}
