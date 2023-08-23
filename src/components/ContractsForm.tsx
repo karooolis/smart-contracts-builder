@@ -20,12 +20,22 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import CodeDisplay from "./CodeDisplay";
+import { ContractSelect } from "./ContractSelect";
+import { LibrarySelect } from "./LibrarySelect";
 
 import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
 import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
 
 const formSchema = z.object({
-  contract: z.enum(["erc20", "erc721"]),
+  contract: z.enum([
+    "erc20",
+    "erc721",
+    "erc1155",
+    "erc4626",
+    "vesting",
+    "crowdsale",
+    "flashloan",
+  ]),
   library: z.enum(["openzeppelin", "solmate"]),
   name: z.string().min(2, {
     message: "name must be at least 2 characters.",
@@ -45,14 +55,34 @@ const formSchema = z.object({
   }),
 });
 
-const contracts = [
+export const contracts = [
   {
     id: "erc20",
-    label: "ERC20",
+    label: "ERC20: Token",
   },
   {
     id: "erc721",
-    label: "ERC721",
+    label: "ERC721: NFT",
+  },
+  {
+    id: "erc1155",
+    label: "ERC1155: Multi-token",
+  },
+  {
+    id: "erc4626",
+    label: "ERC4626: Vault",
+  },
+  {
+    id: "vesting",
+    label: "Vesting",
+  },
+  {
+    id: "crowdsale",
+    label: "Crowdsale",
+  },
+  {
+    id: "flashloan",
+    label: "Flashloan",
   },
 ] as const;
 
@@ -90,7 +120,7 @@ const accessControl = [
   },
 ] as const;
 
-const libraries = [
+export const libraries = [
   {
     id: "openzeppelin",
     label: "OpenZeppelin",
@@ -161,236 +191,274 @@ contract MyToken is ERC20 {
   }
 
   return (
-    <>
-      <Form {...form}>
-        <form onChange={onChange} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="contract"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Contract</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    {contracts.map(({ id, label }, idx) => (
-                      <FormItem
-                        key={idx}
-                        className="flex items-center space-x-3 space-y-0"
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Navigation */}
+      <nav className="p-4">
+        <div className="mx-auto flex items-center gap-8">
+          <div className="text-2xl font-semibold mr-4">🚧 SCB</div>
+
+          <ContractSelect />
+          <LibrarySelect />
+
+          {/* <ul className="flex space-x-4">
+            {contracts.map(({ id, label }, idx) => (
+              <li key={idx}>
+                <a href="#" className="hover:underline">
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul> */}
+        </div>
+      </nav>
+
+      {/* Main content */}
+      <div className="flex flex-grow overflow-hidden">
+        {/* Left Column */}
+        <div className="p-4 overflow-y-auto" style={{ width: "350px" }}>
+          <Form {...form}>
+            <form onChange={onChange} className="space-y-4">
+              {/* <FormField
+                control={form.control}
+                name="contract"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Contract</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
                       >
-                        <FormControl>
-                          <RadioGroupItem
-                            onClick={() => {
-                              form.setValue("contract", id);
-                            }}
-                            value={id}
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal">{label}</FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                        {contracts.map(({ id, label }, idx) => (
+                          <FormItem
+                            key={idx}
+                            className="flex items-center space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                onClick={() => {
+                                  form.setValue("contract", id);
+                                }}
+                                value={id}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {label}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
 
-          <FormField
-            control={form.control}
-            name="library"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Library</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    {libraries.map(({ id, label }, idx) => (
-                      <FormItem
-                        key={idx}
-                        className="flex items-center space-x-3 space-y-0"
+              {/* <FormField
+                control={form.control}
+                name="library"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Library</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
                       >
-                        <FormControl>
-                          <RadioGroupItem
-                            onClick={() => {
-                              form.setValue("library", id);
-                            }}
-                            value={id}
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal">{label}</FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                        {libraries.map(({ id, label }, idx) => (
+                          <FormItem
+                            key={idx}
+                            className="flex items-center space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                onClick={() => {
+                                  form.setValue("library", id);
+                                }}
+                                value={id}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {label}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              /> */}
 
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="symbol"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Symbol</FormLabel>
-                <FormControl>
-                  <Input placeholder="Symbol" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="symbol"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Symbol</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Symbol" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {contract == "erc721" && (
-            <FormField
-              control={form.control}
-              name="baseURI"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Base URI</FormLabel>
-                  <FormControl>
-                    <Input placeholder="ipfs://..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              {contract == "erc721" && (
+                <FormField
+                  control={form.control}
+                  name="baseURI"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Base URI</FormLabel>
+                      <FormControl>
+                        <Input placeholder="ipfs://..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
-          )}
 
-          <FormField
-            control={form.control}
-            name="premint"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Premint</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="0" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              <FormField
+                control={form.control}
+                name="premint"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Premint</FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="0" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="features"
-            render={() => (
-              <FormItem>
-                <div className="mb-4">
-                  <FormLabel className="text-base">Features</FormLabel>
-                  <FormDescription>
-                    Select the additional features to add.
-                  </FormDescription>
-                </div>
+              <FormField
+                control={form.control}
+                name="features"
+                render={() => (
+                  <FormItem>
+                    <div className="mb-4">
+                      <FormLabel className="text-base">Features</FormLabel>
+                      <FormDescription>
+                        Select the additional features to add.
+                      </FormDescription>
+                    </div>
 
-                {features.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name="features"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className="flex flex-row items-start space-x-3 space-y-0"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    );
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      );
-                    }}
-                  />
-                ))}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="accessControl"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Access Control</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    {accessControl.map(({ id, label }, idx) => (
-                      <FormItem
-                        key={idx}
-                        className="flex items-center space-x-3 space-y-0"
-                      >
-                        <FormControl>
-                          <RadioGroupItem
-                            onClick={() => {
-                              form.setValue("accessControl", id);
-                            }}
-                            value={id}
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal">{label}</FormLabel>
-                      </FormItem>
+                    {features.map((item) => (
+                      <FormField
+                        key={item.id}
+                        control={form.control}
+                        name="features"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={item.id}
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(item.id)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...field.value,
+                                          item.id,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== item.id
+                                          )
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {item.label}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
                     ))}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="license"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>License</FormLabel>
-                <FormControl>
-                  <Input placeholder="License" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
+              <FormField
+                control={form.control}
+                name="accessControl"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Access Control</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {accessControl.map(({ id, label }, idx) => (
+                          <FormItem
+                            key={idx}
+                            className="flex items-center space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                onClick={() => {
+                                  form.setValue("accessControl", id);
+                                }}
+                                value={id}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {label}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-      <CodeDisplay value={code} />
-    </>
+              <FormField
+                control={form.control}
+                name="license"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>License</FormLabel>
+                    <FormControl>
+                      <Input placeholder="License" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </div>
+
+        {/* Right Column */}
+        <div className="flex-grow overflow-y-auto">
+          <CodeDisplay value={code} />
+        </div>
+      </div>
+    </div>
   );
 }
