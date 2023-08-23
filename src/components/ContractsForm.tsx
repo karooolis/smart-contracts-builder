@@ -474,6 +474,8 @@ contract MyToken is ERC20 {
           </Form>
         </div>
 
+        <Separator orientation="vertical" />
+
         {/* Right Column */}
         <div className="flex-grow overflow-y-auto">
           <CodeDisplay value={code} />
