@@ -33,7 +33,7 @@ function CodeDisplay({ value }: Props) {
 
       <CodeMirror
         value={formattedCode}
-        height="500px"
+        height="calc(100vh - 4rem)"
         theme={okaidia}
         extensions={[solidity]}
         readOnly
