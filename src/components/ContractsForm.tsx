@@ -59,30 +59,37 @@ export const contracts = [
   {
     id: "erc20",
     label: "ERC20: Token",
+    isReady: true,
   },
   {
     id: "erc721",
     label: "ERC721: NFT",
+    isReady: true,
   },
   {
     id: "erc1155",
     label: "ERC1155: Multi-token",
+    isReady: false,
   },
   {
     id: "erc4626",
     label: "ERC4626: Vault",
+    isReady: false,
   },
   {
     id: "vesting",
     label: "Vesting",
+    isReady: false,
   },
   {
     id: "crowdsale",
     label: "Crowdsale",
+    isReady: false,
   },
   {
     id: "flashloan",
     label: "Flashloan",
+    isReady: false,
   },
 ] as const;
 
