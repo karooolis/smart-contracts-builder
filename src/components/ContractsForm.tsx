@@ -18,6 +18,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ModeToggle } from "@/components/ModeToggle";
 
 import CodeDisplay from "./CodeDisplay";
 import { ContractSelect } from "./ContractSelect";
@@ -201,11 +202,18 @@ contract MyToken is ERC20 {
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Navigation */}
       <nav className="p-4">
-        <div className="mx-auto flex items-center gap-8">
-          <div className="text-2xl font-semibold mr-4">🚧 SCB</div>
+        <div className="mx-auto flex items-center justify-between gap-8">
+          <div className="flex items-center gap-3">
+            <div className="text-2xl">🚧</div>
+            <div className="text-md font-bold">
+              smart contracts builder
+            </div>
+          </div>
 
-          <ContractSelect />
-          <LibrarySelect />
+          <div className="flex gap-4">
+            <ContractSelect />
+            <LibrarySelect />
+          </div>
 
           {/* <ul className="flex space-x-4">
             {contracts.map(({ id, label }, idx) => (
@@ -216,6 +224,8 @@ contract MyToken is ERC20 {
               </li>
             ))}
           </ul> */}
+
+          <ModeToggle />
         </div>
       </nav>
 

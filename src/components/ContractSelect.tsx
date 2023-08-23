@@ -15,7 +15,7 @@ import { contracts } from "./ContractsForm";
 export function ContractSelect() {
   return (
     <Select defaultValue={contracts[0].id}>
-      <SelectTrigger className="w-[200px]">
+      <SelectTrigger className="w-[220px]">
         <SelectValue placeholder="Select a contract" />
       </SelectTrigger>
       <SelectContent>
