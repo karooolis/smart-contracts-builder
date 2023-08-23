@@ -12,9 +12,9 @@ import {
 
 import { contracts } from "./ContractsForm";
 
-export function ContractSelect() {
+export function ContractSelect({ onValueChange }) {
   return (
-    <Select defaultValue={contracts[0].id}>
+    <Select defaultValue={contracts[0].id} onValueChange={onValueChange}>
       <SelectTrigger className="w-[220px]">
         <SelectValue placeholder="Select a contract" />
       </SelectTrigger>
