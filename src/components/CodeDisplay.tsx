@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import Script from "next/script";
 import Editor from "@monaco-editor/react";
-import { solidity } from "@replit/codemirror-lang-solidity";
-import { okaidia } from "@uiw/codemirror-theme-okaidia";
 import _ from "lodash";
 import { useTheme } from "next-themes";
 
@@ -35,6 +33,7 @@ function CodeDisplay({ value }: Props) {
       <Editor
         options={{
           fontSize: 14,
+          readOnly: true,
         }}
         defaultLanguage="sol"
         value={formattedCode}
