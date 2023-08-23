@@ -48,12 +48,32 @@ const formSchema = z.object({
 const contracts = [
   {
     id: "erc20",
-    label: "ERC20",
+    label: "ERC20: Token",
   },
   {
     id: "erc721",
-    label: "ERC721",
+    label: "ERC721: NFT",
   },
+  {
+    id: "erc1155",
+    label: "ERC1155: Multi-token",
+  },
+  {
+    id: "erc4626",
+    label: "ERC4626: Vault",
+  },
+  {
+    id: "vesting",
+    label: "Vesting",
+  },
+  {
+    id: "crowdsale",
+    label: "Crowdsale",
+  },
+  {
+    id: "flashloan",
+    label: "Flashloan",
+  }
 ] as const;
 
 const features = [
