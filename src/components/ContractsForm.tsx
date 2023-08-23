@@ -19,6 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ModeToggle } from "@/components/ModeToggle";
+import { Separator } from "@/components/ui/separator"
 
 import CodeDisplay from "./CodeDisplay";
 import { ContractSelect } from "./ContractSelect";
@@ -205,7 +206,7 @@ contract MyToken is ERC20 {
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
-            <div className="text-md font-bold">
+            <div className="text-md font-semibold">
               smart contracts builder
             </div>
           </div>
@@ -215,26 +216,18 @@ contract MyToken is ERC20 {
             <LibrarySelect />
           </div>
 
-          {/* <ul className="flex space-x-4">
-            {contracts.map(({ id, label }, idx) => (
-              <li key={idx}>
-                <a href="#" className="hover:underline">
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul> */}
-
           <ModeToggle />
         </div>
       </nav>
+
+      <Separator />
 
       {/* Main content */}
       <div className="flex flex-grow overflow-hidden">
         {/* Left Column */}
         <div className="p-4 overflow-y-auto" style={{ width: "350px" }}>
           <Form {...form}>
-            <form onChange={onChange} className="space-y-4">
+            <form onChange={onChange} className="space-y-6">
               {/* <FormField
                 control={form.control}
                 name="contract"
@@ -470,6 +463,8 @@ contract MyToken is ERC20 {
             </form>
           </Form>
         </div>
+
+        <Separator orientation="vertical" />
 
         {/* Right Column */}
         <div className="flex-grow overflow-y-auto">
