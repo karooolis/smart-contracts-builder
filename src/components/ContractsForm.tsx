@@ -260,33 +260,39 @@ contract MyToken is ERC20 {
         <div className="p-4 overflow-y-auto" style={{ width: "290px" }}>
           <Form {...form}>
             <form onChange={onChange} className="space-y-5">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex space-x-3">
+                <div className="flex-grow w-3/4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-              <FormField
-                control={form.control}
-                name="symbol"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Symbol</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Symbol" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <div className="flex-grow w-1/4">
+                  <FormField
+                    control={form.control}
+                    name="symbol"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Symbol</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Symbol" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
 
               {contract == "erc721" && (
                 <FormField
@@ -309,7 +315,12 @@ contract MyToken is ERC20 {
                 name="premint"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Premint</FormLabel>
+                    <FormLabel className="flex w-full justify-between">
+                      Premint{" "}
+                      <ExplanationTooltip>
+                        Create an initial amount of tokens for the deployer.
+                      </ExplanationTooltip>
+                    </FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0" {...field} />
                     </FormControl>

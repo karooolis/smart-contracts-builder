@@ -20,7 +20,7 @@ export function ExplanationTooltip({ children }) {
             ?
           </Button>
         </TooltipTrigger>
-        <TooltipContent className="max-w-xs">
+        <TooltipContent className="max-w-xs font-normal">
           <p>{children}</p>
         </TooltipContent>
       </Tooltip>
