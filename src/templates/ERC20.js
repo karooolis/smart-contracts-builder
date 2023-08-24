@@ -57,7 +57,7 @@ import "solmate/erc20/ERC20.sol";
 <% if (ownable) { %>import "solmate/utils/Ownable.sol";<% } %>
 <% if (roles) { %>import "solmate/access/AccessControl.sol";<% } %>
 
-contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
+contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (ownable) { %>, Owned(msg.sender)<% } %><% if (roles) { %>, AccessControl<% } %> {
     <% if (roles && pause) { %>
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     <% } %>
@@ -77,11 +77,11 @@ contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (owna
     <% } %>
 
     <% if (burn) { %>
-    function burn(uint256 amount) public {
+    function burn(uint256 amount) public <% if (ownable) { %> onlyOwner <% } %> {
         _burn(msg.sender, amount);
     }
 
-    function burnFrom(address account, uint256 amount) public {
+    function burnFrom(address account, uint256 amount) public <% if (ownable) { %> onlyOwner <% } %> {
         uint256 currentAllowance = allowance(account, msg.sender);
         require(currentAllowance >= amount, "Burn amount exceeds allowance");
         _approve(account, msg.sender, currentAllowance - amount);
