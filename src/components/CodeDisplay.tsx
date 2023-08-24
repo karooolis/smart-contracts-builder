@@ -4,11 +4,12 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import _ from "lodash";
 import { useTheme } from "next-themes";
-
 import { Clipboard, Check } from "lucide-react";
 
 import nightOwl from "../themes/night-owl.json";
-import { Button } from "./ui/button";
+import githubDark from "../themes/github-dark.json";
+
+import { Button } from "@/components/ui/button";
 
 type Props = {
   value: string;
@@ -34,6 +35,7 @@ function CodeDisplay({ value }: Props) {
 
   function setEditorTheme(monaco: any) {
     monaco.editor.defineTheme("night-owl", nightOwl);
+    monaco.editor.defineTheme("github-dark", githubDark);
   }
 
   // format code on change
@@ -57,7 +59,7 @@ function CodeDisplay({ value }: Props) {
 
       <div className="relative h-full">
         <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
-          <Button size="sm" className="absolute bottom-8 right-10 z-10">
+          <Button size="sm" className="absolute bottom-6 right-8 z-10">
             {copied ? (
               <>
                 <Check className="mr-2 h-4 w-4" /> Copied!
@@ -78,7 +80,7 @@ function CodeDisplay({ value }: Props) {
           defaultLanguage="sol"
           value={formattedCode}
           defaultValue={formattedCode}
-          theme={theme === "dark" || resolvedTheme === "dark" ? "night-owl" : "vs-light"}
+          theme={theme === "dark" || resolvedTheme === "dark" ? "hc-black" : "vs-light"}
           beforeMount={setEditorTheme}
           onMount={handleEditorDidMount}
         />
