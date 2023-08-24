@@ -27,6 +27,7 @@ import { LibrarySelect } from "./LibrarySelect";
 
 import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
 import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
+import { ExplanationTooltip } from "./ExplanationTooltip";
 
 const formSchema = z.object({
   contract: z.enum([
@@ -99,18 +100,22 @@ const features = [
   {
     id: "mint",
     label: "Mintable",
+    info: "Privileged accounts will be able to create more supply.",
   },
   {
     id: "burn",
     label: "Burnable",
+    info: "Token holders will be able to destroy their tokens.",
   },
   {
     id: "pause",
     label: "Pausable",
+    info: "Privileged accounts will be able to pause the functionality marked as whenNotPaused. Useful for emergency response.",
   },
   {
     id: "permit",
     label: "Permit",
+    info: "Without paying gas, token holders will be able to allow third parties to transfer from their account.",
   },
 ] as const;
 
@@ -118,10 +123,12 @@ const accessControls = [
   {
     id: "ownable",
     label: "Ownable",
+    info: "Simple mechanism with a single account authorized for all privileged actions.",
   },
   {
     id: "roles",
     label: "Roles",
+    info: "Flexible mechanism with a separate role for each privileged action. A role can have many authorized accounts.",
   },
   {
     id: "none",
@@ -250,7 +257,7 @@ contract MyToken is ERC20 {
       {/* Main content */}
       <div className="flex flex-grow overflow-hidden">
         {/* Left Column */}
-        <div className="p-4 overflow-y-auto" style={{ width: "350px" }}>
+        <div className="p-4 overflow-y-auto" style={{ width: "290px" }}>
           <Form {...form}>
             <form onChange={onChange} className="space-y-5">
               <FormField
@@ -360,8 +367,13 @@ contract MyToken is ERC20 {
                                   }
                                 />
                               </FormControl>
-                              <FormLabel className="font-normal">
-                                {item.label}
+                              <FormLabel className="flex w-full font-normal justify-between">
+                                {item.label}{" "}
+                                {item.info && (
+                                  <ExplanationTooltip>
+                                    {item.info}
+                                  </ExplanationTooltip>
+                                )}
                               </FormLabel>
                             </FormItem>
                           );
@@ -387,7 +399,7 @@ contract MyToken is ERC20 {
                         defaultValue={field.value}
                         className="flex flex-col space-y-1"
                       >
-                        {accessControls.map(({ id, label }, idx) => (
+                        {accessControls.map(({ id, label, info }, idx) => (
                           <FormItem
                             key={idx}
                             className="flex items-center space-x-3 space-y-0"
@@ -404,8 +416,11 @@ contract MyToken is ERC20 {
                                 }
                               />
                             </FormControl>
-                            <FormLabel className="font-normal">
-                              {label}
+                            <FormLabel className="flex w-full justify-between font-normal">
+                              {label}{" "}
+                              {info && (
+                                <ExplanationTooltip>{info}</ExplanationTooltip>
+                              )}
                             </FormLabel>
                           </FormItem>
                         ))}
