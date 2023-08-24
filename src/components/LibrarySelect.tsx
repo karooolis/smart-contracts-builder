@@ -9,8 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { libraries } from "./ContractsForm";
+import { libraries } from "@/utils/constants";
 
 export function LibrarySelect({ onValueChange }) {
   return (
