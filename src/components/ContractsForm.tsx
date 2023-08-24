@@ -114,7 +114,7 @@ const features = [
   },
 ] as const;
 
-const accessControl = [
+const accessControls = [
   {
     id: "ownable",
     label: "Ownable",
@@ -169,6 +169,11 @@ contract MyToken is ERC20 {
   });
   const contract = form.watch("contract");
   const library = form.watch("library");
+  const featuresValues = form.watch("features");
+  const mintable = featuresValues.includes("mint");
+  const burnable = featuresValues.includes("burn");
+  const pausable = featuresValues.includes("pause");
+  const accessControl = form.watch("accessControl");
 
   function onChange() {
     const values = form.getValues();
@@ -209,6 +214,18 @@ contract MyToken is ERC20 {
     onChange();
   }
 
+  // set access control if mintable, burnable or pausable
+  React.useEffect(() => {
+    console.log("accessControl", accessControl);
+    console.log("mintable", mintable);
+    console.log("burnable", burnable);
+    console.log("pausable", pausable);
+
+    if (accessControl == "none" && (mintable || burnable || pausable)) {
+      form.setValue("accessControl", "ownable");
+    }
+  }, [accessControl, burnable, form, mintable, pausable]);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Navigation */}
@@ -236,78 +253,6 @@ contract MyToken is ERC20 {
         <div className="p-4 overflow-y-auto" style={{ width: "350px" }}>
           <Form {...form}>
             <form onChange={onChange} className="space-y-5">
-              {/* <FormField
-                control={form.control}
-                name="contract"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Contract</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        {contracts.map(({ id, label }, idx) => (
-                          <FormItem
-                            key={idx}
-                            className="flex items-center space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <RadioGroupItem
-                                onClick={() => {
-                                  form.setValue("contract", id);
-                                }}
-                                value={id}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {label}
-                            </FormLabel>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
-              {/* <FormField
-                control={form.control}
-                name="library"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Library</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        defaultValue={field.value}
-                        className="flex flex-col space-y-1"
-                      >
-                        {libraries.map(({ id, label }, idx) => (
-                          <FormItem
-                            key={idx}
-                            className="flex items-center space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <RadioGroupItem
-                                onClick={() => {
-                                  form.setValue("library", id);
-                                }}
-                                value={id}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal">
-                              {label}
-                            </FormLabel>
-                          </FormItem>
-                        ))}
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
               <FormField
                 control={form.control}
                 name="name"
@@ -438,10 +383,11 @@ contract MyToken is ERC20 {
                     <FormLabel>Access Control</FormLabel>
                     <FormControl>
                       <RadioGroup
+                        value={field.value}
                         defaultValue={field.value}
                         className="flex flex-col space-y-1"
                       >
-                        {accessControl.map(({ id, label }, idx) => (
+                        {accessControls.map(({ id, label }, idx) => (
                           <FormItem
                             key={idx}
                             className="flex items-center space-x-3 space-y-0"
@@ -452,6 +398,10 @@ contract MyToken is ERC20 {
                                   form.setValue("accessControl", id);
                                 }}
                                 value={id}
+                                disabled={
+                                  id == "none" &&
+                                  (mintable || burnable || pausable)
+                                }
                               />
                             </FormControl>
                             <FormLabel className="font-normal">
