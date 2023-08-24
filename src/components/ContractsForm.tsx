@@ -29,6 +29,7 @@ import { LibrarySelect } from "./LibrarySelect";
 import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
 import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
 import { ExplanationTooltip } from "./ExplanationTooltip";
+import { Button } from "./ui/button";
 
 const formSchema = z.object({
   contract: z.enum([
@@ -241,7 +242,7 @@ contract MyToken is ERC20 {
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
-            <div className="text-md font-semibold">smart contracts builder</div>
+            <div className="text-sm font-semibold">smart contracts builder</div>
           </div>
 
           <div className="flex gap-4">

@@ -1,10 +1,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Inconsolata } from "next/font/google";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
+const inconsolatac = Inconsolata({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Smart Contracts Builder",
@@ -18,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className} style={{ overflow: "hidden" }}>
+      <body className={inconsolatac.className} style={{ overflow: "hidden" }}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>
