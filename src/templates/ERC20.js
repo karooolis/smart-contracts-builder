@@ -10,20 +10,22 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 <% if (roles) { %>import "@openzeppelin/contracts/access/AccessControl.sol";<% } %>
 
 contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (pause) { %>, Pausable<% } %><% if (permit) { %>, ERC20Permit<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
-    <% if (roles && pause) { %>
-    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    <% if (roles) { %>
+    <% if (mint) { %>bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");<% } %>
+    <% if (pause) { %>bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");<% } %>
     <% } %>
-    
+
     constructor() ERC20("<%= tokenName %>", "<%= tokenSymbol %>") <% if (permit) { %>ERC20Permit("<%= tokenName %>")<% } %> {
         <% if (premint) { %>_mint(msg.sender, <%= initialSupply %>  * 10 ** decimals());<% } %>
         <% if (roles) { %>
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        <% if (roles) { %>_grantRole(PAUSER_ROLE, msg.sender);<% } %>
+        <% if (mint) { %>_grantRole(MINTER_ROLE, msg.sender);<% } %>
+        <% if (pause) { %>_grantRole(PAUSER_ROLE, msg.sender);<% } %>
         <% } %>
     }
 
     <% if (mint) { %>
-    function mint(address to, uint256 amount) public <% if (ownable) { %> onlyOwner <% } %> {
+    function mint(address to, uint256 amount) public <% if (ownable) { %> onlyOwner <% } %> <% if (roles) { %> onlyRole(MINTER_ROLE) <% } %> {
         _mint(to, amount);
     }
     <% } %>
@@ -57,7 +59,7 @@ import "solmate/erc20/ERC20.sol";
 <% if (ownable) { %>import "solmate/utils/Ownable.sol";<% } %>
 <% if (roles) { %>import "solmate/access/AccessControl.sol";<% } %>
 
-contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
+contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (ownable) { %>, Owned(msg.sender)<% } %><% if (roles) { %>, AccessControl<% } %> {
     <% if (roles && pause) { %>
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     <% } %>
@@ -77,11 +79,11 @@ contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (owna
     <% } %>
 
     <% if (burn) { %>
-    function burn(uint256 amount) public {
+    function burn(uint256 amount) public <% if (ownable) { %> onlyOwner <% } %> {
         _burn(msg.sender, amount);
     }
 
-    function burnFrom(address account, uint256 amount) public {
+    function burnFrom(address account, uint256 amount) public <% if (ownable) { %> onlyOwner <% } %> {
         uint256 currentAllowance = allowance(account, msg.sender);
         require(currentAllowance >= amount, "Burn amount exceeds allowance");
         _approve(account, msg.sender, currentAllowance - amount);
