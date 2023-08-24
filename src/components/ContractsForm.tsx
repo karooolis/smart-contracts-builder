@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
+import _ from "lodash";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import _ from "lodash";
+import { cn } from "@/lib/utils";
 
 import {
   Form,
@@ -236,7 +237,7 @@ contract MyToken is ERC20 {
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Navigation */}
-      <nav className="p-4">
+      <nav className="px-4 py-2">
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
@@ -427,7 +428,14 @@ contract MyToken is ERC20 {
                                 }
                               />
                             </FormControl>
-                            <FormLabel className="flex w-full justify-between font-normal">
+                            <FormLabel
+                              className={cn(
+                                "flex w-full justify-between font-normal",
+                                id == "none" &&
+                                  (mintable || burnable || pausable) &&
+                                  "line-through"
+                              )}
+                            >
                               {label}{" "}
                               {info && (
                                 <ExplanationTooltip>{info}</ExplanationTooltip>
