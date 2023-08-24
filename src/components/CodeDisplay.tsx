@@ -15,7 +15,7 @@ type Props = {
 };
 
 function CodeDisplay({ value }: Props) {
-  const { theme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
   const monaco = useMonaco();
   const editorRef = React.useRef(null);
   const [copied, setCopied] = React.useState(false);
@@ -78,7 +78,7 @@ function CodeDisplay({ value }: Props) {
           defaultLanguage="sol"
           value={formattedCode}
           defaultValue={formattedCode}
-          theme={theme === "dark" ? "night-owl" : "vs-light"}
+          theme={theme === "dark" || resolvedTheme === "dark" ? "night-owl" : "vs-light"}
           beforeMount={setEditorTheme}
           onMount={handleEditorDidMount}
         />

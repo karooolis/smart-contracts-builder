@@ -221,7 +221,7 @@ contract MyToken is ERC20 {
     onChange();
   }
 
-  // set access control if mintable, burnable or pausable
+  // set access control ON if mintable, burnable or pausable
   React.useEffect(() => {
     console.log("accessControl", accessControl);
     console.log("mintable", mintable);
