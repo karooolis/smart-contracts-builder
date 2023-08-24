@@ -1,6 +1,6 @@
 export const ERC721_OpenZeppelin = `
 // SPDX-License-Identifier: <%= license %>
-pragma solidity ^0.8.9;
+pragma solidity <%= pragma %>;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 <% if (burn) { %>import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";<% } %>
@@ -71,7 +71,7 @@ contract <%= tokenName %> is ERC721<% if (burn) { %>, ERC721Burnable<% } %><% if
 
 export const ERC721_Solmate = `
 // SPDX-License-Identifier: <%= license %>
-pragma solidity ^0.8.9;
+pragma solidity <%= pragma %>;
 
 import "solmate/auth/Auth.sol";
 

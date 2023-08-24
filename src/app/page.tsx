@@ -1,118 +1,560 @@
-import Image from "next/image";
+"use client";
 
-import { Button } from "@/components/ui/button";
+import React from "react";
+import _ from "lodash";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { cn } from "@/lib/utils";
 
-export default function Home() {
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ModeToggle } from "@/components/ModeToggle";
+import { Separator } from "@/components/ui/separator";
+
+import CodeDisplay from "@/components/CodeDisplay";
+import { ContractSelect } from "@/components/ContractSelect";
+import { LibrarySelect } from "@/components/LibrarySelect";
+import { ExplanationTooltip } from "@/components/ExplanationTooltip";
+
+import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
+import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
+
+const formSchema = z.object({
+  contract: z.enum([
+    "erc20",
+    "erc721",
+    "erc1155",
+    "erc4626",
+    "vesting",
+    "crowdsale",
+    "flashloan",
+  ]),
+  library: z.enum(["openzeppelin", "solmate"]),
+  name: z.string().min(2, {
+    message: "name must be at least 2 characters.",
+  }),
+  symbol: z.string().min(1, {
+    message: "symbol must be at least 1 characters.",
+  }),
+  baseURI: z.string().optional(),
+  premint: z.coerce.number().optional(),
+  features: z.array(z.string()),
+  accessControl: z.enum(["ownable", "roles", "none"]),
+  upgradeability: z.enum(["transparent", "uups"]),
+  type: z.enum(["all", "mentions", "none"], {
+    required_error: "You need to select a notification type.",
+  }),
+  license: z.string({
+    required_error: "License is required",
+  }),
+  pragma: z.string({
+    required_error: "Pragma is required",
+  }),
+});
+
+export const contracts = [
+  {
+    id: "erc20",
+    label: "ERC20: Token",
+    isReady: true,
+  },
+  {
+    id: "erc721",
+    label: "ERC721: NFT",
+    isReady: true,
+  },
+  {
+    id: "erc1155",
+    label: "ERC1155: Multi-token",
+    isReady: false,
+  },
+  {
+    id: "erc4626",
+    label: "ERC4626: Vault",
+    isReady: false,
+  },
+  {
+    id: "vesting",
+    label: "Vesting",
+    isReady: false,
+  },
+  {
+    id: "crowdsale",
+    label: "Crowdsale",
+    isReady: false,
+  },
+  {
+    id: "flashloan",
+    label: "Flashloan",
+    isReady: false,
+  },
+] as const;
+
+const features = [
+  {
+    id: "mint",
+    label: "Mintable",
+    info: "Privileged accounts will be able to create more supply.",
+  },
+  {
+    id: "burn",
+    label: "Burnable",
+    info: "Token holders will be able to destroy their tokens.",
+  },
+  {
+    id: "pause",
+    label: "Pausable",
+    info: "Privileged accounts will be able to pause the functionality marked as whenNotPaused. Useful for emergency response.",
+  },
+  {
+    id: "permit",
+    label: "Permit",
+    info: "Without paying gas, token holders will be able to allow third parties to transfer from their account.",
+  },
+] as const;
+
+const accessControls = [
+  {
+    id: "ownable",
+    label: "Ownable",
+    info: "Simple mechanism with a single account authorized for all privileged actions.",
+  },
+  {
+    id: "roles",
+    label: "Roles",
+    info: "Flexible mechanism with a separate role for each privileged action. A role can have many authorized accounts.",
+  },
+  {
+    id: "none",
+    label: "None",
+  },
+] as const;
+
+export const libraries = [
+  {
+    id: "openzeppelin",
+    label: "OpenZeppelin",
+  },
+  {
+    id: "solmate",
+    label: "Solmate",
+  },
+] as const;
+
+export const upgradeable = [
+  {
+    id: "transparent",
+    label: "Transparent",
+    info: "Uses more complex proxy with higher overhead, requires less changes in your contract. Can also be used with beacons.",
+  },
+  {
+    id: "uups",
+    label: "UUPS",
+    info: "Uses simpler proxy with less overhead, requires including extra code in your contract. Allows flexibility for authorizing upgrades.",
+  },
+];
+
+export function ContractsForm() {
+  const [code, setCode] = React.useState(`// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.9;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract MyToken is ERC20 {
+    constructor() ERC20("MyToken", "TKN") {
+        _mint(msg.sender, 1000000 * 10 ** decimals());
+    }
+}
+`);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      contract: "erc20",
+      library: "openzeppelin",
+      baseURI: "",
+      name: "MyToken",
+      symbol: "TKN",
+      premint: 1000000,
+      features: [],
+      accessControl: "none",
+      license: "MIT",
+      pragma: "^0.8.9",
+    },
+  });
+  const contract = form.watch("contract");
+  const library = form.watch("library");
+  const featuresValues = form.watch("features");
+  const mintable = featuresValues.includes("mint");
+  const burnable = featuresValues.includes("burn");
+  const pausable = featuresValues.includes("pause");
+  const accessControl = form.watch("accessControl");
+
+  function onChange() {
+    const values = form.getValues();
+    const data = {
+      tokenName: values.name,
+      tokenSymbol: values.symbol,
+      baseURI: values.baseURI,
+      initialSupply: values.premint,
+      premint: values.premint && values.premint > 0,
+      mint: values.features.includes("mint"),
+      burn: values.features.includes("burn"),
+      pause: values.features.includes("pause"),
+      permit: values.features.includes("permit"),
+      ownable: values.accessControl == "ownable", // Whether to make the contract ownable
+      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions,
+      license: values.license,
+      pragma: values.pragma,
+    };
+
+    const template =
+      values.contract == "erc721"
+        ? values.library == "openzeppelin"
+          ? ERC721_OpenZeppelin
+          : ERC721_Solmate
+        : values.library == "openzeppelin"
+        ? ERC20_OpenZeppelin
+        : ERC20_Solmate;
+
+    const compiled_temp = _.template(template)(data);
+    setCode(compiled_temp);
+  }
+
+  function setContract(contract: string) {
+    form.setValue("contract", contract);
+  }
+
+  function setLibrary(library: string) {
+    form.setValue("library", library);
+    onChange();
+  }
+
+  // set access control ON if mintable, burnable or pausable
+  React.useEffect(() => {
+    if (accessControl == "none" && (mintable || burnable || pausable)) {
+      form.setValue("accessControl", "ownable");
+    }
+  }, [accessControl, burnable, form, mintable, pausable]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-          <Button>
-            Hello
-          </Button>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Navigation */}
+      <nav className="px-4 py-3">
+        <div className="mx-auto flex items-center justify-between gap-8">
+          <div className="flex items-center gap-3">
+            <div className="text-2xl">🚧</div>
+            <div className="text-sm font-semibold">smart contracts builder</div>
+          </div>
+
+          <div className="flex gap-4">
+            <ContractSelect onValueChange={setContract} />
+            <LibrarySelect onValueChange={setLibrary} />
+          </div>
+
+          <ModeToggle />
+        </div>
+      </nav>
+
+      <Separator />
+
+      {/* Main content */}
+      <div className="flex flex-grow overflow-hidden pb-3">
+        {/* Left Column */}
+        <div className="p-4 overflow-y-auto" style={{ width: "290px" }}>
+          <Form {...form}>
+            <form onChange={onChange} className="space-y-5">
+              <div className="flex space-x-3">
+                <div className="flex-grow w-3/4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex-grow w-1/4">
+                  <FormField
+                    control={form.control}
+                    name="symbol"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Symbol</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Symbol" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {contract == "erc721" && (
+                <FormField
+                  control={form.control}
+                  name="baseURI"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex w-full justify-between">
+                        Base URI{" "}
+                        <ExplanationTooltip>
+                          Will be concatenated with token IDs to generate the
+                          token URIs.
+                        </ExplanationTooltip>
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder="ipfs://..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              <FormField
+                control={form.control}
+                name="premint"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex w-full justify-between">
+                      Premint{" "}
+                      <ExplanationTooltip>
+                        Create an initial amount of tokens for the deployer.
+                      </ExplanationTooltip>
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="number" placeholder="0" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Separator />
+
+              <FormField
+                control={form.control}
+                name="features"
+                render={() => (
+                  <FormItem>
+                    <div className="mb-4">
+                      <FormLabel className="text-base">Features</FormLabel>
+                      <FormDescription>
+                        Select the additional features to add.
+                      </FormDescription>
+                    </div>
+
+                    {features.map((item) => (
+                      <FormField
+                        key={item.id}
+                        control={form.control}
+                        name="features"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={item.id}
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={
+                                    field.value?.includes(item.id) ||
+                                    (item.id == "permit" &&
+                                      library == "solmate")
+                                  }
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...field.value,
+                                          item.id,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== item.id
+                                          )
+                                        );
+                                  }}
+                                  disabled={
+                                    item.id == "permit" && library == "solmate"
+                                  }
+                                />
+                              </FormControl>
+                              <FormLabel className="flex w-full font-normal justify-between">
+                                {item.label}{" "}
+                                {item.info && (
+                                  <ExplanationTooltip>
+                                    {item.info}
+                                  </ExplanationTooltip>
+                                )}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Separator />
+
+              <FormField
+                control={form.control}
+                name="accessControl"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Access Control</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        value={field.value}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {accessControls.map(({ id, label, info }, idx) => (
+                          <FormItem
+                            key={idx}
+                            className="flex items-center space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                onClick={() => {
+                                  form.setValue("accessControl", id);
+                                }}
+                                value={id}
+                                disabled={
+                                  id == "none" &&
+                                  (mintable || burnable || pausable)
+                                }
+                              />
+                            </FormControl>
+                            <FormLabel
+                              className={cn(
+                                "flex w-full justify-between font-normal",
+                                id == "none" &&
+                                  (mintable || burnable || pausable) &&
+                                  "line-through"
+                              )}
+                            >
+                              {label}{" "}
+                              {info && (
+                                <ExplanationTooltip>{info}</ExplanationTooltip>
+                              )}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Separator />
+
+              <FormField
+                control={form.control}
+                name="accessControl"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Upgradeability</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        value={field.value}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {upgradeable.map(({ id, label, info }, idx) => (
+                          <FormItem
+                            key={idx}
+                            className="flex items-center space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                onClick={() => {
+                                  form.setValue("upgradeability", id);
+                                }}
+                                value={id}
+                                disabled={true}
+                              />
+                            </FormControl>
+                            <FormLabel className="flex w-full justify-between font-normal">
+                              {label}{" "}
+                              {info && (
+                                <ExplanationTooltip>{info}</ExplanationTooltip>
+                              )}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Separator />
+
+              <FormField
+                control={form.control}
+                name="license"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>License</FormLabel>
+                    <FormControl>
+                      <Input placeholder="License" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="pragma"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pragma</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Pragma" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </div>
+
+        <Separator orientation="vertical" />
+
+        {/* Right Column */}
+        <div className="flex-grow overflow-y-auto">
+          <CodeDisplay value={code} />
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }
+
+export default ContractsForm;
