@@ -74,7 +74,7 @@ function CodeDisplay({ value }: Props) {
 
         <Editor
           options={{
-            fontSize: 14,
+            fontSize: 13,
             readOnly: true,
           }}
           defaultLanguage="sol"

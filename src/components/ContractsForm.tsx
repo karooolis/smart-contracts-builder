@@ -29,7 +29,6 @@ import { LibrarySelect } from "./LibrarySelect";
 import { ERC20_OpenZeppelin, ERC20_Solmate } from "../templates/ERC20.js";
 import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
 import { ExplanationTooltip } from "./ExplanationTooltip";
-import { Button } from "./ui/button";
 
 const formSchema = z.object({
   contract: z.enum([
@@ -52,11 +51,15 @@ const formSchema = z.object({
   premint: z.coerce.number().optional(),
   features: z.array(z.string()),
   accessControl: z.enum(["ownable", "roles", "none"]),
+  upgradeability: z.enum(["transparent", "uups"]),
   type: z.enum(["all", "mentions", "none"], {
     required_error: "You need to select a notification type.",
   }),
   license: z.string({
     required_error: "License is required",
+  }),
+  pragma: z.string({
+    required_error: "Pragma is required",
   }),
 });
 
@@ -149,9 +152,22 @@ export const libraries = [
   },
 ] as const;
 
+export const upgradeable = [
+  {
+    id: "transparent",
+    label: "Transparent",
+    info: "Uses more complex proxy with higher overhead, requires less changes in your contract. Can also be used with beacons.",
+  },
+  {
+    id: "uups",
+    label: "UUPS",
+    info: "Uses simpler proxy with less overhead, requires including extra code in your contract. Allows flexibility for authorizing upgrades.",
+  },
+];
+
 export function ContractsForm() {
   const [code, setCode] = React.useState(`// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
@@ -174,6 +190,7 @@ contract MyToken is ERC20 {
       features: [],
       accessControl: "none",
       license: "MIT",
+      pragma: "^0.8.9",
     },
   });
   const contract = form.watch("contract");
@@ -199,6 +216,7 @@ contract MyToken is ERC20 {
       ownable: values.accessControl == "ownable", // Whether to make the contract ownable
       roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions,
       license: values.license,
+      pragma: values.pragma,
     };
 
     const template =
@@ -225,11 +243,6 @@ contract MyToken is ERC20 {
 
   // set access control ON if mintable, burnable or pausable
   React.useEffect(() => {
-    console.log("accessControl", accessControl);
-    console.log("mintable", mintable);
-    console.log("burnable", burnable);
-    console.log("pausable", pausable);
-
     if (accessControl == "none" && (mintable || burnable || pausable)) {
       form.setValue("accessControl", "ownable");
     }
@@ -238,7 +251,7 @@ contract MyToken is ERC20 {
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Navigation */}
-      <nav className="px-4 py-2">
+      <nav className="px-4 py-3">
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
@@ -257,7 +270,7 @@ contract MyToken is ERC20 {
       <Separator />
 
       {/* Main content */}
-      <div className="flex flex-grow overflow-hidden">
+      <div className="flex flex-grow overflow-hidden pb-3">
         {/* Left Column */}
         <div className="p-4 overflow-y-auto" style={{ width: "290px" }}>
           <Form {...form}>
@@ -302,7 +315,13 @@ contract MyToken is ERC20 {
                   name="baseURI"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Base URI</FormLabel>
+                      <FormLabel className="flex w-full justify-between">
+                        Base URI{" "}
+                        <ExplanationTooltip>
+                          Will be concatenated with token IDs to generate the
+                          token URIs.
+                        </ExplanationTooltip>
+                      </FormLabel>
                       <FormControl>
                         <Input placeholder="ipfs://..." {...field} />
                       </FormControl>
@@ -455,12 +474,69 @@ contract MyToken is ERC20 {
 
               <FormField
                 control={form.control}
+                name="accessControl"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Upgradeability</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        value={field.value}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {upgradeable.map(({ id, label, info }, idx) => (
+                          <FormItem
+                            key={idx}
+                            className="flex items-center space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                onClick={() => {
+                                  form.setValue("upgradeability", id);
+                                }}
+                                value={id}
+                                disabled={true}
+                              />
+                            </FormControl>
+                            <FormLabel className="flex w-full justify-between font-normal">
+                              {label}{" "}
+                              {info && (
+                                <ExplanationTooltip>{info}</ExplanationTooltip>
+                              )}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Separator />
+
+              <FormField
+                control={form.control}
                 name="license"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>License</FormLabel>
                     <FormControl>
                       <Input placeholder="License" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="pragma"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pragma</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Pragma" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
