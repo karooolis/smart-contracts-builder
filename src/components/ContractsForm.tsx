@@ -168,6 +168,7 @@ contract MyToken is ERC20 {
     },
   });
   const contract = form.watch("contract");
+  const library = form.watch("library");
 
   function onChange() {
     const values = form.getValues();
@@ -392,7 +393,11 @@ contract MyToken is ERC20 {
                             >
                               <FormControl>
                                 <Checkbox
-                                  checked={field.value?.includes(item.id)}
+                                  checked={
+                                    field.value?.includes(item.id) ||
+                                    (item.id == "permit" &&
+                                      library == "solmate")
+                                  }
                                   onCheckedChange={(checked) => {
                                     return checked
                                       ? field.onChange([
@@ -405,6 +410,9 @@ contract MyToken is ERC20 {
                                           )
                                         );
                                   }}
+                                  disabled={
+                                    item.id == "permit" && library == "solmate"
+                                  }
                                 />
                               </FormControl>
                               <FormLabel className="font-normal">
