@@ -9,8 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import { contracts } from "./ContractsForm";
+import { contracts } from "@/utils/constants";
 
 export function ContractSelect({ onValueChange }) {
   return (
