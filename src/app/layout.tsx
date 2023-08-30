@@ -1,10 +1,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter, Inconsolata } from "next/font/google";
+import { Inconsolata } from "next/font/google";
+import "@rainbow-me/rainbowkit/styles.css";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Providers } from "./providers";
 
-const inter = Inter({ subsets: ["latin"] });
 const inconsolatac = Inconsolata({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inconsolatac.className} style={{ overflow: "hidden" }}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <Providers>{children}</Providers>
         </ThemeProvider>
       </body>
     </html>
