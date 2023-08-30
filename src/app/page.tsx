@@ -7,8 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { cn } from "@/lib/utils";
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-// wallet connect
+// import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton } from "@/components/ConnectButton";
 
 import {
   Form,
@@ -165,9 +165,10 @@ contract MyToken is ERC20 {
             <LibrarySelect onValueChange={setLibrary} />
           </div>
 
-          <ConnectButton />
-
-          <ModeToggle />
+          <div className="flex items-center gap-4">
+            <ConnectButton />
+            <ModeToggle />
+          </div>
         </div>
       </nav>
 
