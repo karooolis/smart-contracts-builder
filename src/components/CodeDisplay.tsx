@@ -3,7 +3,7 @@ import Editor from "@monaco-editor/react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import _ from "lodash";
 import { useTheme } from "next-themes";
-import { Clipboard, Check } from "lucide-react";
+import { Clipboard, Check, BadgeHelp, Send, Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -45,19 +45,33 @@ function CodeDisplay({ value }: Props) {
   return (
     <>
       <div className="relative h-full">
-        <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
-          <Button size="sm" className="absolute bottom-6 right-8 z-10">
-            {copied ? (
-              <>
-                <Check className="mr-2 h-4 w-4" /> Copied!
-              </>
-            ) : (
-              <>
-                <Clipboard className="mr-2 h-4 w-4" /> Copy
-              </>
-            )}
+        <div className="absolute bottom-6 right-8 z-10">
+          <Button size="sm" className="mr-4">
+            <Download className="mr-2 h-4 w-4" /> Download
           </Button>
-        </CopyToClipboard>
+
+          <Button size="sm" className="mr-4">
+            <Send className="mr-2 h-4 w-4" /> Deploy
+          </Button>
+
+          <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
+            <Button size="sm" className="mr-4">
+              {copied ? (
+                <>
+                  <Check className="mr-2 h-4 w-4" /> Copied!
+                </>
+              ) : (
+                <>
+                  <Clipboard className="mr-2 h-4 w-4" /> Copy
+                </>
+              )}
+            </Button>
+          </CopyToClipboard>
+
+          <Button size="sm">
+            <BadgeHelp className="mr-2 h-4 w-4" /> Need help?
+          </Button>
+        </div>
 
         <Editor
           options={{
