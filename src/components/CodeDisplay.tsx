@@ -5,9 +5,6 @@ import _ from "lodash";
 import { useTheme } from "next-themes";
 import { Clipboard, Check } from "lucide-react";
 
-import nightOwl from "../themes/night-owl.json";
-import githubDark from "../themes/github-dark.json";
-
 import { Button } from "@/components/ui/button";
 
 type Props = {
@@ -18,23 +15,13 @@ function CodeDisplay({ value }: Props) {
   const { theme, resolvedTheme } = useTheme();
   const editorRef = React.useRef(null);
   const [copied, setCopied] = React.useState(false);
+  const [formattedCode, setFormattedCode] = React.useState(value);
 
   React.useEffect(() => {
     setTimeout(() => {
       setCopied(false);
     }, 2000);
   }, [copied]);
-
-  function handleEditorDidMount(editor, monaco) {
-    editorRef.current = editor;
-  }
-
-  const [formattedCode, setFormattedCode] = React.useState(value);
-
-  function setEditorTheme(monaco: any) {
-    monaco.editor.defineTheme("night-owl", nightOwl);
-    monaco.editor.defineTheme("github-dark", githubDark);
-  }
 
   // format code on change
   // TODO: fix prettier
@@ -50,6 +37,10 @@ function CodeDisplay({ value }: Props) {
       });
     }
   }, [value]);
+
+  function handleEditorDidMount(editor, monaco) {
+    editorRef.current = editor;
+  }
 
   return (
     <>
@@ -76,8 +67,11 @@ function CodeDisplay({ value }: Props) {
           defaultLanguage="sol"
           value={formattedCode}
           defaultValue={formattedCode}
-          theme={theme === "dark" || resolvedTheme === "dark" ? "hc-black" : "vs-light"}
-          beforeMount={setEditorTheme}
+          theme={
+            theme === "dark" || resolvedTheme === "dark"
+              ? "hc-black"
+              : "vs-light"
+          }
           onMount={handleEditorDidMount}
         />
       </div>
