@@ -1,13 +1,17 @@
-export const ERC20_OpenZeppelin = `
-// SPDX-License-Identifier: <%= license %>
-pragma solidity <%= pragma %>;
-
+export const ERC20_OpenZeppelin_Imports = `
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 <% if (burn) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";<% } %>
 <% if (pause) { %>import "@openzeppelin/contracts/security/Pausable.sol";<% } %>
 <% if (permit) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";<% } %>
 <% if (ownable) { %>import "@openzeppelin/contracts/access/Ownable.sol";<% } %>
 <% if (roles) { %>import "@openzeppelin/contracts/access/AccessControl.sol";<% } %>
+`;
+
+export const ERC20_OpenZeppelin = `
+// SPDX-License-Identifier: <%= license %>
+pragma solidity <%= pragma %>;
+
+<%= imports %>
 
 contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (pause) { %>, Pausable<% } %><% if (permit) { %>, ERC20Permit<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
     <% if (roles) { %>
@@ -50,14 +54,18 @@ contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (
 }
 `;
 
-export const ERC20_Solmate = `
-// SPDX-License-Identifier: <%= license %>
-pragma solidity <%= pragma %>;
-
+export const ERC20_Solmate_Imports = `
 import "solmate/erc20/ERC20.sol";
 <% if (pause) { %>import "solmate/utils/Pausable.sol";<% } %>
 <% if (ownable) { %>import "solmate/utils/Ownable.sol";<% } %>
 <% if (roles) { %>import "solmate/access/AccessControl.sol";<% } %>
+`;
+
+export const ERC20_Solmate = `
+// SPDX-License-Identifier: <%= license %>
+pragma solidity <%= pragma %>;
+
+<%= imports %>
 
 contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (ownable) { %>, Owned(msg.sender)<% } %><% if (roles) { %>, AccessControl<% } %> {
     <% if (roles && pause) { %>
