@@ -5,6 +5,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Providers } from "./providers";
+import Script from "next/script";
 
 const inconsolatac = Inconsolata({ subsets: ["latin"] });
 
@@ -20,6 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Script src="https://unpkg.com/prettier@latest" />
+      <Script src="https://unpkg.com/prettier-plugin-solidity@latest" />
+
       <body className={inconsolatac.className} style={{ overflow: "hidden" }}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Providers>{children}</Providers>

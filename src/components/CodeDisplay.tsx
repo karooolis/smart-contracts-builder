@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import Script from "next/script";
-import Editor, { useMonaco } from "@monaco-editor/react";
+import Editor from "@monaco-editor/react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import _ from "lodash";
 import { useTheme } from "next-themes";
@@ -17,7 +16,6 @@ type Props = {
 
 function CodeDisplay({ value }: Props) {
   const { theme, resolvedTheme } = useTheme();
-  const monaco = useMonaco();
   const editorRef = React.useRef(null);
   const [copied, setCopied] = React.useState(false);
 
@@ -39,6 +37,7 @@ function CodeDisplay({ value }: Props) {
   }
 
   // format code on change
+  // TODO: fix prettier
   useEffect(() => {
     if (window.prettier && value) {
       const formattedCode = prettier.format(value, {
@@ -54,9 +53,6 @@ function CodeDisplay({ value }: Props) {
 
   return (
     <>
-      <Script src="https://unpkg.com/prettier@latest" />
-      <Script src="https://unpkg.com/prettier-plugin-solidity@latest" />
-
       <div className="relative h-full">
         <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
           <Button size="sm" className="absolute bottom-6 right-8 z-10">
