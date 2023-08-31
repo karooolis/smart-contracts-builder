@@ -29,6 +29,7 @@ import CodeDisplay from "@/components/CodeDisplay";
 import { ContractSelect } from "@/components/ContractSelect";
 import { LibrarySelect } from "@/components/LibrarySelect";
 import { ExplanationTooltip } from "@/components/ExplanationTooltip";
+import { SendTransaction } from "@/components/SendTransaction";
 
 import {
   ERC20_OpenZeppelin,
@@ -185,6 +186,8 @@ contract MyToken is ERC20 {
             <ConnectButton />
             <ModeToggle />
           </div>
+
+          <SendTransaction />
         </div>
       </nav>
 
