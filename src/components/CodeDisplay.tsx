@@ -3,9 +3,10 @@ import Editor from "@monaco-editor/react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import _ from "lodash";
 import { useTheme } from "next-themes";
-import { Clipboard, Check, BadgeHelp, Send, Download } from "lucide-react";
+import { Clipboard, Check, Send, Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { NeedHelpDialog } from "@/components/NeedHelpDialog";
 
 type Props = {
   value: string;
@@ -68,9 +69,11 @@ function CodeDisplay({ value }: Props) {
             </Button>
           </CopyToClipboard>
 
-          <Button size="sm">
+          {/* <Button size="sm">
             <BadgeHelp className="mr-2 h-4 w-4" /> Need help?
-          </Button>
+          </Button> */}
+
+          <NeedHelpDialog />
         </div>
 
         <Editor
