@@ -8,6 +8,8 @@ import { Clipboard, Check, Send, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NeedHelpDialog } from "@/components/NeedHelpDialog";
 
+import { SendTransaction } from "@/components/SendTransaction";
+
 type Props = {
   value: string;
 };
@@ -53,6 +55,8 @@ function CodeDisplay({ value }: Props) {
 
           <Button size="sm" className="mr-4">
             <Send className="mr-2 h-4 w-4" /> Deploy
+
+            <SendTransaction />
           </Button>
 
           <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
