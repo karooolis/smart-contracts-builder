@@ -1,17 +1,27 @@
-import { parseEther } from "viem";
-import { useSendTransaction } from "wagmi";
+import { useWalletClient } from "wagmi";
+
+// import Contract from "../../contracts/artifacts/contracts/MockERC20.sol/MyToken.json";
 
 export function SendTransaction() {
-  const { data, isLoading, isSuccess, sendTransaction } = useSendTransaction({
-    to: "0xe1f2d038BC3d6405db168A906dD994Cb590e3A14",
-    value: parseEther("0.01"),
-  });
+  const account = useWalletClient();
+
+  async function sendTransaction() {
+    const response = await fetch("api/hello");
+    const data = await response.json();
+    console.log(data);
+
+    await account.data?.deployContract({
+      abi: data.abi,
+      account: account.data?.account,
+      bytecode: `0x${data.bytecode}`,
+    });
+  }
 
   return (
     <div>
       <button onClick={() => sendTransaction()}>Send Transaction</button>
-      {isLoading && <div>Check Wallet</div>}
-      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>}
+      {/* {isLoading && <div>Check Wallet</div>}
+      {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
     </div>
   );
 }
