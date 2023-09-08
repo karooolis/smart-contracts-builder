@@ -1,15 +1,19 @@
 import { useWalletClient } from "wagmi";
 
-import Contract from "../../contracts/artifacts/contracts/MockERC20.sol/MyToken.json";
+// import Contract from "../../contracts/artifacts/contracts/MockERC20.sol/MyToken.json";
 
 export function SendTransaction() {
   const account = useWalletClient();
 
   async function sendTransaction() {
+    const response = await fetch("api/hello");
+    const data = await response.json();
+    console.log(data);
+
     await account.data?.deployContract({
-      abi: Contract.abi,
+      abi: data.abi,
       account: account.data?.account,
-      bytecode: Contract.bytecode,
+      bytecode: `0x${data.bytecode}`,
     });
   }
 

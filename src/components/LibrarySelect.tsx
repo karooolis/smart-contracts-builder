@@ -21,7 +21,11 @@ export function LibrarySelect({ onValueChange }) {
         <SelectGroup>
           <SelectLabel>Library:</SelectLabel>
           {libraries.map(({ id, label }) => (
-            <SelectItem key={id} value={id}>
+            <SelectItem
+              key={id}
+              value={id}
+              disabled={id === "solmate" || id === "solady"}
+            >
               {label}
             </SelectItem>
           ))}
