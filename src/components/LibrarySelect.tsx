@@ -24,7 +24,7 @@ export function LibrarySelect({ onValueChange }) {
             <SelectItem
               key={id}
               value={id}
-              disabled={id === "solmate" || id === "solady"}
+              disabled={id === "solady"}
             >
               {label}
             </SelectItem>
