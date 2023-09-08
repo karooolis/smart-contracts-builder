@@ -7,7 +7,7 @@ export const contracts = [
   {
     id: "erc721",
     label: "ERC721: NFT",
-    isReady: false,
+    isReady: true,
   },
   {
     id: "erc1155",
@@ -83,7 +83,7 @@ export const libraries = [
   },
   {
     id: "solmate",
-    label: "Solmate (coming soon)",
+    label: "Solmate",
   },
   {
     id: "solady",
