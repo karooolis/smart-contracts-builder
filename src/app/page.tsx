@@ -182,7 +182,7 @@ contract MyToken is ERC20 {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* <ConnectButton /> */}
+            <ConnectButton />
             <ModeToggle />
           </div>
         </div>

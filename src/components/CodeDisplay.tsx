@@ -49,7 +49,7 @@ function CodeDisplay({ value }: Props) {
     <>
       <div className="relative h-full">
         <div className="absolute bottom-6 right-8 z-10">
-          {/* <Button size="sm" className="mr-4">
+          <Button size="sm" className="mr-4">
             <Download className="mr-2 h-4 w-4" /> Download
           </Button>
 
@@ -57,7 +57,7 @@ function CodeDisplay({ value }: Props) {
             <Send className="mr-2 h-4 w-4" /> Deploy
 
             <SendTransaction />
-          </Button> */}
+          </Button>
 
           <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
             <Button size="sm" className="mr-4">
