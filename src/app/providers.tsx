@@ -13,7 +13,7 @@ import {
   trustWallet,
   ledgerWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { configureChains, createConfig, sepolia, WagmiConfig } from "wagmi";
 import {
   mainnet,
   polygon,
@@ -29,6 +29,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     mainnet,
     goerli,
+    sepolia,
     polygon,
     optimism,
     arbitrum,
