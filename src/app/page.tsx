@@ -173,7 +173,7 @@ contract MyToken is ERC20 {
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
-            <div className="text-md font-semibold">smart contracts builder</div>
+            <div className="hidden lg:inline-block text-md font-semibold">smart contracts builder</div>
           </div>
 
           <div className="flex gap-4">
