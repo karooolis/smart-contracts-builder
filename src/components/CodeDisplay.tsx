@@ -69,7 +69,7 @@ function CodeDisplay({ value }: Props) {
             }}
           >
             <Send className="mr-2 h-4 w-4" /> Deploy
-            {/* <SendTransaction /> */}
+            <SendTransaction />
           </Button>
 
           <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>

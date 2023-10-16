@@ -73,7 +73,7 @@ const formSchema = z.object({
 
 export default function Home() {
   const [code, setCode] = React.useState(`// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.21;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
@@ -96,7 +96,7 @@ contract MyToken is ERC20 {
       features: [],
       accessControl: "none",
       license: "MIT",
-      pragma: "^0.8.9",
+      pragma: "^0.8.21",
     },
   });
   const contract = form.watch("contract");
@@ -450,7 +450,7 @@ contract MyToken is ERC20 {
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="pragma"
                 render={({ field }) => (
@@ -462,7 +462,7 @@ contract MyToken is ERC20 {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
             </form>
           </Form>
         </div>

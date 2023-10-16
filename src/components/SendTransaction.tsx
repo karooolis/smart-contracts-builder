@@ -1,7 +1,5 @@
 import { useWalletClient } from "wagmi";
 
-// import Contract from "../../contracts/artifacts/contracts/MockERC20.sol/MyToken.json";
-
 export function SendTransaction() {
   const account = useWalletClient();
 
