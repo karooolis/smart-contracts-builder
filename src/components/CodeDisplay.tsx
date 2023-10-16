@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { NeedHelpDialog } from "@/components/NeedHelpDialog";
 
 import { SendTransaction } from "@/components/SendTransaction";
+import { useAccount, useConnect } from "wagmi";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 type Props = {
   value: string;
@@ -19,6 +21,8 @@ function CodeDisplay({ value }: Props) {
   const editorRef = React.useRef(null);
   const [copied, setCopied] = React.useState(false);
   const [formattedCode, setFormattedCode] = React.useState(value);
+  const { isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
 
   React.useEffect(() => {
     setTimeout(() => {
@@ -51,13 +55,22 @@ function CodeDisplay({ value }: Props) {
         <div className="absolute bottom-6 right-8 z-10">
           {/* <Button size="sm" className="mr-4">
             <Download className="mr-2 h-4 w-4" /> Download
-          </Button>
-
-          <Button size="sm" className="mr-4">
-            <Send className="mr-2 h-4 w-4" /> Deploy
-
-            <SendTransaction />
           </Button> */}
+
+          <Button
+            size="sm"
+            className="mr-4"
+            onClick={() => {
+              if (!isConnected) {
+                return openConnectModal();
+              }
+
+              console.log('hey');
+            }}
+          >
+            <Send className="mr-2 h-4 w-4" /> Deploy
+            <SendTransaction />
+          </Button>
 
           <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
             <Button size="sm" className="mr-4">

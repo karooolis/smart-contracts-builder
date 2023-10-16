@@ -13,7 +13,7 @@ import {
   trustWallet,
   ledgerWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { configureChains, createConfig, sepolia, WagmiConfig } from "wagmi";
 import {
   mainnet,
   polygon,
@@ -29,6 +29,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
     mainnet,
     goerli,
+    sepolia,
     polygon,
     optimism,
     arbitrum,
@@ -71,7 +72,7 @@ const wagmiConfig = createConfig({
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = React.useState(false);
-  const { theme } = useTheme();
+  const { theme, resolvedTheme } = useTheme();
   React.useEffect(() => setMounted(true), []);
 
   return (
@@ -79,7 +80,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <RainbowKitProvider
         chains={chains}
         appInfo={demoAppInfo}
-        theme={theme == "dark" ? darkTheme() : lightTheme()}
+        theme={
+          theme == "dark" || resolvedTheme === "dark"
+            ? darkTheme()
+            : lightTheme()
+        }
       >
         {mounted && children}
       </RainbowKitProvider>
