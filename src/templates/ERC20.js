@@ -1,7 +1,7 @@
 export const ERC20_OpenZeppelin_Imports = `
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 <% if (burn) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";<% } %>
-<% if (pause) { %>import "@openzeppelin/contracts/security/Pausable.sol";<% } %>
+<% if (pause) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";<% } %>
 <% if (permit) { %>import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";<% } %>
 <% if (ownable) { %>import "@openzeppelin/contracts/access/Ownable.sol";<% } %>
 <% if (roles) { %>import "@openzeppelin/contracts/access/AccessControl.sol";<% } %>
@@ -13,18 +13,32 @@ pragma solidity <%= pragma %>;
 
 <%= imports %>
 
-contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (pause) { %>, Pausable<% } %><% if (permit) { %>, ERC20Permit<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
+contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (pause) { %>, ERC20Pausable<% } %><% if (permit) { %>, ERC20Permit<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
     <% if (roles) { %>
     <% if (mint) { %>bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");<% } %>
     <% if (pause) { %>bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");<% } %>
     <% } %>
 
-    constructor() ERC20("<%= tokenName %>", "<%= tokenSymbol %>") <% if (permit) { %>ERC20Permit("<%= tokenName %>")<% } %> {
-        <% if (premint) { %>_mint(msg.sender, <%= initialSupply %>  * 10 ** decimals());<% } %>
+    constructor(
+        <% if (ownable) { %>address initialOwner<% } %>
         <% if (roles) { %>
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        <% if (mint) { %>_grantRole(MINTER_ROLE, msg.sender);<% } %>
-        <% if (pause) { %>_grantRole(PAUSER_ROLE, msg.sender);<% } %>
+            address defaultAdmin,
+            address pauser,
+            address minter
+        <% } %>
+    )
+    ERC20("<%= tokenName %>", "<%= tokenSymbol %>")
+    <% if (ownable) { %>Ownable(initialOwner)<% } %>
+    <% if (permit) { %>ERC20Permit("<%= tokenName %>")<% } %>
+    {
+        <% if (premint) { %>
+            _mint(msg.sender, <%= initialSupply %>  * 10 ** decimals());
+        <% } %>
+
+        <% if (roles) { %>
+            _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
+            <% if (mint) { %>_grantRole(MINTER_ROLE, minter);<% } %>
+            <% if (pause) { %>_grantRole(PAUSER_ROLE, pauser);<% } %>
         <% } %>
     }
 
@@ -43,12 +57,9 @@ contract <%= tokenName %> is ERC20<% if (burn) { %>, ERC20Burnable<% } %><% if (
         _unpause();
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 amount)
-        internal
-        whenNotPaused
-        override
-    {
-        super._beforeTokenTransfer(from, to, amount);
+    // The following functions are overrides required by Solidity.
+    function _update(address from, address to, uint256 value) internal override(ERC20, ERC20Pausable) {
+        super._update(from, to, value);
     }
     <% } %>
 }
