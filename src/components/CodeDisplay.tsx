@@ -65,7 +65,7 @@ function CodeDisplay({ value }: Props) {
                 return openConnectModal();
               }
 
-              console.log('hey');
+              console.log("hey");
             }}
           >
             <Send className="mr-2 h-4 w-4" /> Deploy
