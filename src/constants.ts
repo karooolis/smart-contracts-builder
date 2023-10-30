@@ -107,3 +107,7 @@ export const UPGRADEABLE = [
     label: "None",
   },
 ];
+
+export const FLAGS = {
+  contactsForm: true,
+}
