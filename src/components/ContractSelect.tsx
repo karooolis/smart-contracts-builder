@@ -9,18 +9,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { contracts } from "@/utils/constants";
+import { CONTRACTS } from "@/constants";
 
 export function ContractSelect({ onValueChange }) {
   return (
-    <Select defaultValue={contracts[0].id} onValueChange={onValueChange}>
+    <Select defaultValue={CONTRACTS[0].id} onValueChange={onValueChange}>
       <SelectTrigger className="w-[220px]">
         <SelectValue placeholder="Select a contract" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Contract type:</SelectLabel>
-          {contracts.map(({ id, label, isReady }) => (
+          {CONTRACTS.map(({ id, label, isReady }) => (
             <SelectItem key={id} value={id} disabled={!isReady}>
               {label} {!isReady && "(coming soon)"}
             </SelectItem>

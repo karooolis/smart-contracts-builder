@@ -24,21 +24,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ModeToggle } from "@/components/ModeToggle";
 import { Separator } from "@/components/ui/separator";
 
-import { features, accessControls, upgradeable } from "@/utils/constants";
+import { FEATURES, ACCESS_CONTROLS, UPGRADEABLE } from "@/constants";
 import CodeDisplay from "@/components/CodeDisplay";
 import { ContractSelect } from "@/components/ContractSelect";
 import { LibrarySelect } from "@/components/LibrarySelect";
 import { ExplanationTooltip } from "@/components/ExplanationTooltip";
 
-import {
-  ERC20_OpenZeppelin,
-  ERC20_OpenZeppelin_Imports,
-  ERC20_Solmate,
-  ERC20_Solmate_Imports,
-} from "../templates/ERC20.js";
-import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
+import { ERC20_Initial } from "../templates/ERC20_Initial.js";
 
-const formSchema = z.object({
+import { getTemplate } from "@/utils/templates";
+
+export const formSchema = z.object({
   contract: z.enum([
     "erc20",
     "erc721",
@@ -59,7 +55,7 @@ const formSchema = z.object({
   premint: z.coerce.number().optional(),
   features: z.array(z.string()),
   accessControl: z.enum(["ownable", "roles", "none"]),
-  upgradeability: z.enum(["transparent", "uups"]),
+  upgradeability: z.enum(["transparent", "uups", "none"]),
   type: z.enum(["all", "mentions", "none"], {
     required_error: "You need to select a notification type.",
   }),
@@ -72,17 +68,7 @@ const formSchema = z.object({
 });
 
 export default function Home() {
-  const [code, setCode] = React.useState(`// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.21;
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-contract MyToken is ERC20 {
-    constructor() ERC20("MyToken", "TKN") {
-        _mint(msg.sender, 1000000 * 10 ** decimals());
-    }
-}
-`);
+  const [code, setCode] = React.useState(ERC20_Initial);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -95,6 +81,7 @@ contract MyToken is ERC20 {
       premint: 1000000,
       features: [],
       accessControl: "none",
+      upgradeability: "none",
       license: "MIT",
       pragma: "^0.8.21",
     },
@@ -106,48 +93,12 @@ contract MyToken is ERC20 {
   const burnable = featuresValues.includes("burn");
   const pausable = featuresValues.includes("pause");
   const accessControl = form.watch("accessControl");
+  const upgradeability = form.watch("upgradeability");
 
   function onChange() {
     const values = form.getValues();
-    const template =
-      values.contract == "erc721"
-        ? values.library == "openzeppelin"
-          ? ERC721_OpenZeppelin
-          : ERC721_Solmate
-        : values.library == "openzeppelin"
-        ? ERC20_OpenZeppelin
-        : ERC20_Solmate;
-
-    const importsTemplate =
-      values.library == "openzeppelin" ? ERC20_OpenZeppelin_Imports : ERC20_Solmate_Imports;
-    const compiledImports = _.template(importsTemplate)({
-      mint: values.features.includes("mint"),
-      burn: values.features.includes("burn"),
-      pause: values.features.includes("pause"),
-      permit: values.features.includes("permit"),
-      ownable: values.accessControl == "ownable", // Whether to make the contract ownable
-      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions,
-    }).replace(/[\r\n]/gm, "");
-
-    const data = {
-      tokenName: values.name,
-      tokenSymbol: values.symbol,
-      baseURI: values.baseURI,
-      initialSupply: values.premint,
-      premint: values.premint && values.premint > 0,
-      mint: values.features.includes("mint"),
-      burn: values.features.includes("burn"),
-      pause: values.features.includes("pause"),
-      permit: values.features.includes("permit"),
-      ownable: values.accessControl == "ownable", // Whether to make the contract ownable
-      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions,
-      license: values.license,
-      pragma: values.pragma,
-      imports: compiledImports,
-    };
-
-    const compiled_temp = _.template(template)(data);
-    setCode(compiled_temp);
+    const template = getTemplate(values);
+    setCode(template);
   }
 
   function setContract(contract: z.infer<typeof formSchema>["contract"]) {
@@ -161,10 +112,10 @@ contract MyToken is ERC20 {
 
   // set access control ON if mintable, burnable or pausable
   React.useEffect(() => {
-    if (accessControl == "none" && (mintable || burnable || pausable)) {
+    if (accessControl == "none" && (mintable || burnable || pausable || upgradeability == "uups")) {
       form.setValue("accessControl", "ownable");
     }
-  }, [accessControl, burnable, form, mintable, pausable]);
+  }, [accessControl, burnable, form, mintable, pausable, upgradeability]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -173,7 +124,9 @@ contract MyToken is ERC20 {
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
-            <div className="hidden lg:inline-block text-md font-semibold">smart contracts builder</div>
+            <div className="hidden lg:inline-block text-md font-semibold">
+              smart contracts builder
+            </div>
           </div>
 
           <div className="flex gap-4">
@@ -285,7 +238,7 @@ contract MyToken is ERC20 {
                       </FormDescription>
                     </div>
 
-                    {features.map((item) => (
+                    {FEATURES.map((item) => (
                       <FormField
                         key={item.id}
                         control={form.control}
@@ -352,7 +305,7 @@ contract MyToken is ERC20 {
                         defaultValue={field.value}
                         className="flex flex-col space-y-1"
                       >
-                        {accessControls.map(({ id, label, info }, idx) => (
+                        {ACCESS_CONTROLS.map(({ id, label, info }, idx) => (
                           <FormItem
                             key={idx}
                             className="flex items-center space-x-3 space-y-0"
@@ -395,17 +348,17 @@ contract MyToken is ERC20 {
 
               <FormField
                 control={form.control}
-                name="accessControl"
+                name="upgradeability"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel>Upgradeability (coming soon)</FormLabel>
+                    <FormLabel>Upgradeability</FormLabel>
                     <FormControl>
                       <RadioGroup
                         value={field.value}
                         defaultValue={field.value}
                         className="flex flex-col space-y-1"
                       >
-                        {upgradeable.map(({ id, label, info }, idx) => (
+                        {UPGRADEABLE.map(({ id, label, info }, idx) => (
                           <FormItem
                             key={idx}
                             className="flex items-center space-x-3 space-y-0"
@@ -416,7 +369,6 @@ contract MyToken is ERC20 {
                                   form.setValue("upgradeability", id);
                                 }}
                                 value={id}
-                                disabled={true}
                               />
                             </FormControl>
                             <FormLabel className="flex w-full justify-between font-normal">

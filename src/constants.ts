@@ -1,4 +1,4 @@
-export const contracts = [
+export const CONTRACTS = [
   {
     id: "erc20",
     label: "ERC20: Token",
@@ -36,7 +36,7 @@ export const contracts = [
   },
 ] as const;
 
-export const features = [
+export const FEATURES = [
   {
     id: "mint",
     label: "Mintable",
@@ -59,7 +59,7 @@ export const features = [
   },
 ] as const;
 
-export const accessControls = [
+export const ACCESS_CONTROLS = [
   {
     id: "ownable",
     label: "Ownable",
@@ -76,7 +76,7 @@ export const accessControls = [
   },
 ] as const;
 
-export const libraries = [
+export const LIBRARIES = [
   {
     id: "openzeppelin",
     label: "OpenZeppelin",
@@ -88,10 +88,10 @@ export const libraries = [
   {
     id: "solady",
     label: "Solady (coming soon)",
-  }
+  },
 ] as const;
 
-export const upgradeable = [
+export const UPGRADEABLE = [
   {
     id: "transparent",
     label: "Transparent",
@@ -101,5 +101,9 @@ export const upgradeable = [
     id: "uups",
     label: "UUPS",
     info: "Uses simpler proxy with less overhead, requires including extra code in your contract. Allows flexibility for authorizing upgrades.",
+  },
+  {
+    id: "none",
+    label: "None",
   },
 ];
