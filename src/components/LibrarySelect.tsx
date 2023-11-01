@@ -20,11 +20,11 @@ export function LibrarySelect({ onValueChange }) {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Library:</SelectLabel>
-          {LIBRARIES.map(({ id, label }) => (
+          {LIBRARIES.map(({ id, label, isReady }) => (
             <SelectItem
               key={id}
               value={id}
-              disabled={id === "solady"}
+              disabled={!isReady}
             >
               {label}
             </SelectItem>

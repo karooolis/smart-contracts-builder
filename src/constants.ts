@@ -80,14 +80,17 @@ export const LIBRARIES = [
   {
     id: "openzeppelin",
     label: "OpenZeppelin",
+    isReady: true,
   },
   {
     id: "solmate",
-    label: "Solmate",
+    label: "Solmate (coming soon)",
+    isReady: false,
   },
   {
     id: "solady",
     label: "Solady (coming soon)",
+    isReady: false,
   },
 ] as const;
 
