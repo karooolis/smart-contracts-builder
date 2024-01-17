@@ -3,7 +3,14 @@ import Editor from "@monaco-editor/react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import _ from "lodash";
 import { useTheme } from "next-themes";
-import { Clipboard, Check, Send, Download } from "lucide-react";
+import { Clipboard, Check, Send, Download, BadgeHelp } from "lucide-react";
+import CodeMirror from "@uiw/react-codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+import { solidity } from "@replit/codemirror-lang-solidity";
+
+import prettier from "prettier/standalone";
+import solidityPlugin from "prettier-plugin-solidity/standalone";
+import { boysAndGirls, tomorrow } from "thememirror";
 
 import { Button } from "@/components/ui/button";
 import { NeedHelpDialog } from "@/components/NeedHelpDialog";
@@ -32,22 +39,30 @@ function CodeDisplay({ value }: Props) {
 
   // format code on change
   // TODO: fix prettier
-  useEffect(() => {
-    if (window.prettier && value) {
-      const formattedCode = prettier.format(value, {
-        parser: "solidity-parse",
-        plugins: window.prettierPlugins,
-      });
 
-      formattedCode.then(function (result) {
-        setFormattedCode(result);
-      });
-    }
-  }, [value]);
+  async function formatCode() {
+    const formattedCode = prettier.format(value, {
+      parser: "solidity-parse",
+      plugins: [solidityPlugin],
+    });
 
-  function handleEditorDidMount(editor, monaco) {
-    editorRef.current = editor;
+    formattedCode.then(function (result) {
+      setFormattedCode(result);
+    });
   }
+
+  useEffect(() => {
+    const formatCode = async () => {
+      const formattedCode = await prettier.format(value, {
+        parser: "solidity-parse",
+        plugins: [solidityPlugin],
+      });
+
+      setFormattedCode(formattedCode);
+    };
+
+    formatCode();
+  }, [value]);
 
   return (
     <>
@@ -64,8 +79,6 @@ function CodeDisplay({ value }: Props) {
               if (!isConnected) {
                 return openConnectModal();
               }
-
-              console.log("hey");
             }}
           >
             <Send className="mr-2 h-4 w-4" /> Deploy
@@ -86,14 +99,10 @@ function CodeDisplay({ value }: Props) {
             </Button>
           </CopyToClipboard>
 
-          {/* <Button size="sm">
-            <BadgeHelp className="mr-2 h-4 w-4" /> Need help?
-          </Button> */}
-
           <NeedHelpDialog />
         </div>
 
-        <Editor
+        {/* <Editor
           options={{
             fontSize: 13,
             readOnly: true,
@@ -107,6 +116,19 @@ function CodeDisplay({ value }: Props) {
               : "vs-light"
           }
           onMount={handleEditorDidMount}
+        /> */}
+
+        <CodeMirror
+          value={formattedCode}
+          height="100%"
+          theme={
+            theme === "dark" || resolvedTheme === "dark"
+              ? boysAndGirls
+              : tomorrow
+          }
+          extensions={[solidity]}
+          // extensions={[javascript({ jsx: true })]}
+          // onChange={() => {}}
         />
       </div>
     </>
