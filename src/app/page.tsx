@@ -94,6 +94,9 @@ export default function Home() {
   const pausable = featuresValues.includes("pause");
   const accessControl = form.watch("accessControl");
   const upgradeability = form.watch("upgradeability");
+  const name = form.watch("name");
+
+  console.log("name:", name);
 
   function onChange() {
     const values = form.getValues();
@@ -423,7 +426,7 @@ export default function Home() {
 
         {/* Right Column */}
         <div className="flex-grow overflow-y-auto">
-          <CodeDisplay value={code} />
+          <CodeDisplay name={name} value={code} />
         </div>
       </div>
     </div>

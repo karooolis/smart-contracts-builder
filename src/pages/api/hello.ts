@@ -72,43 +72,47 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
+  const name = req.body.name;
+  const contract = req.body.contract;
 
-  const contract = `
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.21;
+  console.log("CONTRACT CODE:", contract);
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+  //   const contract = `
+  // // SPDX-License-Identifier: MIT
+  // pragma solidity ^0.8.21;
 
-contract MyToken is ERC20, ERC20Burnable, Pausable, Ownable {
-    constructor() ERC20("MyToken", "TKN") {
-        _mint(msg.sender, 1000000 * 10 ** decimals());
-    }
+  // import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+  // import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+  // import "@openzeppelin/contracts/security/Pausable.sol";
+  // import "@openzeppelin/contracts/access/Ownable.sol";
 
-    function pause() public onlyOwner {
-        _pause();
-    }
+  // contract MyToken is ERC20, ERC20Burnable, Pausable, Ownable {
+  //     constructor() ERC20("MyToken", "TKN") {
+  //         _mint(msg.sender, 1000000 * 10 ** decimals());
+  //     }
 
-    function unpause() public onlyOwner {
-        _unpause();
-    }
+  //     function pause() public onlyOwner {
+  //         _pause();
+  //     }
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal override whenNotPaused {
-        super._beforeTokenTransfer(from, to, amount);
-    }
-}
-`;
+  //     function unpause() public onlyOwner {
+  //         _unpause();
+  //     }
 
-  console.log("findFiles:");
-  console.log(findFiles(contract, "."));
+  //     function _beforeTokenTransfer(
+  //         address from,
+  //         address to,
+  //         uint256 amount
+  //     ) internal override whenNotPaused {
+  //         super._beforeTokenTransfer(from, to, amount);
+  //     }
+  // }
+  // `;
 
-  const finalInput = _.uniqBy(findFiles(contract, "MyToken.sol"), "path");
+  // console.log("findFiles:");
+  // console.log(findFiles(contract, "."));
+
+  const finalInput = _.uniqBy(findFiles(contract, `${name}.sol`), "path");
   const finalInputObject = finalInput.reduce((acc, curr) => {
     return {
       ...acc,
@@ -121,7 +125,7 @@ contract MyToken is ERC20, ERC20Burnable, Pausable, Ownable {
   const input = {
     language: "Solidity",
     sources: {
-      "MyToken.sol": {
+      [`${name}.sol`]: {
         content: contract,
       },
       ...finalInputObject,
@@ -143,18 +147,19 @@ contract MyToken is ERC20, ERC20Burnable, Pausable, Ownable {
     },
   };
 
-  // console.log("input", JSON.stringify(input, undefined, 4));
+  console.log("input", JSON.stringify(input, undefined, 4));
 
   // New syntax (supported from 0.5.12, mandatory from 0.6.0)
   const output = JSON.parse(solc.compile(JSON.stringify(input)));
 
   // console.log("output", JSON.stringify(output, undefined, 4));
-
   // res.status(200);
 
+  console.log(output);
+
   res.status(200).json({
-    abi: output.contracts["MyToken.sol"]["MyToken"].abi,
-    bytecode: output.contracts["MyToken.sol"]["MyToken"].evm.bytecode.object,
+    abi: output.contracts[`${name}.sol`][name].abi,
+    bytecode: output.contracts[`${name}.sol`][name].evm.bytecode.object,
     input: input,
     output: output,
   });

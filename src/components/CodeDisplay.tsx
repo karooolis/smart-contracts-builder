@@ -20,10 +20,11 @@ import { useAccount, useConnect } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 type Props = {
+  name: string;
   value: string;
 };
 
-function CodeDisplay({ value }: Props) {
+function CodeDisplay({ name, value }: Props) {
   const { theme, resolvedTheme } = useTheme();
   const editorRef = React.useRef(null);
   const [copied, setCopied] = React.useState(false);
@@ -82,7 +83,7 @@ function CodeDisplay({ value }: Props) {
             }}
           >
             <Send className="mr-2 h-4 w-4" /> Deploy
-            <SendTransaction />
+            <SendTransaction name={name} contract={formattedCode} />
           </Button>
 
           <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
