@@ -82,7 +82,7 @@ function CodeDisplay({ name, value }: Props) {
               }
             }}
           >
-            <Send className="mr-2 h-4 w-4" /> Deploy
+            <Send className="mr-2 h-4 w-4" /> 
             <SendTransaction name={name} contract={formattedCode} />
           </Button>
 

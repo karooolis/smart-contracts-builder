@@ -34,7 +34,7 @@ export function SendTransaction({
 
   return (
     <div>
-      <button onClick={() => sendTransaction()}>Send Transaction</button>
+      <button onClick={() => sendTransaction()}>Deploy</button>
       {/* {isLoading && <div>Check Wallet</div>}
       {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
     </div>
