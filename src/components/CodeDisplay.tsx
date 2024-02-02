@@ -28,7 +28,9 @@ function CodeDisplay({ name, value }: Props) {
   const { theme, resolvedTheme } = useTheme();
   const editorRef = React.useRef(null);
   const [copied, setCopied] = React.useState(false);
-  const [formattedCode, setFormattedCode] = React.useState(value);
+
+  const [actualValue, setActualValue] = React.useState(value);
+  const [formattedCode, setFormattedCode] = React.useState(actualValue);
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
 
@@ -37,6 +39,10 @@ function CodeDisplay({ name, value }: Props) {
       setCopied(false);
     }, 2000);
   }, [copied]);
+
+  useEffect(() => {
+    setActualValue(value);
+  }, [value]);
 
   // format code on change
   // TODO: fix prettier
@@ -73,18 +79,7 @@ function CodeDisplay({ name, value }: Props) {
             <Download className="mr-2 h-4 w-4" /> Download
           </Button> */}
 
-          <Button
-            size="sm"
-            className="mr-4"
-            onClick={() => {
-              if (!isConnected) {
-                return openConnectModal();
-              }
-            }}
-          >
-            <Send className="mr-2 h-4 w-4" /> 
-            <SendTransaction name={name} contract={formattedCode} />
-          </Button>
+          <SendTransaction name={name} contract={formattedCode} />
 
           <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
             <Button size="sm" className="mr-4">
@@ -121,6 +116,11 @@ function CodeDisplay({ name, value }: Props) {
 
         <CodeMirror
           value={formattedCode}
+          onChange={(newCode) => {
+            console.log("newCode", newCode);
+
+            setActualValue(newCode);
+          }}
           height="100%"
           theme={
             theme === "dark" || resolvedTheme === "dark"

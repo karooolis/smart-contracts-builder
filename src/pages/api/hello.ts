@@ -17,7 +17,7 @@ const findFiles = (
   importContextPath: string,
   imports: Array<{ path: string; content: string }> = []
 ): Array<{ path: string; content: string }> => {
-  const fullImportsRegex = /import\s+['"](.*?)['"];/g;
+  const fullImportsRegex = /import\s+(?:{.*?}\s+from\s+)?['"](.*?)['"];/g; // /import\s+['"](.*?)['"];/g;
   const newFullImports = contractCode.match(fullImportsRegex);
 
   if (!newFullImports) return [...imports];
@@ -27,8 +27,11 @@ const findFiles = (
   for (let i = 0; i < newFullImports.length; i++) {
     const importFullStatement = newFullImports[i];
 
-    const importPathRegex = /import\s+"(.*?)";/;
+    const importPathRegex = /import\s+(?:{.*?}\s+from\s+)?['"](.*?)['"]/;
     const importPathMatch = importFullStatement.match(importPathRegex);
+
+    console.log("importPathMatch", importPathMatch);
+    // if (!importPathMatch) continue;
     const importPath = importPathMatch[1];
 
     const isRelative = isRelativePath(importPath);
@@ -75,44 +78,14 @@ export default function handler(
   const name = req.body.name;
   const contract = req.body.contract;
 
-  console.log("CONTRACT CODE:", contract);
+  console.log(contract);
 
-  //   const contract = `
-  // // SPDX-License-Identifier: MIT
-  // pragma solidity ^0.8.21;
-
-  // import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-  // import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-  // import "@openzeppelin/contracts/security/Pausable.sol";
-  // import "@openzeppelin/contracts/access/Ownable.sol";
-
-  // contract MyToken is ERC20, ERC20Burnable, Pausable, Ownable {
-  //     constructor() ERC20("MyToken", "TKN") {
-  //         _mint(msg.sender, 1000000 * 10 ** decimals());
-  //     }
-
-  //     function pause() public onlyOwner {
-  //         _pause();
-  //     }
-
-  //     function unpause() public onlyOwner {
-  //         _unpause();
-  //     }
-
-  //     function _beforeTokenTransfer(
-  //         address from,
-  //         address to,
-  //         uint256 amount
-  //     ) internal override whenNotPaused {
-  //         super._beforeTokenTransfer(from, to, amount);
-  //     }
-  // }
-  // `;
-
-  // console.log("findFiles:");
-  // console.log(findFiles(contract, "."));
+  console.log("111111");
 
   const finalInput = _.uniqBy(findFiles(contract, `${name}.sol`), "path");
+
+  console.log("2222222");
+
   const finalInputObject = finalInput.reduce((acc, curr) => {
     return {
       ...acc,
@@ -122,6 +95,8 @@ export default function handler(
     };
   }, {});
 
+  console.log("333333");
+
   const input = {
     language: "Solidity",
     sources: {
@@ -130,13 +105,21 @@ export default function handler(
       },
       ...finalInputObject,
 
-      // path to the absolute file on disk
-      // "@openzeppelin/contracts/token/ERC20/ERC20.sol": {
-      //   content: fs.readFileSync(
-      //     "./node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol",
-      //     "utf8"
-      //   ),
-      // },
+      //       'test.sol': {
+      //         content: `
+      // // SPDX-License-Identifier: MIT
+      // pragma solidity ^0.8.21;
+      // import "./hello.sol";
+      // contract C {H h; constructor(uint256 in) {h = new H(in);} function f() public { } }
+      // `
+      //       },
+      //       'hello.sol': {
+      //         content: `
+      // // SPDX-License-Identifier: MIT
+      // pragma solidity ^0.8.21;
+      // contract H { uint256 foo; constructor(uint256 _foo) {foo = _foo;} function g() public { } }
+      // `
+      // }
     },
     settings: {
       outputSelection: {
@@ -147,15 +130,22 @@ export default function handler(
     },
   };
 
+  console.log("4444444");
+
   console.log("input", JSON.stringify(input, undefined, 4));
+  // solc.compile(JSON.stringify(input));
 
   // New syntax (supported from 0.5.12, mandatory from 0.6.0)
+
   const output = JSON.parse(solc.compile(JSON.stringify(input)));
+  console.log(output);
+
+  console.log("555555");
 
   // console.log("output", JSON.stringify(output, undefined, 4));
   // res.status(200);
 
-  console.log(output);
+  console.log("666666");
 
   res.status(200).json({
     abi: output.contracts[`${name}.sol`][name].abi,

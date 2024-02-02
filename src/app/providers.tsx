@@ -21,6 +21,7 @@ import {
   arbitrum,
   zora,
   goerli,
+  localhost,
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { useTheme } from "next-themes";
@@ -34,6 +35,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     optimism,
     arbitrum,
     zora,
+    localhost,
     // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
   [publicProvider()]
