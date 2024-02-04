@@ -8,7 +8,6 @@ import {
 } from "wagmi";
 import { Clipboard, Check, Send, Download, BadgeHelp } from "lucide-react";
 import { Button } from "./ui/button";
-import { mainnet, sepolia } from "wagmi/chains";
 
 export function SendTransaction({
   name,
@@ -21,9 +20,7 @@ export function SendTransaction({
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const account = useWalletClient();
-  const publicClient = usePublicClient({
-    chainId: sepolia.id,
-  });
+  const publicClient = usePublicClient();
 
   console.log("name:", name);
   console.log("account:", account.data);

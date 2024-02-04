@@ -24,7 +24,9 @@ import {
   localhost,
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
+import { infuraProvider } from "wagmi/providers/infura";
 import { useTheme } from "next-themes";
+import { json } from "stream/consumers";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -38,19 +40,22 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     localhost,
     // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
-  [publicProvider()]
+  [
+    infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
+    publicProvider(),
+  ]
 );
 
 const projectId = "YOUR_PROJECT_ID";
 
 const { wallets } = getDefaultWallets({
-  appName: "RainbowKit demo",
+  appName: "Smart Contracts Builder",
   projectId,
   chains,
 });
 
 const demoAppInfo = {
-  appName: "Rainbowkit Demo",
+  appName: "Smart Contracts Builder",
 };
 
 const connectors = connectorsForWallets([
