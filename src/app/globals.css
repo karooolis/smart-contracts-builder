@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.group.toast {
+  margin-top: 60px;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
