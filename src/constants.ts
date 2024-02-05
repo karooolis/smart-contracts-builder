@@ -70,10 +70,10 @@ export const ACCESS_CONTROLS = [
     label: "Roles",
     info: "Flexible mechanism with a separate role for each privileged action. A role can have many authorized accounts.",
   },
-  {
-    id: "none",
-    label: "None",
-  },
+  // {
+  //   id: "none",
+  //   label: "None",
+  // },
 ] as const;
 
 export const LIBRARIES = [
@@ -102,10 +102,10 @@ export const UPGRADEABLE = [
     label: "UUPS",
     info: "Uses simpler proxy with less overhead, requires including extra code in your contract. Allows flexibility for authorizing upgrades.",
   },
-  {
-    id: "none",
-    label: "None",
-  },
+  // {
+  //   id: "none",
+  //   label: "None",
+  // },
 ];
 
 export const FLAGS = {

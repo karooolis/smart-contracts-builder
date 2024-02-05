@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -29,6 +30,7 @@ import CodeDisplay from "@/components/CodeDisplay";
 import { ContractSelect } from "@/components/ContractSelect";
 import { LibrarySelect } from "@/components/LibrarySelect";
 import { ExplanationTooltip } from "@/components/ExplanationTooltip";
+import { Jobs } from "@/components/Jobs";
 
 import { ERC20_Initial } from "../templates/ERC20_Initial.js";
 
@@ -113,9 +115,12 @@ export default function Home() {
 
   // set access control ON if mintable, burnable or pausable
   React.useEffect(() => {
-    if (accessControl == "none" && (mintable || burnable || pausable || upgradeability == "uups")) {
-      form.setValue("accessControl", "ownable");
-    }
+    // if (
+    //   accessControl == "none" &&
+    //   (mintable || burnable || pausable || upgradeability == "uups")
+    // ) {
+    //   form.setValue("accessControl", "ownable");
+    // }
   }, [accessControl, burnable, form, mintable, pausable, upgradeability]);
 
   return (
@@ -136,6 +141,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4">
+            {/* <Jobs /> */}
             <ConnectButton />
             <ModeToggle />
           </div>
@@ -299,7 +305,20 @@ export default function Home() {
                 name="accessControl"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel>Access Control</FormLabel>
+                    <FormLabel className="flex justify-between items-center">
+                      Access Control{" "}
+                      <Switch
+                        className="scale-75"
+                        checked={field.value != "none"}
+                        onCheckedChange={() => {
+                          if (field.value == "none") {
+                            form.setValue("accessControl", "ownable");
+                          } else {
+                            form.setValue("accessControl", "none");
+                          }
+                        }}
+                      />
+                    </FormLabel>
                     <FormControl>
                       <RadioGroup
                         value={field.value}
@@ -317,18 +336,13 @@ export default function Home() {
                                   form.setValue("accessControl", id);
                                 }}
                                 value={id}
-                                disabled={
-                                  id == "none" &&
-                                  (mintable || burnable || pausable)
-                                }
+                                disabled={accessControl == "none"}
                               />
                             </FormControl>
                             <FormLabel
                               className={cn(
                                 "flex w-full justify-between font-normal",
-                                id == "none" &&
-                                  (mintable || burnable || pausable) &&
-                                  "line-through"
+                                accessControl == "none" && "line-through"
                               )}
                             >
                               {label}{" "}
@@ -352,7 +366,20 @@ export default function Home() {
                 name="upgradeability"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel>Upgradeability</FormLabel>
+                    <FormLabel className="flex justify-between items-center">
+                      Upgradeability
+                      <Switch
+                        className="scale-75"
+                        checked={field.value != "none"}
+                        onCheckedChange={() => {
+                          if (field.value == "none") {
+                            form.setValue("upgradeability", "transparent");
+                          } else {
+                            form.setValue("upgradeability", "none");
+                          }
+                        }}
+                      />
+                    </FormLabel>
                     <FormControl>
                       <RadioGroup
                         value={field.value}
@@ -370,9 +397,15 @@ export default function Home() {
                                   form.setValue("upgradeability", id);
                                 }}
                                 value={id}
+                                disabled={upgradeability == "none"}
                               />
                             </FormControl>
-                            <FormLabel className="flex w-full justify-between font-normal">
+                            <FormLabel
+                              className={cn(
+                                "flex w-full justify-between font-normal",
+                                upgradeability == "none" && "line-through"
+                              )}
+                            >
                               {label}{" "}
                               {info && (
                                 <ExplanationTooltip>{info}</ExplanationTooltip>
