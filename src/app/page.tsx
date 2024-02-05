@@ -174,7 +174,7 @@ export default function Home() {
           {/* Left Column */}
           {/* <div className="p-4 overflow-y-auto" style={{ width: "290px" }}> */}
           <Form {...form}>
-            <form onChange={onChange} className="space-y-5">
+            <form onChange={onChange} className="space-y-6">
               <div className="flex space-x-3">
                 <div className="flex-grow w-3/4">
                   <FormField
@@ -323,7 +323,7 @@ export default function Home() {
                 control={form.control}
                 name="accessControl"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
+                  <FormItem className="space-y-4">
                     <FormLabel className="flex justify-between items-center">
                       Access Control{" "}
                       <Switch
@@ -384,7 +384,7 @@ export default function Home() {
                 control={form.control}
                 name="upgradeability"
                 render={({ field }) => (
-                  <FormItem className="space-y-3">
+                  <FormItem className="space-y-4">
                     <FormLabel className="flex justify-between items-center">
                       Upgradeability
                       <Switch
