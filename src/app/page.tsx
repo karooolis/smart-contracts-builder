@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +24,11 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ModeToggle } from "@/components/ModeToggle";
 import { Separator } from "@/components/ui/separator";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 import { FEATURES, ACCESS_CONTROLS, UPGRADEABLE } from "@/constants";
 import CodeDisplay from "@/components/CodeDisplay";
@@ -123,6 +128,16 @@ export default function Home() {
     // }
   }, [accessControl, burnable, form, mintable, pausable, upgradeability]);
 
+  const [size, setSize] = React.useState(20);
+  useLayoutEffect(() => {
+    const desiredInitialSizePx = 290;
+    const initialSizePct = (desiredInitialSizePx / window.innerWidth) * 100;
+    setSize(initialSizePct);
+
+    // TODO: handle values during resizes as well
+    // const observer = new ResizeObserver((entries) => {});
+  }, []);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {/* Navigation */}
@@ -150,10 +165,14 @@ export default function Home() {
 
       <Separator />
 
-      {/* Main content */}
-      <div className="flex flex-grow overflow-hidden pb-3">
-        {/* Left Column */}
-        <div className="p-4 overflow-y-auto" style={{ width: "290px" }}>
+      <ResizablePanelGroup direction="horizontal">
+        <ResizablePanel
+          className="p-4 overflow-y-auto"
+          defaultSize={size}
+          minSize={size * 0.75}
+        >
+          {/* Left Column */}
+          {/* <div className="p-4 overflow-y-auto" style={{ width: "290px" }}> */}
           <Form {...form}>
             <form onChange={onChange} className="space-y-5">
               <div className="flex space-x-3">
@@ -451,15 +470,23 @@ export default function Home() {
               /> */}
             </form>
           </Form>
-        </div>
+          {/* </div> */}
+        </ResizablePanel>
 
-        <Separator orientation="vertical" />
+        <ResizableHandle withHandle />
 
-        {/* Right Column */}
-        <div className="flex-grow overflow-y-auto">
+        <ResizablePanel>
+          {/* Right Column */}
+          {/* <div className="flex-grow overflow-y-auto"> */}
           <CodeDisplay name={name} value={code} contractType={contract} />
-        </div>
-      </div>
+          {/* </div> */}
+        </ResizablePanel>
+      </ResizablePanelGroup>
+
+      {/* Main content */}
+      {/* <div className="flex flex-grow overflow-hidden pb-3">
+        <Separator orientation="vertical" />
+      </div> */}
     </div>
   );
 }
