@@ -75,7 +75,7 @@ function CodeDisplay({ name, value, contractType }: Props) {
   return (
     <>
       <div className="relative h-full">
-        <div className="absolute bottom-6 right-8 z-10">
+        <div className="fixed bottom-6 right-0 z-10">
           {/* <Button size="sm" className="mr-4">
             <Download className="mr-2 h-4 w-4" /> Download
           </Button> */}

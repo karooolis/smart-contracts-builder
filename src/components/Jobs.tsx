@@ -10,13 +10,16 @@ export function Jobs() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button size="sm">
-          <Loader2 className="animate-spin" /> Deploying contract (1)
+        <Button size="sm" className="mr-2">
+          {/* <Loader2 className="animate-spin mr-2" /> Deploying contract (1) */}
+          Contracts (0)
         </Button>
       </PopoverTrigger>
 
       <PopoverContent>
-        <ul className="">
+        Your deployed contracts will appear here.
+
+        {/* <ul className="">
           <li className="border-b pb-3">
             <a href="#" className="block text-sm">
               ERC20: Token 12123
@@ -34,7 +37,7 @@ export function Jobs() {
               ERC20: Token 12123
             </a>
           </li>
-        </ul>
+        </ul> */}
       </PopoverContent>
     </Popover>
   );
