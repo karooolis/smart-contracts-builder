@@ -5,9 +5,11 @@ import {
   useAccount,
   useConnect,
   usePublicClient,
+  useNetwork,
 } from "wagmi";
 import { Clipboard, Check, Send, Download, BadgeHelp } from "lucide-react";
 import { Button } from "./ui/button";
+import { truncateEthAddress } from "@/lib/utils";
 
 // import { Toaster } from "@/components/ui/toaster";
 // import { ToastAction } from "@/components/ui/toast";
@@ -16,23 +18,27 @@ import { Button } from "./ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
-export function SendTransaction({
-  name,
-  contract,
-}: {
+type Props = {
   name: string;
   contract: string;
-}) {
+  contractType: string;
+};
+
+export function SendTransaction({ name, contract, contractType }: Props) {
   // const { toast } = useToast();
   const [loading, setLoading] = React.useState(false);
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const account = useWalletClient();
   const publicClient = usePublicClient();
+  const network = useNetwork();
+
+  const explorerUrl = network.chain?.blockExplorers?.etherscan?.url;
 
   console.log("name:", name);
   console.log("account:", account.data);
   console.log("contract:", contract);
+  console.log("network:", explorerUrl);
 
   async function sendTransaction() {
     setLoading(true);
@@ -79,12 +85,23 @@ export function SendTransaction({
 
       console.log("RECEIPT:", receipt);
 
-      toast("New ERC20 token has been created", {
-        description: "Congratulations! You have successfully deployed a new ERC20 token.",
-        // action: {
-        //   label: "Undo",
-        //   onClick: () => console.log("Undo"),
-        // },
+      // blockHash - "0x2fc352900e9bb3ee37d48600a6e34536747738a01b9cea96f80c7d9276a948bc"
+      // contractAddress - "0x3240814606781b0ee5a688548b6ae1adedb03738"
+
+      // block explorer url for the connected chain
+      const url = toast(`${contractType.toUpperCase()} token has been created`, {
+        description: `Contract address: ${truncateEthAddress(receipt.contractAddress)}`,
+        action: {
+          label: "Open",
+          onClick: () => {
+            window
+              .open(
+                `${explorerUrl}/address/${receipt.contractAddress}`,
+                "_blank"
+              )
+              .focus();
+          },
+        },
       });
     } catch (error) {
       console.error("Error:", error);
@@ -95,7 +112,7 @@ export function SendTransaction({
 
   return (
     <>
-      <Toaster position="top-right" closeButton />
+      <Toaster position="top-right" duration={10000000} closeButton />
 
       <Button
         size="sm"

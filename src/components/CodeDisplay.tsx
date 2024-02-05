@@ -22,9 +22,10 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 type Props = {
   name: string;
   value: string;
+  contractType: string;
 };
 
-function CodeDisplay({ name, value }: Props) {
+function CodeDisplay({ name, value, contractType }: Props) {
   const { theme, resolvedTheme } = useTheme();
   const editorRef = React.useRef(null);
   const [copied, setCopied] = React.useState(false);
@@ -79,7 +80,11 @@ function CodeDisplay({ name, value }: Props) {
             <Download className="mr-2 h-4 w-4" /> Download
           </Button> */}
 
-          <SendTransaction name={name} contract={formattedCode} />
+          <SendTransaction
+            name={name}
+            contract={formattedCode}
+            contractType={contractType}
+          />
 
           <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
             <Button size="sm" className="mr-4">
