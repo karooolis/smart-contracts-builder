@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Popover,
   PopoverContent,
@@ -12,29 +13,35 @@ import { useEffect } from "react";
 export function Jobs() {
   // const supabase = createClient();
 
+  const [contracts, setContracts] = React.useState([]);
+
   useEffect(() => {
     const fetchContracts = async () => {
-      const { data, error } = await supabase.from("contracts").select();
+      const data = await supabase.from("contracts").select("*");
 
-      await supabase.from("contracts").insert({
-        contract_address: "0x123",
-        creator_address: "0x123",
-        chain_id: 42,
-        network_name: "kovan",
-      });
+      // await supabase.from("contracts").insert({
+      //   contract_address: "0x123",
+      //   creator_address: "0x123",
+      //   chain_id: 42,
+      //   network_name: "kovan",
+      // });
 
-      console.log(data, error);
+      console.log("CONTRACTS HEY:", data);
+
+      // setContracts(data);
     };
 
     fetchContracts();
   }, []);
 
+  console.log("CONTRACTS:", contracts);
+
   return (
     <Popover>
       <PopoverTrigger>
-        <Button size="sm" className="mr-2">
+        <Button variant="outline" className="mr-2">
           {/* <Loader2 className="animate-spin mr-2" /> Deploying contract (1) */}
-          Contracts (0)
+          My contracts (0)
         </Button>
       </PopoverTrigger>
 
