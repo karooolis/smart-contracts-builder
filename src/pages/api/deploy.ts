@@ -46,7 +46,7 @@ const findFiles = (
 
     const finalResolvedPath = path.join(
       process.cwd(),
-      "node_modules",
+      "src/lib",
       resolvedPath
     );
 
