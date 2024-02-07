@@ -36,7 +36,7 @@ export function Deploy({ name, contract, contractType }: Props) {
     setDeploying(true);
 
     try {
-      const response = await fetch("api/hello", {
+      const response = await fetch("api/deploy", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
