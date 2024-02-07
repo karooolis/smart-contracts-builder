@@ -6,7 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-// import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { supabase } from "../utils/supabase";
 import { Tables } from "@/types/supabase.types";
@@ -39,7 +39,7 @@ export function Jobs() {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent>
+      <PopoverContent className="w-[320px]">
         {contracts.length > 0 ? (
           <ul>
             {contracts.map((contract: Tables<"contracts">) => {
@@ -53,8 +53,8 @@ export function Jobs() {
                     {contract.contract_name}
                   </p>
 
-                  <div>
-                    {/* <Badge variant="outline">Unverified</Badge> */}
+                  <div className="flex justify-between items-center gap-x-2">
+                    <Badge variant="outline">Unverified</Badge>
                     <a
                       href={contract.explorer_url}
                       target="_blank"
