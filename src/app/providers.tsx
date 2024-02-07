@@ -47,7 +47,7 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ]
 );
 
-const projectId = "YOUR_PROJECT_ID";
+const projectId = "368e129bd75ddd92d41f5bf7ac4cf1e6";
 
 const { wallets } = getDefaultWallets({
   appName: "Smart Contracts Builder",
