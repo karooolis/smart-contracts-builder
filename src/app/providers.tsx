@@ -25,6 +25,7 @@ import {
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from "wagmi/providers/infura";
+import { alchemyProvider } from "wagmi/providers/alchemy";
 import { useTheme } from "next-themes";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -40,7 +41,8 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
   ],
   [
-    infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
+    // infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
+    alchemyProvider({ apiKey: "l9y1XpexuigDM7JeIYD3R32Qh9kXnGsq" }),
     publicProvider(),
   ]
 );
