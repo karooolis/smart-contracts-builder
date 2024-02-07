@@ -87,7 +87,7 @@ function CodeDisplay({ name, value, contractType }: Props) {
           />
 
           <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
-            <Button size="sm" className="mr-4">
+            <Button size="sm" variant="outline" className="mr-4">
               {copied ? (
                 <>
                   <Check className="mr-2 h-4 w-4" /> Copied!

@@ -59,7 +59,7 @@ export function NeedHelpDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" className="mr-4">
+        <Button size="sm" variant="outline" className="mr-4">
           <BadgeHelp className="mr-2 h-4 w-4" /> Need help?
         </Button>
       </DialogTrigger>

@@ -17,7 +17,7 @@ export function Jobs() {
 
   useEffect(() => {
     const fetchContracts = async () => {
-      const data = await supabase.from("contracts").select("*");
+      const { data, error } = await supabase.from("contracts").select();
 
       // await supabase.from("contracts").insert({
       //   contract_address: "0x123",
@@ -26,7 +26,7 @@ export function Jobs() {
       //   network_name: "kovan",
       // });
 
-      console.log("CONTRACTS HEY:", data);
+      console.log("CONTRACTS HEY:", data, error);
 
       // setContracts(data);
     };

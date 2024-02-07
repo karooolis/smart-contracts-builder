@@ -116,6 +116,7 @@ export function SendTransaction({ name, contract, contractType }: Props) {
 
       <Button
         size="sm"
+        variant="outline"
         className="mr-4"
         onClick={() => {
           if (!isConnected) {
