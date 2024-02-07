@@ -1,22 +1,20 @@
-import * as React from "react";
+import { useState } from "react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { Loader2 } from "lucide-react";
 import {
   useWalletClient,
   useAccount,
-  useConnect,
   usePublicClient,
   useNetwork,
 } from "wagmi";
-import { Clipboard, Check, Send, Download, BadgeHelp } from "lucide-react";
+import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { truncateEthAddress } from "@/lib/utils";
-
-// import { Toaster } from "@/components/ui/toaster";
-// import { ToastAction } from "@/components/ui/toast";
-// import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "../utils/supabase";
 
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import { TransactionReceipt } from "viem";
 
 type Props = {
   name: string;
@@ -24,23 +22,16 @@ type Props = {
   contractType: string;
 };
 
-export function SendTransaction({ name, contract, contractType }: Props) {
-  // const { toast } = useToast();
-  const [loading, setLoading] = React.useState(false);
-  const { isConnected } = useAccount();
+export function Deploy({ name, contract, contractType }: Props) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const { isConnected, address: accountAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
   const account = useWalletClient();
   const publicClient = usePublicClient();
   const network = useNetwork();
-
   const explorerUrl = network.chain?.blockExplorers?.etherscan?.url;
 
-  console.log("name:", name);
-  console.log("account:", account.data);
-  console.log("contract:", contract);
-  console.log("network:", explorerUrl);
-
-  async function sendTransaction() {
+  async function deploy() {
     setLoading(true);
 
     try {
@@ -53,11 +44,8 @@ export function SendTransaction({ name, contract, contractType }: Props) {
       });
       const data = await response.json();
 
-      console.log("DATA RESPONSE:", data);
-
       let inputs = data.abi.find((item: any) => item.type === "constructor");
       inputs = inputs?.inputs;
-      console.log("INPUTS:", inputs);
 
       const args = [];
       if (inputs.length > 0) {
@@ -66,9 +54,7 @@ export function SendTransaction({ name, contract, contractType }: Props) {
         }
       }
 
-      console.log("args", args);
-
-      const hash = await account.data?.deployContract({
+      const hash: string = await account.data?.deployContract({
         abi: data.abi,
         account: account.data?.account,
         bytecode: `0x${data.bytecode}`,
@@ -76,35 +62,35 @@ export function SendTransaction({ name, contract, contractType }: Props) {
         gas: BigInt(2000000),
       });
 
-      console.log("HASH:", hash);
-
       // wait for TX to finish
-      const receipt = await publicClient.waitForTransactionReceipt({
-        hash,
-      });
+      const receipt: TransactionReceipt =
+        await publicClient.waitForTransactionReceipt({
+          hash,
+        });
 
-      console.log("RECEIPT:", receipt);
-
-      // blockHash - "0x2fc352900e9bb3ee37d48600a6e34536747738a01b9cea96f80c7d9276a948bc"
-      // contractAddress - "0x3240814606781b0ee5a688548b6ae1adedb03738"
-
-      // block explorer url for the connected chain
-      const url = toast(`${contractType.toUpperCase()} token has been created`, {
-        description: `Contract address: ${truncateEthAddress(receipt.contractAddress)}`,
+      const contractUrl = `${explorerUrl}/address/${receipt.contractAddress as string}`;
+      toast(`${contractType.toUpperCase()} token has been created`, {
+        description: `Contract address: ${truncateEthAddress(receipt.contractAddress as string)}`,
         action: {
           label: "Open",
           onClick: () => {
-            window
-              .open(
-                `${explorerUrl}/address/${receipt.contractAddress}`,
-                "_blank"
-              )
-              .focus();
+            window.open(contractUrl, "_blank")?.focus();
           },
         },
       });
+
+      await supabase.from("contracts").insert({
+        contract_address: receipt.contractAddress,
+        contract_name: name,
+        contract_type: contractType,
+        creator_address: accountAddress,
+        chain_id: network.chain?.id,
+        network_name: network.chain?.name,
+        hash: receipt.blockHash,
+        explorer_url: contractUrl,
+      });
     } catch (error) {
-      console.error("Error:", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -120,18 +106,27 @@ export function SendTransaction({ name, contract, contractType }: Props) {
         className="mr-4"
         onClick={() => {
           if (!isConnected) {
-            return openConnectModal();
+            if (openConnectModal) {
+              openConnectModal();
+            }
+          } else {
+            deploy();
           }
-
-          sendTransaction();
         }}
+        disabled={loading}
       >
-        <Send className="mr-2 h-4 w-4" />
-        Deploy
-        {/* {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deploying ...
+          </>
+        ) : (
+          <>
+            <Send className="mr-2 h-4 w-4" /> Deploy
+          </>
+        )}
       </Button>
     </>
   );
 }
 
-export default SendTransaction;
+export default Deploy;

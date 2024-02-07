@@ -172,7 +172,6 @@ export default function Home() {
           minSize={size * 0.75}
         >
           {/* Left Column */}
-          {/* <div className="p-4 overflow-y-auto" style={{ width: "290px" }}> */}
           <Form {...form}>
             <form onChange={onChange} className="space-y-6">
               <div className="flex space-x-3">
@@ -454,39 +453,17 @@ export default function Home() {
                   </FormItem>
                 )}
               />
-
-              {/* <FormField
-                control={form.control}
-                name="pragma"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Pragma</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Pragma" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
             </form>
           </Form>
-          {/* </div> */}
         </ResizablePanel>
 
         <ResizableHandle withHandle />
 
         <ResizablePanel>
           {/* Right Column */}
-          {/* <div className="flex-grow overflow-y-auto"> */}
           <CodeDisplay name={name} value={code} contractType={contract} />
-          {/* </div> */}
         </ResizablePanel>
       </ResizablePanelGroup>
-
-      {/* Main content */}
-      {/* <div className="flex flex-grow overflow-hidden pb-3">
-        <Separator orientation="vertical" />
-      </div> */}
     </div>
   );
 }

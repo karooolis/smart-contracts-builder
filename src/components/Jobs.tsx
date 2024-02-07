@@ -1,71 +1,76 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
+import { useAccount } from "wagmi";
+import { Loader2, ExternalLink } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+// import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
-import { Loader2 } from "lucide-react";
-
 import { supabase } from "../utils/supabase";
-import { useEffect } from "react";
+import { Tables } from "@/types/supabase.types";
 
 export function Jobs() {
-  // const supabase = createClient();
-
-  const [contracts, setContracts] = React.useState([]);
+  const [contracts, setContracts] = useState<Tables<"contracts">[]>([]);
+  const { address: accountAddress } = useAccount();
 
   useEffect(() => {
     const fetchContracts = async () => {
-      const { data, error } = await supabase.from("contracts").select();
+      const { data, error } = await supabase
+        .from("contracts")
+        .select()
+        .eq("creator_address", accountAddress);
 
-      // await supabase.from("contracts").insert({
-      //   contract_address: "0x123",
-      //   creator_address: "0x123",
-      //   chain_id: 42,
-      //   network_name: "kovan",
-      // });
-
-      console.log("CONTRACTS HEY:", data, error);
-
-      // setContracts(data);
+      if (data?.length) {
+        setContracts(data);
+      }
     };
 
     fetchContracts();
-  }, []);
-
-  console.log("CONTRACTS:", contracts);
+  }, [accountAddress]);
 
   return (
     <Popover>
       <PopoverTrigger>
         <Button variant="outline" className="mr-2">
           {/* <Loader2 className="animate-spin mr-2" /> Deploying contract (1) */}
-          My contracts (0)
+          My contracts ({contracts.length})
         </Button>
       </PopoverTrigger>
 
       <PopoverContent>
-        Your deployed contracts will appear here.
-        {/* <ul className="">
-          <li className="border-b pb-3">
-            <a href="#" className="block text-sm">
-              ERC20: Token 12123
-            </a>
-          </li>
+        {contracts.length > 0 ? (
+          <ul>
+            {contracts.map((contract: Tables<"contracts">) => {
+              return (
+                <li
+                  key={contract.contract_address}
+                  className="flex justify-between items-center border-b py-2"
+                >
+                  <p>
+                    {contract.contract_type.toUpperCase()}:{" "}
+                    {contract.contract_name}
+                  </p>
 
-          <li className="border-b py-3">
-            <a href="#" className="block text-sm">
-              ERC20: Token 12123
-            </a>
-          </li>
-
-          <li className="pt-3">
-            <a href="#" className="block text-sm">
-              ERC20: Token 12123
-            </a>
-          </li>
-        </ul> */}
+                  <div>
+                    {/* <Badge variant="outline">Unverified</Badge> */}
+                    <a
+                      href={contract.explorer_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-sm"
+                    >
+                      <ExternalLink className="h-4" />
+                    </a>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <>Your deployed contracts will appear here.</>
+        )}
       </PopoverContent>
     </Popover>
   );
