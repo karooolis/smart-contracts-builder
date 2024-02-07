@@ -26,7 +26,6 @@ import {
 import { publicProvider } from "wagmi/providers/public";
 import { infuraProvider } from "wagmi/providers/infura";
 import { useTheme } from "next-themes";
-import { json } from "stream/consumers";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [

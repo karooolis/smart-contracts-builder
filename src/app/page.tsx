@@ -8,7 +8,6 @@ import * as z from "zod";
 import { cn } from "@/lib/utils";
 
 import { ConnectButton } from "@/components/ConnectButton";
-
 import {
   Form,
   FormControl,
@@ -38,7 +37,6 @@ import { ExplanationTooltip } from "@/components/ExplanationTooltip";
 import { Jobs } from "@/components/Jobs";
 
 import { ERC20_Initial } from "../templates/ERC20_Initial.js";
-
 import { getTemplate } from "@/utils/templates";
 
 export const formSchema = z.object({

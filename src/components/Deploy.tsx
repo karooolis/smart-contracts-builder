@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Loader2 } from "lucide-react";
 import {
@@ -15,6 +14,7 @@ import { supabase } from "../utils/supabase";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { TransactionReceipt } from "viem";
+import { useStore } from "@/utils/store";
 
 type Props = {
   name: string;
@@ -23,8 +23,9 @@ type Props = {
 };
 
 export function Deploy({ name, contract, contractType }: Props) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const { isConnected, address: accountAddress } = useAccount();
+  const { deploying, fetchContracts } = useStore();
+  const setDeploying = useStore((state) => state.setDeploying);
+  const { isConnected, address: walletAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
   const account = useWalletClient();
   const publicClient = usePublicClient();
@@ -32,7 +33,7 @@ export function Deploy({ name, contract, contractType }: Props) {
   const explorerUrl = network.chain?.blockExplorers?.etherscan?.url;
 
   async function deploy() {
-    setLoading(true);
+    setDeploying(true);
 
     try {
       const response = await fetch("api/hello", {
@@ -83,16 +84,18 @@ export function Deploy({ name, contract, contractType }: Props) {
         contract_address: receipt.contractAddress,
         contract_name: name,
         contract_type: contractType,
-        creator_address: accountAddress,
+        creator_address: walletAddress,
         chain_id: network.chain?.id,
         network_name: network.chain?.name,
         hash: receipt.blockHash,
         explorer_url: contractUrl,
       });
+
+      fetchContracts(walletAddress);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setDeploying(false);
     }
   }
 
@@ -113,9 +116,9 @@ export function Deploy({ name, contract, contractType }: Props) {
             deploy();
           }
         }}
-        disabled={loading}
+        disabled={deploying}
       >
-        {loading ? (
+        {deploying ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deploying ...
           </>

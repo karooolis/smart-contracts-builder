@@ -1,13 +1,11 @@
-// "use client";
-
 import "./globals.css";
 import type { Metadata } from "next";
+
 import { Inconsolata } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Providers } from "./providers";
-// import { Toaster } from "@/components/ui/sonner";
 
 const inconsolatac = Inconsolata({ subsets: ["latin"] });
 
@@ -23,13 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* <Script src="https://unpkg.com/prettier@latest" />
-      <Script src="https://unpkg.com/prettier-plugin-solidity@latest" /> */}
-
       <body className={inconsolatac.className} style={{ overflow: "hidden" }}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Providers>{children}</Providers>
-          {/* <Toaster /> */}
         </ThemeProvider>
       </body>
     </html>

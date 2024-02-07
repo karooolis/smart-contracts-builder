@@ -10,32 +10,41 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { supabase } from "../utils/supabase";
 import { Tables } from "@/types/supabase.types";
+import { useStore } from "@/utils/store";
 
 export function Jobs() {
-  const [contracts, setContracts] = useState<Tables<"contracts">[]>([]);
+  const { deploying, contracts, fetchContracts } = useStore();
+  // const [contracts, setContracts] = useState<Tables<"contracts">[]>([]);
   const { address: accountAddress } = useAccount();
 
   useEffect(() => {
-    const fetchContracts = async () => {
-      const { data, error } = await supabase
-        .from("contracts")
-        .select()
-        .eq("creator_address", accountAddress);
+    // const fetchContracts = async () => {
+    //   const { data, error } = await supabase
+    //     .from("contracts")
+    //     .select()
+    //     .eq("creator_address", accountAddress);
 
-      if (data?.length) {
-        setContracts(data);
-      }
-    };
+    //   if (data?.length) {
+    //     setContracts(data);
+    //   }
+    // };
 
-    fetchContracts();
-  }, [accountAddress]);
+    fetchContracts(accountAddress);
+  }, [fetchContracts, accountAddress]);
+
+  console.log("CONTRACTS:", contracts);
 
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="outline" className="mr-2">
-          {/* <Loader2 className="animate-spin mr-2" /> Deploying contract (1) */}
-          My contracts ({contracts.length})
+        <Button variant="outline" className="mr-2" disabled={deploying}>
+          {deploying ? (
+            <>
+              <Loader2 className="animate-spin mr-2" /> Deploying ...
+            </>
+          ) : (
+            <>My contracts ({contracts.length})</>
+          )}
         </Button>
       </PopoverTrigger>
 
