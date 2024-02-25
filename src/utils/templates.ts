@@ -1,13 +1,15 @@
 import _ from "lodash";
 import * as z from "zod";
 import { formSchema } from "@/app/page";
-import {
-  ERC20_OpenZeppelin,
-  ERC20_OpenZeppelin_Imports,
-  ERC20_Solmate,
-  ERC20_Solmate_Imports,
-} from "../templates/ERC20.js";
-import { ERC721_OpenZeppelin, ERC721_Solmate } from "../templates/ERC721.js";
+
+import ERC20_OpenZeppelin_Imports from "../templates/ERC20/OpenZeppelin/Imports.sol";
+import ERC20_OpenZeppelin from "../templates/ERC20/OpenZeppelin/ERC20.sol";
+
+import ERC20_Solmate_Imports from "../templates/ERC20/Solmate/Imports.sol";
+import ERC20_Solmate from "../templates/ERC20/OpenZeppelin/ERC20.sol";
+
+import ERC721_OpenZeppelin from "../templates/ERC721/OpenZeppelin/ERC721.sol";
+import ERC721_Solmate from "../templates/ERC721/Solmate/ERC721.sol";
 
 export const getImports = (values: z.infer<typeof formSchema>) => {
   const importsTemplate =
@@ -33,8 +35,8 @@ export const getTemplate = (values: z.infer<typeof formSchema>) => {
         ? ERC721_OpenZeppelin
         : ERC721_Solmate
       : values.library == "openzeppelin"
-      ? ERC20_OpenZeppelin
-      : ERC20_Solmate;
+        ? ERC20_OpenZeppelin
+        : ERC20_Solmate;
 
   const data = {
     tokenName: values.name,

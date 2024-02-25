@@ -4,6 +4,13 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.externals.push("pino-pretty", "lokijs", "encoding");
+
+    config.module.rules.push({
+      // load Solidity files as raw strings
+      test: /\.sol$/,
+      use: "raw-loader",
+    });
+
     return config;
   },
   typescript: {
