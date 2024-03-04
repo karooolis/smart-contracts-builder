@@ -39,58 +39,21 @@ import { Jobs } from "@/components/Jobs";
 import { ERC20_Initial } from "../templates/ERC20_Initial.js";
 import { getTemplate } from "@/utils/templates";
 
-export const formSchema = z.object({
-  contract: z.enum([
-    "erc20",
-    "erc721",
-    "erc1155",
-    "erc4626",
-    "vesting",
-    "crowdsale",
-    "flashloan",
-  ]),
-  library: z.enum(["openzeppelin", "solmate"]),
-  name: z.string().min(2, {
-    message: "name must be at least 2 characters.",
-  }),
-  symbol: z.string().min(1, {
-    message: "symbol must be at least 1 characters.",
-  }),
-  baseURI: z.string().optional(),
-  premint: z.coerce.number().optional(),
-  features: z.array(z.string()),
-  accessControl: z.enum(["ownable", "roles", "none"]),
-  upgradeability: z.enum(["transparent", "uups", "none"]),
-  type: z.enum(["all", "mentions", "none"], {
-    required_error: "You need to select a notification type.",
-  }),
-  license: z.string({
-    required_error: "License is required",
-  }),
-  pragma: z.string({
-    required_error: "Pragma is required",
-  }),
-});
+import {
+  formSchema,
+  formSchemaDefaultValues,
+} from "@/components/ContractOptionsForm/constants";
+
+import { ContractOptionsForm } from "@/components/ContractOptionsForm/ContractOptionsForm";
 
 export default function Home() {
   const [code, setCode] = React.useState(ERC20_Initial);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      contract: "erc20",
-      library: "openzeppelin",
-      baseURI: "",
-      name: "MyToken",
-      symbol: "TKN",
-      premint: 1000000,
-      features: [],
-      accessControl: "none",
-      upgradeability: "none",
-      license: "MIT",
-      pragma: "^0.8.21",
-    },
+    defaultValues: formSchemaDefaultValues,
   });
+
   const contract = form.watch("contract");
   const library = form.watch("library");
   const featuresValues = form.watch("features");
@@ -169,6 +132,8 @@ export default function Home() {
           defaultSize={size}
           minSize={size * 0.75}
         >
+          {/* <ContractOptionsForm /> */}
+
           {/* Left Column */}
           <Form {...form}>
             <form onChange={onChange} className="space-y-6">
