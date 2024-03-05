@@ -1,7 +1,8 @@
+import _ from "lodash";
 import { z, ZodObject, ZodString, ZodNumber, ZodEnum } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ERC20_SCHEMA, ERC721_SCHEMA } from "./constants";
+import { ERC20_SCHEMA, ERC721_SCHEMA, formSchemaDefaultValues } from "./constants";
 
 import {
   Form,
@@ -38,6 +39,7 @@ const TextField = ({ form }) => {
 const constructForm = (form, schema: ZodObject<any>) => {
   const elements = Object.keys(schema.shape).map((key) => {
     const field = schema.shape[key];
+    const title = _.startCase(key);
     const type = field.constructor.name;
     const helpText = field?.description;
     console.log("type", key, type);
@@ -51,13 +53,13 @@ const constructForm = (form, schema: ZodObject<any>) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {key}
+                {title}
                 {helpText && (
                   <ExplanationTooltip>{helpText}</ExplanationTooltip>
                 )}
               </FormLabel>
               <FormControl>
-                <Input placeholder={key} {...field} />
+                <Input placeholder={title} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -73,13 +75,13 @@ const constructForm = (form, schema: ZodObject<any>) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {key}
+                {title}
                 {helpText && (
                   <ExplanationTooltip>{helpText}</ExplanationTooltip>
                 )}
               </FormLabel>
               <FormControl>
-                <Input type="number" placeholder={key} {...field} />
+                <Input type="number" placeholder={title} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -87,11 +89,6 @@ const constructForm = (form, schema: ZodObject<any>) => {
         />
       );
     } else if (field instanceof ZodEnum) {
-      console.log("ENUM FIELD");
-
-      // field options
-      console.log(field.options);
-
       return (
         <>
           <FormField
@@ -101,7 +98,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel className="text-base">{key}</FormLabel>
+                  <FormLabel className="text-base">{title}</FormLabel>
                   {helpText && (
                     <FormDescription>
                       Select the additional features to add.
@@ -149,7 +146,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
                               />
                             </FormControl>
                             <FormLabel className="flex w-full font-normal justify-between">
-                              {item.label}{" "}
+                              {_.startCase(item.label)}{" "}
                               {item.info && (
                                 <ExplanationTooltip>
                                   {item.info}
@@ -166,7 +163,6 @@ const constructForm = (form, schema: ZodObject<any>) => {
               </FormItem>
             )}
           />
-
           <Separator />
         </>
       );
@@ -186,7 +182,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
 export const ContractOptionsForm = () => {
   const form = useForm<z.infer<typeof ERC20_SCHEMA>>({
     resolver: zodResolver(ERC20_SCHEMA),
-    defaultValues: {},
+    defaultValues: formSchemaDefaultValues,
   });
 
   function onChange() {
@@ -194,11 +190,6 @@ export const ContractOptionsForm = () => {
     // const template = getTemplate(values);
     // setCode(template);
   }
-
-  console.log(
-    ERC20_SCHEMA.shape.general instanceof ZodObject,
-    Object.keys(ERC721_SCHEMA.shape)
-  );
 
   return (
     <Form {...form}>
