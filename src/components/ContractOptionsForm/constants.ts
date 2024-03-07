@@ -66,7 +66,7 @@ export const ERC20_SCHEMA = z.object({
       .number()
       .describe("Create an initial amount of tokens for the deployer."),
   }),
-  features: z.enum(["mint", "burn", "pause", "permit"], {
+  features: z.array(["mint", "burn", "pause", "permit"], {
     description: "Select the additional features to add.",
   }),
   accessControl: z.enum(["ownable", "roles", "none"]),

@@ -1,8 +1,13 @@
 import _ from "lodash";
-import { z, ZodObject, ZodString, ZodNumber, ZodEnum } from "zod";
+import { z, ZodObject, ZodString, ZodNumber, ZodEnum, ZodArray } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ERC20_SCHEMA, ERC721_SCHEMA, formSchemaDefaultValues } from "./constants";
+import { cn } from "@/lib/utils";
+import {
+  ERC20_SCHEMA,
+  ERC721_SCHEMA,
+  formSchemaDefaultValues,
+} from "./constants";
 
 import {
   Form,
@@ -14,27 +19,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ExplanationTooltip } from "@/components/ExplanationTooltip";
 import { Separator } from "../ui/separator";
-
-const TextField = ({ form }) => {
-  return (
-    <FormField
-      control={form.control}
-      name="name"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Name</FormLabel>
-          <FormControl>
-            <Input placeholder="Name" {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
 
 const constructForm = (form, schema: ZodObject<any>) => {
   const elements = Object.keys(schema.shape).map((key) => {
@@ -42,7 +31,6 @@ const constructForm = (form, schema: ZodObject<any>) => {
     const title = _.startCase(key);
     const type = field.constructor.name;
     const helpText = field?.description;
-    console.log("type", key, type);
 
     if (field instanceof ZodString) {
       return (
@@ -88,7 +76,9 @@ const constructForm = (form, schema: ZodObject<any>) => {
           )}
         />
       );
-    } else if (field instanceof ZodEnum) {
+    } else if (field instanceof ZodArray) {
+      const options = field._def.type;
+
       return (
         <>
           <FormField
@@ -98,7 +88,9 @@ const constructForm = (form, schema: ZodObject<any>) => {
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel className="text-base">{title}</FormLabel>
+                  <FormLabel className="flex justify-between items-center">
+                    {title}
+                  </FormLabel>
                   {helpText && (
                     <FormDescription>
                       Select the additional features to add.
@@ -106,7 +98,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
                   )}
                 </div>
 
-                {field.options.map((fieldId) => {
+                {options.map((fieldId) => {
                   const item = {
                     id: fieldId,
                     label: fieldId,
@@ -163,6 +155,83 @@ const constructForm = (form, schema: ZodObject<any>) => {
               </FormItem>
             )}
           />
+          <Separator />
+        </>
+      );
+    } else if (field instanceof ZodEnum) {
+      const options = field.options;
+      return (
+        <>
+          <FormField
+            control={form.control}
+            name={key}
+            render={({ field: fieldInner }) => (
+              <FormItem className="space-y-4">
+                <FormLabel className="flex justify-between items-center">
+                  {title}{" "}
+                  <Switch
+                    className="scale-75"
+                    checked={field.value != "none"}
+                    onCheckedChange={() => {
+                      if (field.value == "none") {
+                        form.setValue(key, _.first(field.options));
+                      } else {
+                        form.setValue(key, "none");
+                      }
+                    }}
+                  />
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    value={field.value}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-1"
+                  >
+                    {field.options.map((itemId, idx) => {
+                      const id = itemId;
+                      const label = _.startCase(itemId);
+                      const info = "INFO";
+                      const item = {
+                        id: itemId,
+                        label: _.startCase(itemId),
+                        info: "INFO",
+                      };
+
+                      return (
+                        <FormItem
+                          key={idx}
+                          className="flex items-center space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <RadioGroupItem
+                              onClick={() => {
+                                // form.setValue("accessControl", id);
+                              }}
+                              value={id}
+                              // disabled={accessControl == "none"}
+                            />
+                          </FormControl>
+                          <FormLabel
+                            className={cn(
+                              "flex w-full justify-between font-normal"
+                              // accessControl == "none" && "line-through"
+                            )}
+                          >
+                            {label}{" "}
+                            {info && (
+                              <ExplanationTooltip>{info}</ExplanationTooltip>
+                            )}
+                          </FormLabel>
+                        </FormItem>
+                      );
+                    })}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Separator />
         </>
       );
