@@ -96,8 +96,8 @@ export default function Home() {
           </div>
 
           <div className="flex gap-4">
-            <ContractSelect onValueChange={setContract} />
-            <LibrarySelect onValueChange={setLibrary} />
+            <ContractSelect />
+            <LibrarySelect />
           </div>
 
           <div className="flex items-center gap-4">

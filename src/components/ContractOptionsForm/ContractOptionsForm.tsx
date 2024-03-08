@@ -2,13 +2,17 @@ import _ from "lodash";
 import { z, ZodObject, ZodString, ZodNumber, ZodEnum, ZodArray } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import prettier from "prettier/standalone";
+import solidityPlugin from "prettier-plugin-solidity/standalone";
+
 import { cn } from "@/lib/utils";
+import { getTemplate } from "@/utils/templates";
 import {
   ERC20_SCHEMA,
   ERC721_SCHEMA,
   formSchemaDefaultValues,
 } from "./constants";
-
 import {
   Form,
   FormControl,
@@ -24,6 +28,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ExplanationTooltip } from "@/components/ExplanationTooltip";
 import { Separator } from "../ui/separator";
+import { useStore } from "@/utils/store";
 
 const constructForm = (form, schema: ZodObject<any>) => {
   const elements = Object.keys(schema.shape).map((key) => {
@@ -78,7 +83,6 @@ const constructForm = (form, schema: ZodObject<any>) => {
       );
     } else if (field instanceof ZodArray) {
       const options = field._def.type;
-
       return (
         <>
           <FormField
@@ -159,7 +163,6 @@ const constructForm = (form, schema: ZodObject<any>) => {
         </>
       );
     } else if (field instanceof ZodEnum) {
-      const options = field.options;
       return (
         <>
           <FormField
@@ -248,17 +251,30 @@ const constructForm = (form, schema: ZodObject<any>) => {
   return elements;
 };
 
+const formatCode = async (code: string) => {
+  const formattedCode = await prettier.format(code, {
+    parser: "solidity-parse",
+    plugins: [solidityPlugin],
+  });
+
+  return formattedCode;
+};
+
 export const ContractOptionsForm = () => {
+  const code = useStore((state) => state.code);
+  const setCode = useStore((state) => state.setCode);
+
   const form = useForm<z.infer<typeof ERC20_SCHEMA>>({
     resolver: zodResolver(ERC20_SCHEMA),
     defaultValues: formSchemaDefaultValues,
   });
 
-  function onChange() {
-    // const values = form.getValues();
-    // const template = getTemplate(values);
-    // setCode(template);
-  }
+  const onChange = async () => {
+    const values = form.getValues();
+    const template = getTemplate(values);
+    const formattedCode = await formatCode(template);
+    setCode(formattedCode);
+  };
 
   return (
     <Form {...form}>

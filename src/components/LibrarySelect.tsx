@@ -10,10 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LIBRARIES } from "@/constants";
+import { useStore } from "@/utils/store";
 
-export function LibrarySelect({ onValueChange }) {
+export function LibrarySelect() {
+  const library = useStore((state) => state.library);
+  const setLibrary = useStore((state) => state.setLibrary);
+  
   return (
-    <Select defaultValue={LIBRARIES[0].id} onValueChange={onValueChange}>
+    <Select defaultValue={library} onValueChange={setLibrary}>
       <SelectTrigger className="w-[220px]">
         <SelectValue placeholder="Select a library" />
       </SelectTrigger>

@@ -10,10 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CONTRACTS } from "@/constants";
+import { useStore } from "@/utils/store";
 
-export function ContractSelect({ onValueChange }) {
+export function ContractSelect() {
+  const setContractType = useStore((state) => state.setContractType);
+  const contractType = useStore((state) => state.contractType);
+
   return (
-    <Select defaultValue={CONTRACTS[0].id} onValueChange={onValueChange}>
+    <Select defaultValue={contractType} onValueChange={setContractType}>
       <SelectTrigger className="w-[220px]">
         <SelectValue placeholder="Select a contract" />
       </SelectTrigger>

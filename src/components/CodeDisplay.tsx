@@ -5,13 +5,12 @@ import CodeMirror from "@uiw/react-codemirror";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Clipboard, Check } from "lucide-react";
 import { solidity } from "@replit/codemirror-lang-solidity";
-import prettier from "prettier/standalone";
-import solidityPlugin from "prettier-plugin-solidity/standalone";
 import { boysAndGirls, tomorrow } from "thememirror";
 
 import { Button } from "@/components/ui/button";
 import { NeedHelpDialog } from "@/components/NeedHelpDialog";
 import { Deploy } from "@/components/Deploy";
+import { useStore } from "@/utils/store";
 
 type Props = {
   name: string;
@@ -19,34 +18,18 @@ type Props = {
   contractType: string;
 };
 
-function CodeDisplay({ name, value, contractType }: Props) {
+function CodeDisplay({ name, contractType }: Props) {
   const { theme, resolvedTheme } = useTheme();
   const [copied, setCopied] = useState(false);
-  const [actualValue, setActualValue] = useState(value);
-  const [formattedCode, setFormattedCode] = useState(actualValue);
+
+  const code = useStore((state) => state.code);
+  const setCode = useStore((state) => state.setCode);
 
   useEffect(() => {
     setTimeout(() => {
       setCopied(false);
     }, 2000);
   }, [copied]);
-
-  useEffect(() => {
-    setActualValue(value);
-  }, [value]);
-
-  useEffect(() => {
-    const formatCode = async () => {
-      const formattedCode = await prettier.format(value, {
-        parser: "solidity-parse",
-        plugins: [solidityPlugin],
-      });
-
-      setFormattedCode(formattedCode);
-    };
-
-    formatCode();
-  }, [value]);
 
   return (
     <>
@@ -58,11 +41,11 @@ function CodeDisplay({ name, value, contractType }: Props) {
 
           <Deploy
             name={name}
-            contract={formattedCode}
+            contract={code}
             contractType={contractType}
           />
 
-          <CopyToClipboard text={formattedCode} onCopy={() => setCopied(true)}>
+          <CopyToClipboard text={code} onCopy={() => setCopied(true)}>
             <Button size="sm" variant="outline" className="mr-4">
               {copied ? (
                 <>
@@ -80,10 +63,8 @@ function CodeDisplay({ name, value, contractType }: Props) {
         </div>
 
         <CodeMirror
-          value={formattedCode}
-          onChange={(newCode) => {
-            setActualValue(newCode);
-          }}
+          value={code}
+          onChange={setCode}
           height="100%"
           theme={
             theme === "dark" || resolvedTheme === "dark"
