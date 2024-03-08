@@ -27,10 +27,11 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ExplanationTooltip } from "@/components/ExplanationTooltip";
+import { OPTIONS_FIELDS } from "./constants";
 import { Separator } from "../ui/separator";
 import { useStore } from "@/utils/store";
 
-const constructForm = (form, schema: ZodObject<any>) => {
+const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
   const elements = Object.keys(schema.shape).map((key) => {
     const field = schema.shape[key];
     const title = _.startCase(key);
@@ -102,51 +103,48 @@ const constructForm = (form, schema: ZodObject<any>) => {
                   )}
                 </div>
 
-                {options.map((fieldId) => {
-                  const item = {
-                    id: fieldId,
-                    label: fieldId,
-                    info: "INFO",
-                  };
+                {options.map((itemId) => {
+                  const id = itemId;
+                  const label = _.startCase(itemId);
+                  const fullKey = `${key}.${itemId}`;
+                  const info = _.get(OPTIONS_FIELDS, fullKey)?.info;
 
                   return (
                     <FormField
-                      key={item.id}
+                      key={id}
                       control={form.control}
                       name="features"
                       render={({ field }) => {
                         return (
                           <FormItem
-                            key={item.id}
+                            key={id}
                             className="flex flex-row items-start space-x-3 space-y-0"
                           >
                             <FormControl>
                               <Checkbox
                                 checked={field.value?.includes(
-                                  item.id
+                                  id
                                 )
-                                // || (item.id == "permit" && library == "solmate")
+                                // || (id == "permit" && library == "solmate")
                                 }
                                 onCheckedChange={(checked) => {
                                   return checked
-                                    ? field.onChange([...field.value, item.id])
+                                    ? field.onChange([...field.value, id])
                                     : field.onChange(
                                         field.value?.filter(
-                                          (value) => value !== item.id
+                                          (value) => value !== id
                                         )
                                       );
                                 }}
                                 // disabled={
-                                // item.id == "permit" && library == "solmate"
+                                // id == "permit" && library == "solmate"
                                 // }
                               />
                             </FormControl>
                             <FormLabel className="flex w-full font-normal justify-between">
-                              {_.startCase(item.label)}{" "}
-                              {item.info && (
-                                <ExplanationTooltip>
-                                  {item.info}
-                                </ExplanationTooltip>
+                              {_.startCase(label)}{" "}
+                              {info && (
+                                <ExplanationTooltip>{info}</ExplanationTooltip>
                               )}
                             </FormLabel>
                           </FormItem>
@@ -163,22 +161,32 @@ const constructForm = (form, schema: ZodObject<any>) => {
         </>
       );
     } else if (field instanceof ZodEnum) {
+      // field value of key
+      const fieldValue = form.getValues()[key];
+      const noneChecked = fieldValue == "none";
+
       return (
         <>
           <FormField
             control={form.control}
             name={key}
-            render={({ field: fieldInner }) => (
+            render={() => (
               <FormItem className="space-y-4">
                 <FormLabel className="flex justify-between items-center">
                   {title}{" "}
                   <Switch
                     className="scale-75"
-                    checked={field.value != "none"}
+                    checked={!noneChecked}
                     onCheckedChange={() => {
-                      if (field.value == "none") {
+                      if (noneChecked) {
+                        console.log(
+                          "setting to first option",
+                          key,
+                          _.first(field.options)
+                        );
                         form.setValue(key, _.first(field.options));
                       } else {
+                        console.log("setting to none", key);
                         form.setValue(key, "none");
                       }
                     }}
@@ -186,19 +194,19 @@ const constructForm = (form, schema: ZodObject<any>) => {
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
-                    value={field.value}
-                    defaultValue={field.value}
+                    value={fieldValue}
+                    defaultValue={fieldValue}
                     className="flex flex-col space-y-1"
                   >
                     {field.options.map((itemId, idx) => {
                       const id = itemId;
                       const label = _.startCase(itemId);
-                      const info = "INFO";
-                      const item = {
-                        id: itemId,
-                        label: _.startCase(itemId),
-                        info: "INFO",
-                      };
+                      const fullKey = `${key}.${itemId}`;
+                      const info = _.get(OPTIONS_FIELDS, fullKey)?.info;
+
+                      if (id == "none") {
+                        return;
+                      }
 
                       return (
                         <FormItem
@@ -208,16 +216,16 @@ const constructForm = (form, schema: ZodObject<any>) => {
                           <FormControl>
                             <RadioGroupItem
                               onClick={() => {
-                                // form.setValue("accessControl", id);
+                                form.setValue(key, id);
                               }}
                               value={id}
-                              // disabled={accessControl == "none"}
+                              disabled={noneChecked}
                             />
                           </FormControl>
                           <FormLabel
                             className={cn(
-                              "flex w-full justify-between font-normal"
-                              // accessControl == "none" && "line-through"
+                              "flex w-full justify-between font-normal",
+                              noneChecked && "line-through"
                             )}
                           >
                             {label}{" "}
@@ -241,7 +249,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
     } else if (field instanceof ZodObject) {
       return (
         <>
-          {constructForm(form, field)}
+          {constructForm(form, field, key)}
           <Separator />
         </>
       );
@@ -261,13 +269,15 @@ const formatCode = async (code: string) => {
 };
 
 export const ContractOptionsForm = () => {
-  const code = useStore((state) => state.code);
   const setCode = useStore((state) => state.setCode);
-
   const form = useForm<z.infer<typeof ERC20_SCHEMA>>({
     resolver: zodResolver(ERC20_SCHEMA),
     defaultValues: formSchemaDefaultValues,
   });
+
+  // Need to include to re-render the form on change
+  const accessControl = form.watch("accessControl");
+  const upgradeability = form.watch("upgradeability");
 
   const onChange = async () => {
     const values = form.getValues();

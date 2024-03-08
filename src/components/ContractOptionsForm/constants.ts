@@ -74,9 +74,9 @@ export const ERC20_SCHEMA = z.object({
   license: z.string({
     required_error: "License is required",
   }),
-  pragma: z.string({
-    required_error: "Pragma is required",
-  }),
+  // pragma: z.string({
+  //   required_error: "Pragma is required",
+  // }),
 });
 
 export const ERC721_SCHEMA = z.object({

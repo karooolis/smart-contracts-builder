@@ -56,5 +56,8 @@ export const getTemplate = (values: z.infer<typeof formSchema>) => {
     imports: getImports(values),
   };
 
+  console.log(values, data);
+
+
   return _.template(template)(data);
 };
