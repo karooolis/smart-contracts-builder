@@ -48,21 +48,6 @@ export default function Home() {
   const upgradeability = form.watch("upgradeability");
   const name = form.watch("name");
 
-  function onChange() {
-    const values = form.getValues();
-    const template = getTemplate(values);
-    setCode(template);
-  }
-
-  function setContract(contract: z.infer<typeof formSchema>["contract"]) {
-    form.setValue("contract", contract);
-  }
-
-  function setLibrary(library: z.infer<typeof formSchema>["library"]) {
-    form.setValue("library", library);
-    onChange();
-  }
-
   // set access control ON if mintable, burnable or pausable
   React.useEffect(() => {
     // if (

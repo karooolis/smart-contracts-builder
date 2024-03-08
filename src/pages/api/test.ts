@@ -118,10 +118,7 @@ const relativeContract = `
   }
 `;
 
-// console.log("findFiles:");
-
 const finalInput = _.uniqBy(findFiles(contract, "MyToken.sol"), "path");
-// console.log("finalInput", finalInput);
 
 // reduce finalInput to a single object where "path" is the key of object
 // and "content" is the value

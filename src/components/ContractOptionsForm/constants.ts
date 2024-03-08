@@ -87,23 +87,43 @@ export const ERC721_SCHEMA = z.object({
     symbol: z.string().min(1, {
       message: "symbol must be at least 1 characters.",
     }),
-    baseURI: z.string().optional(),
+    baseURI: z.string().describe("Will be concatenated with token IDs to generate the token URIs.")
   }),
-
-  premint: z.coerce.number().optional(),
-  features: z.array(z.string()),
+  features: z.array(["mint", "burn", "pause"], {
+    description: "Select the additional features to add.",
+  }),
   accessControl: z.enum(["ownable", "roles", "none"]),
   upgradeability: z.enum(["transparent", "uups", "none"]),
-  type: z.enum(["all", "mentions", "none"], {
-    required_error: "You need to select a notification type.",
-  }),
   license: z.string({
     required_error: "License is required",
   }),
-  pragma: z.string({
-    required_error: "Pragma is required",
-  }),
+
+  // general: z.object({
+  //   name: z.string().min(2, {
+  //     message: "name must be at least 2 characters.",
+  //   }),
+  //   symbol: z.string().min(1, {
+  //     message: "symbol must be at least 1 characters.",
+  //   }),
+  //   baseURI: z.string().optional(),
+  // }),
+
+  // premint: z.coerce.number().optional(),
+  // features: z.array(z.string()),
+  // accessControl: z.enum(["ownable", "roles", "none"]),
+  // upgradeability: z.enum(["transparent", "uups", "none"]),
+  // license: z.string({
+  //   required_error: "License is required",
+  // }),
+  // pragma: z.string({
+  //   required_error: "Pragma is required",
+  // }),
 });
+
+export const SCHEMAS_MAP = {
+  erc20: ERC20_SCHEMA,
+  erc721: ERC721_SCHEMA,
+};
 
 // TODO: old schema, need to replace
 export const formSchema = z.object({
@@ -140,8 +160,6 @@ export const formSchema = z.object({
 });
 
 export const formSchemaDefaultValues = {
-  contract: "erc20",
-  library: "openzeppelin",
   baseURI: "",
   name: "MyToken",
   symbol: "TKN",

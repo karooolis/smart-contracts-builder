@@ -11,6 +11,7 @@ import { getTemplate } from "@/utils/templates";
 import {
   ERC20_SCHEMA,
   ERC721_SCHEMA,
+  SCHEMAS_MAP,
   formSchemaDefaultValues,
 } from "./constants";
 import {
@@ -30,6 +31,7 @@ import { ExplanationTooltip } from "@/components/ExplanationTooltip";
 import { OPTIONS_FIELDS } from "./constants";
 import { Separator } from "../ui/separator";
 import { useStore } from "@/utils/store";
+import { useEffect } from "react";
 
 const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
   const elements = Object.keys(schema.shape).map((key) => {
@@ -179,14 +181,8 @@ const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
                     checked={!noneChecked}
                     onCheckedChange={() => {
                       if (noneChecked) {
-                        console.log(
-                          "setting to first option",
-                          key,
-                          _.first(field.options)
-                        );
                         form.setValue(key, _.first(field.options));
                       } else {
-                        console.log("setting to none", key);
                         form.setValue(key, "none");
                       }
                     }}
@@ -269,9 +265,14 @@ const formatCode = async (code: string) => {
 };
 
 export const ContractOptionsForm = () => {
+  const contractType = useStore((state) => state.contractType);
+  const library = useStore((state) => state.library);
+
+  const formSchema = SCHEMAS_MAP[contractType];
   const setCode = useStore((state) => state.setCode);
-  const form = useForm<z.infer<typeof ERC20_SCHEMA>>({
-    resolver: zodResolver(ERC20_SCHEMA),
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: formSchemaDefaultValues,
   });
 
@@ -281,15 +282,19 @@ export const ContractOptionsForm = () => {
 
   const onChange = async () => {
     const values = form.getValues();
-    const template = getTemplate(values);
+    const template = getTemplate(values, contractType, library);
     const formattedCode = await formatCode(template);
     setCode(formattedCode);
   };
 
+  useEffect(() => {
+    onChange();
+  }, [contractType, library]);
+
   return (
     <Form {...form}>
       <form onChange={onChange} className="space-y-6">
-        {constructForm(form, ERC20_SCHEMA)}
+        {constructForm(form, formSchema)}
       </form>
     </Form>
   );

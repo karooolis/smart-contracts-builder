@@ -28,13 +28,17 @@ export const getImports = (values: z.infer<typeof formSchema>) => {
   }).replace(/[\r\n]/gm, "");
 };
 
-export const getTemplate = (values: z.infer<typeof formSchema>) => {
+export const getTemplate = (
+  values: z.infer<typeof formSchema>,
+  contract: string,
+  library: string
+) => {
   const template =
-    values.contract == "erc721"
-      ? values.library == "openzeppelin"
+    contract == "erc721"
+      ? library == "openzeppelin"
         ? ERC721_OpenZeppelin
         : ERC721_Solmate
-      : values.library == "openzeppelin"
+      : library == "openzeppelin"
         ? ERC20_OpenZeppelin
         : ERC20_Solmate;
 
@@ -55,9 +59,6 @@ export const getTemplate = (values: z.infer<typeof formSchema>) => {
     pragma: values.pragma,
     imports: getImports(values),
   };
-
-  console.log(values, data);
-
 
   return _.template(template)(data);
 };
