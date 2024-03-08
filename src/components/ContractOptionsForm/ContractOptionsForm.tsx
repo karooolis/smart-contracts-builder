@@ -40,7 +40,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
           name={key}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex w-full justify-between">
                 {title}
                 {helpText && (
                   <ExplanationTooltip>{helpText}</ExplanationTooltip>
@@ -62,7 +62,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
           name={key}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>
+              <FormLabel className="flex w-full justify-between">
                 {title}
                 {helpText && (
                   <ExplanationTooltip>{helpText}</ExplanationTooltip>
