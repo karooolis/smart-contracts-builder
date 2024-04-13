@@ -1,11 +1,6 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Loader2 } from "lucide-react";
-import {
-  useWalletClient,
-  useAccount,
-  usePublicClient,
-  useNetwork,
-} from "wagmi";
+import { useWalletClient, useAccount, usePublicClient } from "wagmi";
 import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { truncateEthAddress } from "@/lib/utils";
@@ -23,13 +18,15 @@ type Props = {
 };
 
 export function Deploy({ name, contract, contractType }: Props) {
-  const { deploying, fetchContracts } = useStore();
+  const { deploying, fetchContracts } = useStore(); // TODO: add types
   const setDeploying = useStore((state) => state.setDeploying);
-  const { isConnected, address: walletAddress } = useAccount();
+  const { isConnected, chain, address: walletAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
   const account = useWalletClient();
   const publicClient = usePublicClient();
-  const network = useNetwork();
+  // const network = useNetwork();
+
+  const network = {}; // TODO: fix later
   const explorerUrl = network.chain?.blockExplorers?.etherscan?.url;
 
   async function deploy() {
@@ -85,8 +82,8 @@ export function Deploy({ name, contract, contractType }: Props) {
         contract_name: name,
         contract_type: contractType,
         creator_address: walletAddress,
-        chain_id: network.chain?.id,
-        network_name: network.chain?.name,
+        // chain_id: network.chain?.id,
+        // network_name: network.chain?.name,
         hash: receipt.blockHash,
         explorer_url: contractUrl,
       });
