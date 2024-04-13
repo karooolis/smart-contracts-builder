@@ -196,6 +196,9 @@ devDependencies:
   husky:
     specifier: ^8.0.3
     version: 8.0.3
+  types-solc:
+    specifier: ^1.0.1
+    version: 1.0.1
 
 packages:
 
@@ -11895,6 +11898,10 @@ packages:
       is-typed-array: 1.1.13
       possible-typed-array-names: 1.0.0
     dev: false
+
+  /types-solc@1.0.1:
+    resolution: {integrity: sha512-nNuhDWJ40qewIchJw+ddyIwi9HbpLo0F5K45aLO5r264Sod1jU8Vs7yKUO/+O6Mmr6rg4veD/FXBRvSO2m0Xlg==}
+    dev: true
 
   /typescript@5.1.6:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}

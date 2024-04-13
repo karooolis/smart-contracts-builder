@@ -74,6 +74,7 @@
     "@commitlint/config-conventional": "^17.8.1",
     "@types/lodash": "^4.17.0",
     "@types/react-copy-to-clipboard": "^5.0.7",
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "types-solc": "^1.0.1"
   }
 }
