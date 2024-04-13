@@ -11,9 +11,13 @@ import ERC20_Solmate from "../templates/ERC20/OpenZeppelin/ERC20.sol";
 import ERC721_OpenZeppelin from "../templates/ERC721/OpenZeppelin/ERC721.sol";
 import ERC721_Solmate from "../templates/ERC721/Solmate/ERC721.sol";
 
-export const getImports = (values: z.infer<typeof formSchema>) => {
+export const getImports = (
+  values: z.infer<typeof formSchema>,
+  contract: string,
+  library: string
+) => {
   const importsTemplate =
-    values.library == "openzeppelin"
+    library == "openzeppelin"
       ? ERC20_OpenZeppelin_Imports
       : ERC20_Solmate_Imports;
 
@@ -57,7 +61,7 @@ export const getTemplate = (
     upgradeability: values.upgradeability,
     license: values.license,
     pragma: values.pragma,
-    imports: getImports(values),
+    imports: getImports(values, contract, library),
   };
 
   return _.template(template)(data);
