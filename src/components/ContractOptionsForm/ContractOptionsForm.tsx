@@ -28,11 +28,10 @@ import { OPTIONS_FIELDS } from "./constants";
 import { Separator } from "../ui/separator";
 import { useStore } from "@/utils/store";
 
-const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
+const constructForm = (form, schema: ZodObject<any>) => {
   const elements = Object.keys(schema.shape).map((key) => {
     const field = schema.shape[key];
     const title = _.startCase(key);
-    const type = field.constructor.name;
     const helpText = field?.description;
 
     if (field instanceof ZodString) {
@@ -240,7 +239,7 @@ const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
     } else if (field instanceof ZodObject) {
       return (
         <Fragment key={key}>
-          {constructForm(form, field, key)}
+          {constructForm(form, field)}
           <Separator />
         </Fragment>
       );

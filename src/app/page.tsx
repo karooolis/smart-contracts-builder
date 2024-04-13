@@ -70,7 +70,7 @@ export default function Home() {
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
-            <div className="hidden lg:inline-block text-md font-semibold">
+            <div className="hidden xl:inline-block text-md font-semibold">
               smart contracts builder
             </div>
           </div>
