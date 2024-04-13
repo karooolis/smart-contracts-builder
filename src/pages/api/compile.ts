@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { compile } from "./helpers/compile";
 
 // TODO: add proper output types
-type ResponseData = {
+export type ResponseData = {
   abi: any;
   bytecode: any;
   input: any;
