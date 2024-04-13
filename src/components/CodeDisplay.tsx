@@ -39,11 +39,7 @@ function CodeDisplay({ name, contractType }: Props) {
             <Download className="mr-2 h-4 w-4" /> Download
           </Button> */}
 
-          <Deploy
-            name={name}
-            contract={code}
-            contractType={contractType}
-          />
+          <Deploy name={name} contract={code} />
 
           <CopyToClipboard text={code} onCopy={() => setCopied(true)}>
             <Button size="sm" variant="outline" className="mr-4">

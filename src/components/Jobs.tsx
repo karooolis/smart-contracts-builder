@@ -42,9 +42,9 @@ export function Jobs() {
           asChild={true}
         >
           {deploying ? (
-            <>
+            <span>
               <Loader2 className="animate-spin mr-2" /> Deploying ...
-            </>
+            </span>
           ) : (
             <>My contracts ({contracts.length})</>
           )}

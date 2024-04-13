@@ -14,20 +14,16 @@ import { useStore } from "@/utils/store";
 type Props = {
   name: string;
   contract: string;
-  contractType: string;
 };
 
-export function Deploy({ name, contract, contractType }: Props) {
-  const { deploying, fetchContracts } = useStore(); // TODO: add types
+export function Deploy({ name, contract }: Props) {
+  const { contractType, deploying, fetchContracts } = useStore(); // TODO: add types
   const setDeploying = useStore((state) => state.setDeploying);
   const { isConnected, chain, address: walletAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
   const account = useWalletClient();
   const publicClient = usePublicClient();
-  // const network = useNetwork();
-
-  const network = {}; // TODO: fix later
-  const explorerUrl = network.chain?.blockExplorers?.etherscan?.url;
+  const explorerUrl = chain?.blockExplorers?.default?.url;
 
   async function deploy() {
     setDeploying(true);
@@ -52,13 +48,14 @@ export function Deploy({ name, contract, contractType }: Props) {
         }
       }
 
-      const hash: string = await account.data?.deployContract({
-        abi: data.abi,
-        account: account.data?.account,
-        bytecode: `0x${data.bytecode}`,
-        args: args,
-        gas: BigInt(2000000),
-      });
+      const hash: `0x${string}` | undefined =
+        await account.data?.deployContract({
+          abi: data.abi,
+          account: account.data?.account,
+          bytecode: `0x${data.bytecode}`,
+          args: args,
+          gas: BigInt(2000000),
+        });
 
       // wait for TX to finish
       const receipt: TransactionReceipt =
@@ -82,8 +79,8 @@ export function Deploy({ name, contract, contractType }: Props) {
         contract_name: name,
         contract_type: contractType,
         creator_address: walletAddress,
-        // chain_id: network.chain?.id,
-        // network_name: network.chain?.name,
+        chain_id: chain?.id,
+        network_name: chain?.name,
         hash: receipt.blockHash,
         explorer_url: contractUrl,
       });
