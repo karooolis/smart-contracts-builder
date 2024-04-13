@@ -32,12 +32,15 @@ export function Jobs() {
     fetchContracts(accountAddress);
   }, [fetchContracts, accountAddress]);
 
-  console.log("CONTRACTS:", contracts);
-
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="outline" className="mr-2" disabled={deploying}>
+        <Button
+          variant="outline"
+          className="mr-2"
+          disabled={deploying}
+          asChild={true}
+        >
           {deploying ? (
             <>
               <Loader2 className="animate-spin mr-2" /> Deploying ...
