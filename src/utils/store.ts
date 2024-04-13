@@ -3,6 +3,7 @@ import { supabase } from "./supabase";
 
 import ERC20_Initial from "../templates/ERC20_Sample.sol";
 
+// TODO: TS
 export const useStore = create((set) => ({
   deploying: false,
   setDeploying: (newDeploying: boolean) =>

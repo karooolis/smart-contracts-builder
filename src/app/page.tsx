@@ -20,9 +20,6 @@ import { ContractSelect } from "@/components/ContractSelect";
 import { LibrarySelect } from "@/components/LibrarySelect";
 import { Jobs } from "@/components/Jobs";
 
-import { ERC20_Initial } from "../templates/ERC20_Initial.js";
-import { getTemplate } from "@/utils/templates";
-
 import {
   formSchema,
   formSchemaDefaultValues,
@@ -31,8 +28,6 @@ import {
 import { ContractOptionsForm } from "@/components/ContractOptionsForm/ContractOptionsForm";
 
 export default function Home() {
-  const [code, setCode] = React.useState(ERC20_Initial);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: formSchemaDefaultValues,
@@ -103,7 +98,7 @@ export default function Home() {
         <ResizableHandle withHandle />
 
         <ResizablePanel>
-          <CodeDisplay name={name} value={code} contractType={contract} />
+          <CodeDisplay name={name} contractType={contract} />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
