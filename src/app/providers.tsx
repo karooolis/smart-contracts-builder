@@ -24,7 +24,9 @@ import { useTheme } from "next-themes";
 
 const wagmiConfig = getDefaultConfig({
   appName: "Smart Contracts Builder",
-  projectId: process.env.NEXT_PUBLIC_PROJECT_ID as string,
+  projectId:
+    (process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string) ??
+    "368e129bd75ddd92d41f5bf7ac4cf1e6",
   chains: [
     mainnet,
     goerli,
