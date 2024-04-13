@@ -1,3 +1,4 @@
+import { Fragment, useEffect } from "react";
 import _ from "lodash";
 import { z, ZodObject, ZodString, ZodNumber, ZodEnum, ZodArray } from "zod";
 import { useForm } from "react-hook-form";
@@ -31,7 +32,6 @@ import { ExplanationTooltip } from "@/components/ExplanationTooltip";
 import { OPTIONS_FIELDS } from "./constants";
 import { Separator } from "../ui/separator";
 import { useStore } from "@/utils/store";
-import { useEffect } from "react";
 
 const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
   const elements = Object.keys(schema.shape).map((key) => {
@@ -87,7 +87,7 @@ const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
     } else if (field instanceof ZodArray) {
       const options = field._def.type;
       return (
-        <>
+        <Fragment key={key}>
           <FormField
             key={key}
             control={form.control}
@@ -160,7 +160,7 @@ const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
             )}
           />
           <Separator />
-        </>
+        </Fragment>
       );
     } else if (field instanceof ZodEnum) {
       // field value of key
@@ -168,7 +168,7 @@ const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
       const noneChecked = fieldValue == "none";
 
       return (
-        <>
+        <Fragment key={key}>
           <FormField
             control={form.control}
             name={key}
@@ -240,14 +240,14 @@ const constructForm = (form, schema: ZodObject<any>, childKey?: string) => {
           />
 
           <Separator />
-        </>
+        </Fragment>
       );
     } else if (field instanceof ZodObject) {
       return (
-        <>
+        <Fragment key={key}>
           {constructForm(form, field, key)}
           <Separator />
-        </>
+        </Fragment>
       );
     }
   });
@@ -294,7 +294,7 @@ export const ContractOptionsForm = () => {
   return (
     <Form {...form}>
       <form onChange={onChange} className="space-y-6">
-        {/* {constructForm(form, formSchema)} */}
+        {constructForm(form, formSchema)}
       </form>
     </Form>
   );
