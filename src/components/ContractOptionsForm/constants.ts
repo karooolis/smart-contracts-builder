@@ -94,6 +94,9 @@ export const ERC721_SCHEMA = z.object({
   }),
   accessControl: z.enum(["ownable", "roles", "none"]),
   upgradeability: z.enum(["transparent", "uups", "none"]),
+
+  verify: z.boolean().optional(),
+
   license: z.string({
     required_error: "License is required",
   }),
@@ -151,6 +154,7 @@ export const formSchema = z.object({
   type: z.enum(["all", "mentions", "none"], {
     required_error: "You need to select a notification type.",
   }),
+  verify: z.boolean().optional(),
   license: z.string({
     required_error: "License is required",
   }),
@@ -167,6 +171,7 @@ export const formSchemaDefaultValues = {
   features: [],
   accessControl: "none",
   upgradeability: "none",
+  verify: true,
   license: "MIT",
-  pragma: "^0.8.21",
+  pragma: "^0.8.25",
 };
