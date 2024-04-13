@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useCallback, useEffect } from "react";
 import _ from "lodash";
 import { z, ZodObject, ZodString, ZodNumber, ZodEnum, ZodArray } from "zod";
 import { useForm } from "react-hook-form";
@@ -9,12 +9,7 @@ import solidityPlugin from "prettier-plugin-solidity/standalone";
 
 import { cn } from "@/lib/utils";
 import { getTemplate } from "@/utils/templates";
-import {
-  ERC20_SCHEMA,
-  ERC721_SCHEMA,
-  SCHEMAS_MAP,
-  formSchemaDefaultValues,
-} from "./constants";
+import { SCHEMAS_MAP, formSchemaDefaultValues } from "./constants";
 import {
   Form,
   FormControl,
@@ -280,16 +275,16 @@ export const ContractOptionsForm = () => {
   const accessControl = form.watch("accessControl");
   const upgradeability = form.watch("upgradeability");
 
-  const onChange = async () => {
+  const onChange = useCallback(async () => {
     const values = form.getValues();
     const template = getTemplate(values, contractType, library);
     const formattedCode = await formatCode(template);
     setCode(formattedCode);
-  };
+  }, [contractType, form, library, setCode]);
 
   useEffect(() => {
     onChange();
-  }, [contractType, library]);
+  }, [contractType, onChange, library]);
 
   return (
     <Form {...form}>
