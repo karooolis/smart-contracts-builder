@@ -259,6 +259,7 @@ const formatCode = async (code: string) => {
 };
 
 export const ContractOptionsForm = () => {
+  const setOptionsForm = useStore((state) => state.setOptionsForm);
   const contractType = useStore((state) => state.contractType);
   const library = useStore((state) => state.library);
 
@@ -269,6 +270,10 @@ export const ContractOptionsForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: formSchemaDefaultValues,
   });
+
+  useEffect(() => {
+    setOptionsForm(form);
+  }, [form, setOptionsForm]);
 
   // Need to include to re-render the form on change
   const accessControl = form.watch("accessControl");

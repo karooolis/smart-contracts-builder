@@ -1,7 +1,6 @@
 export type VerifyProps = {
   code: string;
   name: string;
-  compiler: string;
   contractAddress: string;
   chainId: number;
 };
@@ -9,7 +8,6 @@ export type VerifyProps = {
 export const verify = async ({
   code,
   name,
-  compiler,
   contractAddress,
   chainId,
 }: VerifyProps) => {
@@ -21,7 +19,6 @@ export const verify = async ({
     body: JSON.stringify({
       code,
       name,
-      compiler,
       contractAddress,
       chainId,
     }),

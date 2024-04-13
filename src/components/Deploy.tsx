@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { useStore } from "@/utils/store";
 import { compile } from "./helpers/compile";
-import { deploy as deployContracts } from './helpers/deploy';
+import { deploy as deployContracts } from "./helpers/deploy";
 import { verify } from "./helpers/verify";
 
 type Props = {
@@ -14,21 +14,22 @@ type Props = {
   contract: string;
 };
 
-export function Deploy({ name, contract }: Props) {
-  const { contractType, deploying, fetchContracts } = useStore(); // TODO: add types
+export function Deploy({ contract }: Props) {
+  const { optionsForm, contractType, deploying, fetchContracts } = useStore(); // TODO: add types
   const setDeploying = useStore((state) => state.setDeploying);
   const { isConnected, chain, address: walletAddress } = useAccount();
   const { openConnectModal } = useConnectModal();
   const account = useWalletClient();
   const publicClient = usePublicClient();
   const explorerUrl = chain?.blockExplorers?.default?.url;
+  const name = optionsForm?.watch("name");
 
   async function deploy() {
     setDeploying(true);
 
     try {
       // TODO: refactor into hooks
-      const data = await compile({ name, contract});
+      const data = await compile({ name, contract });
       const contractAddress = await deployContracts({
         data,
         name,
@@ -40,10 +41,11 @@ export function Deploy({ name, contract }: Props) {
         chain,
       });
 
+      await setTimeout(() => {}, 20000);
+
       await verify({
         code: data.input,
         name: `${name}.sol:${name}`,
-        compiler: "v0.8.25+commit.b61c2a91",
         contractAddress,
         chainId: chain?.id,
       });

@@ -5,6 +5,9 @@ import ERC20_Initial from "../templates/ERC20_Sample.sol";
 
 // TODO: TS
 export const useStore = create((set) => ({
+  optionsForm: null,
+  setOptionsForm: (newForm: any) => set({ optionsForm: newForm }),
+
   deploying: false,
   setDeploying: (newDeploying: boolean) =>
     set((state) => ({ deploying: newDeploying })),

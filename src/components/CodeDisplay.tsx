@@ -12,13 +12,7 @@ import { NeedHelpDialog } from "@/components/NeedHelpDialog";
 import { Deploy } from "@/components/Deploy";
 import { useStore } from "@/utils/store";
 
-type Props = {
-  name: string;
-  value: string;
-  contractType: string;
-};
-
-function CodeDisplay({ name, contractType }: Props) {
+function CodeDisplay() {
   const { theme, resolvedTheme } = useTheme();
   const [copied, setCopied] = useState(false);
 

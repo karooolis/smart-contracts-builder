@@ -28,31 +28,6 @@ import {
 import { ContractOptionsForm } from "@/components/ContractOptionsForm/ContractOptionsForm";
 
 export default function Home() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: formSchemaDefaultValues,
-  });
-
-  const contract = form.watch("contract");
-  const library = form.watch("library");
-  const featuresValues = form.watch("features");
-  const mintable = featuresValues.includes("mint");
-  const burnable = featuresValues.includes("burn");
-  const pausable = featuresValues.includes("pause");
-  const accessControl = form.watch("accessControl");
-  const upgradeability = form.watch("upgradeability");
-  const name = form.watch("name");
-
-  // set access control ON if mintable, burnable or pausable
-  React.useEffect(() => {
-    // if (
-    //   accessControl == "none" &&
-    //   (mintable || burnable || pausable || upgradeability == "uups")
-    // ) {
-    //   form.setValue("accessControl", "ownable");
-    // }
-  }, [accessControl, burnable, form, mintable, pausable, upgradeability]);
-
   const [size, setSize] = React.useState(20);
   useLayoutEffect(() => {
     const desiredInitialSizePx = 290;
@@ -98,7 +73,7 @@ export default function Home() {
         <ResizableHandle withHandle />
 
         <ResizablePanel>
-          <CodeDisplay name={name} contractType={contract} />
+          <CodeDisplay />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
