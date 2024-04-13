@@ -96,11 +96,7 @@ export default function Home() {
       <Separator />
 
       <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel
-          className="p-4 overflow-y-auto"
-          defaultSize={size}
-          minSize={size * 0.75}
-        >
+        <ResizablePanel defaultSize={size} minSize={size * 0.75}>
           <ContractOptionsForm />
         </ResizablePanel>
 

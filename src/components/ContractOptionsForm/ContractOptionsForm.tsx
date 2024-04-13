@@ -293,9 +293,11 @@ export const ContractOptionsForm = () => {
 
   return (
     <Form {...form}>
-      <form onChange={onChange} className="space-y-6">
-        {constructForm(form, formSchema)}
-      </form>
+      <div className="p-4 overflow-y-auto">
+        <form onChange={onChange} className="space-y-6">
+          {constructForm(form, formSchema)}
+        </form>
+      </div>
     </Form>
   );
 };
