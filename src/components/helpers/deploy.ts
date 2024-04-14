@@ -61,5 +61,5 @@ export const deploy = async ({
     explorer_url: contractUrl,
   });
 
-  return receipt.contractAddress as string;
+  return receipt;
 };

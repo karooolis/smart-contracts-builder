@@ -51,7 +51,7 @@ export function Jobs() {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[320px]">
+      <PopoverContent className="w-[320px] overflow-y-scroll max-h-[350px]">
         {contracts.length > 0 ? (
           <ul>
             {contracts.map((contract: Tables<"contracts">) => {

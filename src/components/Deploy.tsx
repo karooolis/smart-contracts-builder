@@ -30,7 +30,7 @@ export function Deploy({ contract }: Props) {
     try {
       // TODO: refactor into hooks
       const data = await compile({ name, contract });
-      const contractAddress = await deployContracts({
+      const receipt = await deployContracts({
         data,
         name,
         account,
@@ -41,12 +41,22 @@ export function Deploy({ contract }: Props) {
         chain,
       });
 
-      await setTimeout(() => {}, 20000);
-
-      await verify({
+      console.log(receipt);
+      console.log({
         code: data.input,
         name: `${name}.sol:${name}`,
-        contractAddress,
+        addr: receipt.contractAddress,
+        txHash: receipt.transactionHash,
+        chainId: chain?.id,
+      });
+
+      console.log('data:', data);
+
+      await verify({
+        code: JSON.stringify(data.input),
+        name: `${name}.sol:${name}`,
+        addr: receipt.contractAddress,
+        txHash: receipt.transactionHash,
         chainId: chain?.id,
       });
 

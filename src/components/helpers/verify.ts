@@ -1,16 +1,11 @@
 export type VerifyProps = {
   code: string;
   name: string;
-  contractAddress: string;
+  addr: string;
   chainId: number;
 };
 
-export const verify = async ({
-  code,
-  name,
-  contractAddress,
-  chainId,
-}: VerifyProps) => {
+export const verify = async ({ code, name, addr, chainId }: VerifyProps) => {
   const response = await fetch("api/verify", {
     method: "POST",
     headers: {
@@ -19,7 +14,7 @@ export const verify = async ({
     body: JSON.stringify({
       code,
       name,
-      contractAddress,
+      addr,
       chainId,
     }),
   });

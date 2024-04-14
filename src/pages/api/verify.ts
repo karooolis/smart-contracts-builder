@@ -10,31 +10,63 @@ const COMPILER = "v0.8.25+commit.b61c2a91";
 // TODO: add proper output types
 type ResponseData = {};
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
-) {
-  const { code, name, contractAddress, chainId } = req.body;
+const fetchTxStatus = async (txHash: string) => {
+  const params = new URLSearchParams({
+    module: "transaction",
+    action: "gettxreceiptstatus",
+    txhash: txHash,
+    apikey: API_KEY,
+  });
 
-  let formData = new FormData();
-  formData.append("sourcecode", code);
-  formData.append("contractname", name);
-  formData.append("compilerversion", COMPILER);
-  formData.append("apikey", API_KEY);
-  formData.append("action", ACTION);
-  formData.append("codeformat", CODE_FORMAT);
-  formData.append("module", MODULE);
-  formData.append("chainid", chainId);
-  formData.append("contractaddress", contractAddress);
+  const res = await fetch(`${ETHERSCAN_API_URL}?${params.toString()}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
+  const data = await res.json();
+  return data;
+};
+
+const verifyEtherscan = async (
+  name: string,
+  addr: string,
+  chainId: string,
+  code: string
+) => {
+  console.log("code:", code);
 
   const fetchResponse = await fetch(ETHERSCAN_API_URL, {
     method: "POST",
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: formData,
+    body: new URLSearchParams({
+      sourcecode: code,
+      contractname: name,
+      compilerversion: COMPILER,
+      apikey: API_KEY,
+      action: ACTION,
+      codeformat: CODE_FORMAT,
+      module: MODULE,
+      chainid: chainId,
+      contractaddress: addr,
+    }),
   });
   const data = await fetchResponse.json();
-  return res.status(200).json(data);
+  return data;
+};
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseData>
+) {
+  const { code, name, addr, chainId, txHash } = req.body;
+  const fetchData = await fetchTxStatus(txHash);
+  const verifyData = await verifyEtherscan(name, addr, chainId, code);
+
+  return res.status(200).json({
+    fetchData,
+    verifyData,
+  });
 }
