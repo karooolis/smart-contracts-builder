@@ -14,7 +14,7 @@ export function ExplanationTooltip({ children }) {
           <Button
             variant="outline"
             onClick={(e) => e.preventDefault()}
-            className="h-4 w-4 text-xs p-0 rounded-full"
+            className="h-4 w-4 rounded-full p-0 text-xs"
             size="icon"
           >
             ?

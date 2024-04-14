@@ -15,7 +15,7 @@ import { useStore } from "@/utils/store";
 export function LibrarySelect() {
   const library = useStore((state) => state.library);
   const setLibrary = useStore((state) => state.setLibrary);
-  
+
   return (
     <Select defaultValue={library} onValueChange={setLibrary}>
       <SelectTrigger className="w-[220px]">
@@ -25,11 +25,7 @@ export function LibrarySelect() {
         <SelectGroup>
           <SelectLabel>Library:</SelectLabel>
           {LIBRARIES.map(({ id, label }) => (
-            <SelectItem
-              key={id}
-              value={id}
-              disabled={id === "solady"}
-            >
+            <SelectItem key={id} value={id} disabled={id === "solady"}>
               {label}
             </SelectItem>
           ))}

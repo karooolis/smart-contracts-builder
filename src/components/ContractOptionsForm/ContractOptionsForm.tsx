@@ -89,7 +89,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel className="flex justify-between items-center">
+                  <FormLabel className="flex items-center justify-between">
                     {title}
                   </FormLabel>
                   {helpText && (
@@ -119,7 +119,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
                             <FormControl>
                               <Checkbox
                                 checked={field.value?.includes(
-                                  id
+                                  id,
                                 )
                                 // || (id == "permit" && library == "solmate")
                                 }
@@ -128,8 +128,8 @@ const constructForm = (form, schema: ZodObject<any>) => {
                                     ? field.onChange([...field.value, id])
                                     : field.onChange(
                                         field.value?.filter(
-                                          (value) => value !== id
-                                        )
+                                          (value) => value !== id,
+                                        ),
                                       );
                                 }}
                                 // disabled={
@@ -137,7 +137,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
                                 // }
                               />
                             </FormControl>
-                            <FormLabel className="flex w-full font-normal justify-between">
+                            <FormLabel className="flex w-full justify-between font-normal">
                               {_.startCase(label)}{" "}
                               {info && (
                                 <ExplanationTooltip>{info}</ExplanationTooltip>
@@ -168,7 +168,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
             name={key}
             render={() => (
               <FormItem className="space-y-4">
-                <FormLabel className="flex justify-between items-center">
+                <FormLabel className="flex items-center justify-between">
                   {title}{" "}
                   <Switch
                     className="scale-75"
@@ -215,7 +215,7 @@ const constructForm = (form, schema: ZodObject<any>) => {
                           <FormLabel
                             className={cn(
                               "flex w-full justify-between font-normal",
-                              noneChecked && "line-through"
+                              noneChecked && "line-through",
                             )}
                           >
                             {label}{" "}
@@ -292,7 +292,7 @@ export const ContractOptionsForm = () => {
 
   return (
     <Form {...form}>
-      <div className="p-4 max-h-full overflow-y-auto">
+      <div className="max-h-full overflow-y-auto p-4">
         <form onChange={onChange} className="space-y-6">
           {constructForm(form, formSchema)}
         </form>

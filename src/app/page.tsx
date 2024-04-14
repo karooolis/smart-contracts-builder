@@ -39,13 +39,13 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex h-screen flex-col overflow-hidden">
       {/* Navigation */}
       <nav className="px-4 py-3">
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
             <div className="text-2xl">🚧</div>
-            <div className="hidden xl:inline-block text-md font-semibold">
+            <div className="text-md hidden font-semibold xl:inline-block">
               smart contracts builder
             </div>
           </div>

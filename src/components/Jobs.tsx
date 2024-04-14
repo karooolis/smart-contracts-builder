@@ -30,7 +30,7 @@ export function Jobs() {
         >
           {deploying ? (
             <span>
-              <Loader2 className="animate-spin mr-2" /> Deploying ...
+              <Loader2 className="mr-2 animate-spin" /> Deploying ...
             </span>
           ) : (
             <>My contracts ({contracts.length})</>
@@ -38,21 +38,21 @@ export function Jobs() {
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[320px] overflow-y-scroll max-h-[350px]">
+      <PopoverContent className="max-h-[350px] w-[320px] overflow-y-scroll">
         {contracts.length > 0 ? (
           <ul>
             {contracts.map((contract: Tables<"contracts">) => {
               return (
                 <li
                   key={contract.contract_address}
-                  className="flex justify-between items-center border-b py-2"
+                  className="flex items-center justify-between border-b py-2"
                 >
                   <p>
                     {contract.contract_type.toUpperCase()}:{" "}
                     {contract.contract_name}
                   </p>
 
-                  <div className="flex justify-between items-center gap-x-2">
+                  <div className="flex items-center justify-between gap-x-2">
                     <Badge variant="outline">Unverified</Badge>
                     <a
                       href={contract.explorer_url}
