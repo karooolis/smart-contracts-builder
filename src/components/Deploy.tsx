@@ -41,17 +41,6 @@ export function Deploy({ contract }: Props) {
         chain,
       });
 
-      console.log(receipt);
-      console.log({
-        code: data.input,
-        name: `${name}.sol:${name}`,
-        addr: receipt.contractAddress,
-        txHash: receipt.transactionHash,
-        chainId: chain?.id,
-      });
-
-      console.log('data:', data);
-
       await verify({
         code: JSON.stringify(data.input),
         name: `${name}.sol:${name}`,

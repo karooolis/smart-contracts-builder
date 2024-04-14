@@ -75,6 +75,7 @@
     "@types/lodash": "^4.17.0",
     "@types/react-copy-to-clipboard": "^5.0.7",
     "husky": "^8.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.13",
     "types-solc": "^1.0.1"
   }
 }

@@ -34,8 +34,6 @@ const verifyEtherscan = async (
   chainId: string,
   code: string
 ) => {
-  console.log("code:", code);
-
   const fetchResponse = await fetch(ETHERSCAN_API_URL, {
     method: "POST",
     headers: {

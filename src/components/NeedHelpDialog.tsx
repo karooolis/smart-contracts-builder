@@ -118,7 +118,7 @@ export function NeedHelpDialog() {
                     <FormLabel>Message</FormLabel>
                     <FormControl>
                       <Textarea
-                        className="mt-3 mb-1"
+                        className="mb-1 mt-3"
                         placeholder="Your message ..."
                         {...field}
                       />
