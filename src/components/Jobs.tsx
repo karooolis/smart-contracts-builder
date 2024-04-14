@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { Loader2, ExternalLink } from "lucide-react";
 import {
@@ -8,27 +8,14 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
-import { supabase } from "../utils/supabase";
 import { Tables } from "@/types/supabase.types";
 import { useStore } from "@/utils/store";
 
 export function Jobs() {
   const { deploying, contracts, fetchContracts } = useStore();
-  // const [contracts, setContracts] = useState<Tables<"contracts">[]>([]);
   const { address: accountAddress } = useAccount();
 
   useEffect(() => {
-    // const fetchContracts = async () => {
-    //   const { data, error } = await supabase
-    //     .from("contracts")
-    //     .select()
-    //     .eq("creator_address", accountAddress);
-
-    //   if (data?.length) {
-    //     setContracts(data);
-    //   }
-    // };
-
     fetchContracts(accountAddress);
   }, [fetchContracts, accountAddress]);
 
