@@ -1,5 +1,5 @@
 import { truncateEthAddress } from "@/lib/utils";
-import { supabase } from "../../utils/supabase";
+import { supabase } from "@/utils/supabase";
 import { toast } from "sonner";
 import { TransactionReceipt } from "viem";
 
@@ -59,6 +59,7 @@ export const deploy = async ({
     network_name: chain?.name,
     hash: receipt.blockHash,
     explorer_url: contractUrl,
+    input: data.input,
   });
 
   return receipt;

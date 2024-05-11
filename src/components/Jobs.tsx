@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
-import { Tables } from "@/types/supabase.types";
+import { Tables } from "@/types/supabase";
 import { useStore } from "@/utils/store";
 
 export function Jobs() {
@@ -18,6 +18,24 @@ export function Jobs() {
   useEffect(() => {
     fetchContracts(accountAddress);
   }, [fetchContracts, accountAddress]);
+
+  const verifyContract = async (contract: Tables<'contracts'>) => {
+    const name = contract.contract_name;
+    const response = await fetch("api/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: contract.input,
+        name: `${name}.sol:${name}`,
+        addr: contract.contract_address,
+        chainId: contract.chain_id,
+      }),
+    });
+    const data = await response.json();
+    return data;
+  };
 
   return (
     <Popover>
@@ -48,14 +66,23 @@ export function Jobs() {
                   className="flex items-center justify-between border-b py-2"
                 >
                   <p>
-                    {contract.contract_type.toUpperCase()}:{" "}
+                    {contract.contract_type?.toUpperCase()}:{" "}
                     {contract.contract_name}
                   </p>
 
                   <div className="flex items-center justify-between gap-x-2">
-                    <Badge variant="outline">Unverified</Badge>
+                    <Badge
+                      role="button"
+                      variant="outline"
+                      className="cursor-pointer"
+                      onClick={() => {
+                        verifyContract(contract);
+                      }}
+                    >
+                      Unverified
+                    </Badge>
                     <a
-                      href={contract.explorer_url}
+                      href={contract.explorer_url as string}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block text-sm"

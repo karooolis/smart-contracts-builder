@@ -7,7 +7,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { useStore } from "@/utils/store";
 import { compile } from "./helpers/compile";
 import { deploy as deployContracts } from "./helpers/deploy";
-import { verify } from "./helpers/verify";
 
 type Props = {
   name: string;
@@ -39,14 +38,6 @@ export function Deploy({ contract }: Props) {
         contractType,
         walletAddress,
         chain,
-      });
-
-      await verify({
-        code: JSON.stringify(data.input),
-        name: `${name}.sol:${name}`,
-        addr: receipt.contractAddress,
-        txHash: receipt.transactionHash,
-        chainId: chain?.id,
       });
 
       fetchContracts(walletAddress);
