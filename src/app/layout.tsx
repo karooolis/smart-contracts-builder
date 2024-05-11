@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import { Inconsolata } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { ThemeProvider } from "@/components/ThemeProvider";
 import { Providers } from "./providers";
 
 const inconsolatac = Inconsolata({ subsets: ["latin"] });
@@ -22,9 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inconsolatac.className} style={{ overflow: "hidden" }}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Providers>{children}</Providers>
-        </ThemeProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
