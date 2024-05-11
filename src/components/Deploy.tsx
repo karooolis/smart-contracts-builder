@@ -27,9 +27,8 @@ export function Deploy({ contract }: Props) {
     setDeploying(true);
 
     try {
-      // TODO: refactor into hooks
       const data = await compile({ name, contract });
-      const receipt = await deployContracts({
+      await deployContracts({
         data,
         name,
         account,

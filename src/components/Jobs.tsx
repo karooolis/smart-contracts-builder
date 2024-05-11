@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
-import { Loader2, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { Tables } from "@/types/supabase";
 import { useStore } from "@/utils/store";
+import { update } from "./helpers/update";
+import { cn } from "@/lib/utils";
 
 export function Jobs() {
   const { deploying, contracts, fetchContracts } = useStore();
@@ -19,22 +21,33 @@ export function Jobs() {
     fetchContracts(accountAddress);
   }, [fetchContracts, accountAddress]);
 
-  const verifyContract = async (contract: Tables<'contracts'>) => {
-    const name = contract.contract_name;
-    const response = await fetch("api/verify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        code: contract.input,
-        name: `${name}.sol:${name}`,
-        addr: contract.contract_address,
-        chainId: contract.chain_id,
-      }),
-    });
-    const data = await response.json();
-    return data;
+  const verifyContract = async (contract: Tables<"contracts">) => {
+    try {
+      const name = contract.contract_name;
+      const response = await fetch("api/verify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code: contract.input,
+          name: `${name}.sol:${name}`,
+          addr: contract.contract_address,
+          chainId: contract.chain_id,
+        }),
+      });
+      const data = await response.json();
+
+      if (data.verifyData.message === "OK") {
+        await update(contract.id, {
+          verified: true,
+        });
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -46,13 +59,7 @@ export function Jobs() {
           disabled={deploying}
           asChild={true}
         >
-          {deploying ? (
-            <span>
-              <Loader2 className="mr-2 animate-spin" /> Deploying ...
-            </span>
-          ) : (
-            <>My contracts ({contracts.length})</>
-          )}
+          <>My contracts ({contracts.length})</>
         </Button>
       </PopoverTrigger>
 
@@ -74,12 +81,15 @@ export function Jobs() {
                     <Badge
                       role="button"
                       variant="outline"
-                      className="cursor-pointer"
+                      className={cn("cursor-pointer", {
+                        "bg-lime-300": contract.verified,
+                      })}
                       onClick={() => {
+                        if (contract.verified) return;
                         verifyContract(contract);
                       }}
                     >
-                      Unverified
+                      {contract.verified ? "Verified" : "Unverified"}
                     </Badge>
                     <a
                       href={contract.explorer_url as string}

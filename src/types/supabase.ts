@@ -22,6 +22,7 @@ export type Database = {
           id: number
           input: string | null
           network_name: string | null
+          verified: boolean | null
         }
         Insert: {
           chain_id?: number | null
@@ -35,6 +36,7 @@ export type Database = {
           id?: number
           input?: string | null
           network_name?: string | null
+          verified?: boolean | null
         }
         Update: {
           chain_id?: number | null
@@ -48,6 +50,7 @@ export type Database = {
           id?: number
           input?: string | null
           network_name?: string | null
+          verified?: boolean | null
         }
         Relationships: []
       }
