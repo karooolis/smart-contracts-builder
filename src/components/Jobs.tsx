@@ -85,8 +85,18 @@ export function Jobs() {
                         "bg-lime-300": contract.verified,
                       })}
                       onClick={() => {
-                        if (contract.verified) return;
-                        verifyContract(contract);
+                        if (contract.verified) {
+                          if (
+                            typeof window !== "undefined" &&
+                            contract?.explorer_url
+                          ) {
+                            window
+                              .open(`${contract.explorer_url}#code`, "_blank")
+                              ?.focus();
+                          }
+                        } else {
+                          verifyContract(contract);
+                        }
                       }}
                     >
                       {contract.verified ? "Verified" : "Unverified"}
