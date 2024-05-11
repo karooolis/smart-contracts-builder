@@ -2,9 +2,6 @@
 
 import React, { useLayoutEffect } from "react";
 import _ from "lodash";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 
 import { ConnectButton } from "@/components/ConnectButton";
 import { ModeToggle } from "@/components/ModeToggle";
@@ -19,11 +16,6 @@ import CodeDisplay from "@/components/CodeDisplay";
 import { ContractSelect } from "@/components/ContractSelect";
 import { LibrarySelect } from "@/components/LibrarySelect";
 import { Jobs } from "@/components/Jobs";
-
-import {
-  formSchema,
-  formSchemaDefaultValues,
-} from "@/components/ContractOptionsForm/constants";
 
 import { ContractOptionsForm } from "@/components/ContractOptionsForm/ContractOptionsForm";
 
