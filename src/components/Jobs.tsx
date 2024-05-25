@@ -59,12 +59,12 @@ export function Jobs() {
           disabled={deploying}
           asChild={true}
         >
-          <>My contracts ({contracts.length})</>
+          <>My contracts ({contracts?.length})</>
         </Button>
       </PopoverTrigger>
 
       <PopoverContent className="max-h-[350px] w-[320px] overflow-y-scroll">
-        {contracts.length > 0 ? (
+        {contracts?.length > 0 ? (
           <ul>
             {contracts.map((contract: Tables<"contracts">) => {
               return (
