@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "vitest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -72,10 +73,14 @@
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
+    "@testing-library/react": "^15.0.7",
     "@types/lodash": "^4.17.1",
     "@types/react-copy-to-clipboard": "^5.0.7",
+    "@vitejs/plugin-react": "^4.3.0",
     "husky": "^8.0.3",
+    "jsdom": "^24.1.0",
     "prettier-plugin-tailwindcss": "^0.5.14",
-    "types-solc": "^1.0.1"
+    "types-solc": "^1.0.1",
+    "vitest": "^1.6.0"
   }
 }

@@ -13,8 +13,12 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const { name } = req.body;
-  const { input, output } = compile(req);
+  const { name, contract } = req.body;
+
+  console.log(name);
+  console.log(contract);
+
+  const { input, output } = compile(name, contract);
 
   res.status(200).json({
     abi: output.contracts[`${name}.sol`][name].abi,

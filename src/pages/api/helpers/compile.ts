@@ -1,10 +1,8 @@
 import _ from "lodash";
 import solc from "solc";
 import { findFiles } from "./findFiles";
-import type { NextApiRequest, NextApiResponse } from "next";
 
-export const compile = (req: NextApiRequest) => {
-  const { name, contract } = req.body;
+export const compile = (name: string, contract: string) => {
   const finalInput = _.uniqBy(findFiles(contract, `${name}.sol`), "path");
   const finalInputObject = finalInput.reduce((acc, curr) => {
     return {
