@@ -1,7 +1,7 @@
 import { Fragment, useCallback, useEffect } from "react";
 import _ from "lodash";
 import { z, ZodObject, ZodString, ZodNumber, ZodEnum, ZodArray } from "zod";
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import prettier from "prettier/standalone";
@@ -28,7 +28,10 @@ import { OPTIONS_FIELDS } from "./constants";
 import { Separator } from "../ui/separator";
 import { useStore } from "@/utils/store";
 
-const constructForm = (form, schema: ZodObject<any>) => {
+export const constructForm = (
+  form: UseFormReturn<any, any, undefined>,
+  schema: ZodObject<any>,
+) => {
   const elements = Object.keys(schema.shape).map((key) => {
     const field = schema.shape[key];
     const title = _.startCase(key);

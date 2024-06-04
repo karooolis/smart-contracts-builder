@@ -126,7 +126,7 @@ export const ERC721_SCHEMA = z.object({
 export const SCHEMAS_MAP = {
   erc20: ERC20_SCHEMA,
   erc721: ERC721_SCHEMA,
-};
+} as const;
 
 // TODO: old schema, need to replace
 export const formSchema = z.object({
@@ -174,4 +174,4 @@ export const formSchemaDefaultValues = {
   verify: true,
   license: "MIT",
   pragma: "^0.8.25",
-};
+} as const;

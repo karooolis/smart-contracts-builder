@@ -1,5 +1,6 @@
 import { expect, test } from "vitest";
 import { compile } from "../pages/api/helpers/compile";
+import { constructForm } from "@/components/ContractOptionsForm/ContractOptionsForm";
 
 test("Compile", () => {
   const name = "MyToken";
