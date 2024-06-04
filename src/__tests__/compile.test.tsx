@@ -1,4 +1,3 @@
-import { NextApiRequest } from "next";
 import { expect, test } from "vitest";
 import { compile } from "../pages/api/helpers/compile";
 

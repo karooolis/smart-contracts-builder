@@ -275,10 +275,6 @@ export const ContractOptionsForm = () => {
     setOptionsForm(form);
   }, [form, setOptionsForm]);
 
-  // Need to include to re-render the form on change
-  const accessControl = form.watch("accessControl");
-  const upgradeability = form.watch("upgradeability");
-
   const onChange = useCallback(async () => {
     const values = form.getValues();
     const template = getTemplate(values, contractType, library);
