@@ -14,10 +14,6 @@ export default function handler(
   res: NextApiResponse<ResponseData>
 ) {
   const { name, contract } = req.body;
-
-  console.log(name);
-  console.log(contract);
-
   const { input, output } = compile(name, contract);
 
   res.status(200).json({

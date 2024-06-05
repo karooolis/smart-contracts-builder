@@ -32,6 +32,8 @@ export const constructForm = (
   form: UseFormReturn<any, any, undefined>,
   schema: ZodObject<any>,
 ) => {
+  console.log(form, schema);
+
   const elements = Object.keys(schema.shape).map((key) => {
     const field = schema.shape[key];
     const title = _.startCase(key);
@@ -280,8 +282,10 @@ export const ContractOptionsForm = () => {
 
   const onChange = useCallback(async () => {
     const values = form.getValues();
+    console.log('values', values);
     const template = getTemplate(values, contractType, library);
     const formattedCode = await formatCode(template);
+
     setCode(formattedCode);
   }, [contractType, form, library, setCode]);
 

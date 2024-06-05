@@ -6,18 +6,13 @@ const nextConfig = {
     config.externals.push("pino-pretty", "lokijs", "encoding");
 
     config.module.rules.push({
-      // load Solidity files as raw strings
       test: /\.sol$/,
-      use: "raw-loader",
+      type: 'asset/source'
     });
 
     return config;
   },
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
     ignoreBuildErrors: true,
   },
 };
