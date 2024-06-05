@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import _ from "lodash";
 import { z, ZodObject, ZodString, ZodNumber, ZodEnum, ZodArray } from "zod";
 import { UseFormReturn, useForm } from "react-hook-form";
@@ -120,11 +120,7 @@ export const constructForm = (
                           >
                             <FormControl>
                               <Checkbox
-                                checked={field.value?.includes(
-                                  id,
-                                )
-                                // || (id == "permit" && library == "solmate")
-                                }
+                                checked={field.value?.includes(id)}
                                 onCheckedChange={(checked) => {
                                   return checked
                                     ? field.onChange([...field.value, id])
@@ -134,9 +130,6 @@ export const constructForm = (
                                         ),
                                       );
                                 }}
-                                // disabled={
-                                // id == "permit" && library == "solmate"
-                                // }
                               />
                             </FormControl>
                             <FormLabel className="flex w-full justify-between font-normal">
@@ -261,7 +254,6 @@ export const ContractOptionsForm = () => {
 
   const onChange = useCallback(async () => {
     const values = form.getValues();
-    console.log("values", values);
     const template = getTemplate(values, contractType, library);
     const formattedCode = await formatCode(template);
 
