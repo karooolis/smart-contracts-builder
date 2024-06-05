@@ -32,8 +32,6 @@ export const constructForm = (
   form: UseFormReturn<any, any, undefined>,
   schema: ZodObject<any>,
 ) => {
-  console.log(form, schema);
-
   const elements = Object.keys(schema.shape).map((key) => {
     const field = schema.shape[key];
     const title = _.startCase(key);
@@ -164,7 +162,6 @@ export const constructForm = (
     } else if (field instanceof ZodEnum) {
       // field value of key
       const fieldValue = form.getValues()[key];
-      const noneChecked = fieldValue == "none";
 
       return (
         <Fragment key={key}>
@@ -174,18 +171,7 @@ export const constructForm = (
             render={() => (
               <FormItem className="space-y-4">
                 <FormLabel className="flex items-center justify-between">
-                  {title}{" "}
-                  <Switch
-                    className="scale-75"
-                    checked={!noneChecked}
-                    onCheckedChange={() => {
-                      if (noneChecked) {
-                        form.setValue(key, _.first(field.options));
-                      } else {
-                        form.setValue(key, "none");
-                      }
-                    }}
-                  />
+                  {title}
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
@@ -199,10 +185,6 @@ export const constructForm = (
                       const fullKey = `${key}.${itemId}`;
                       const info = _.get(OPTIONS_FIELDS, fullKey)?.info;
 
-                      if (id == "none") {
-                        return;
-                      }
-
                       return (
                         <FormItem
                           key={idx}
@@ -214,13 +196,11 @@ export const constructForm = (
                                 form.setValue(key, id);
                               }}
                               value={id}
-                              disabled={noneChecked}
                             />
                           </FormControl>
                           <FormLabel
                             className={cn(
                               "flex w-full justify-between font-normal",
-                              noneChecked && "line-through",
                             )}
                           >
                             {label}{" "}
@@ -282,7 +262,7 @@ export const ContractOptionsForm = () => {
 
   const onChange = useCallback(async () => {
     const values = form.getValues();
-    console.log('values', values);
+    console.log("values", values);
     const template = getTemplate(values, contractType, library);
     const formattedCode = await formatCode(template);
 
