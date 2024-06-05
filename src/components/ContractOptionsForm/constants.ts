@@ -100,27 +100,6 @@ export const ERC721_SCHEMA = z.object({
   license: z.string({
     required_error: "License is required",
   }),
-
-  // general: z.object({
-  //   name: z.string().min(2, {
-  //     message: "name must be at least 2 characters.",
-  //   }),
-  //   symbol: z.string().min(1, {
-  //     message: "symbol must be at least 1 characters.",
-  //   }),
-  //   baseURI: z.string().optional(),
-  // }),
-
-  // premint: z.coerce.number().optional(),
-  // features: z.array(z.string()),
-  // accessControl: z.enum(["ownable", "roles", "none"]),
-  // upgradeability: z.enum(["transparent", "uups", "none"]),
-  // license: z.string({
-  //   required_error: "License is required",
-  // }),
-  // pragma: z.string({
-  //   required_error: "Pragma is required",
-  // }),
 });
 
 export const SCHEMAS_MAP = {
