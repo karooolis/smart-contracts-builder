@@ -36,6 +36,8 @@ export const CONTRACTS = [
   },
 ] as const;
 
+export type ContractType = typeof CONTRACTS[number]['id'];
+
 export const FEATURES = [
   {
     id: "mint",
@@ -59,6 +61,8 @@ export const FEATURES = [
   },
 ] as const;
 
+export type Features = typeof FEATURES[number]['id'];
+
 export const ACCESS_CONTROLS = [
   {
     id: "ownable",
@@ -70,11 +74,9 @@ export const ACCESS_CONTROLS = [
     label: "Roles",
     info: "Flexible mechanism with a separate role for each privileged action. A role can have many authorized accounts.",
   },
-  // {
-  //   id: "none",
-  //   label: "None",
-  // },
 ] as const;
+
+export type AccesControl = typeof ACCESS_CONTROLS[number]['id'];
 
 export const LIBRARIES = [
   {
@@ -91,6 +93,8 @@ export const LIBRARIES = [
   },
 ] as const;
 
+export type Library = typeof LIBRARIES[number]['id'];
+
 export const UPGRADEABLE = [
   {
     id: "transparent",
@@ -102,11 +106,9 @@ export const UPGRADEABLE = [
     label: "UUPS",
     info: "Uses simpler proxy with less overhead, requires including extra code in your contract. Allows flexibility for authorizing upgrades.",
   },
-  // {
-  //   id: "none",
-  //   label: "None",
-  // },
 ];
+
+export type Upgradeable = typeof UPGRADEABLE[number]['id'];
 
 export const FLAGS = {
   contactsForm: true,
