@@ -7,6 +7,18 @@ const nextConfig = {
 
     config.module.rules.push({
       test: /\.sol$/,
+      use: [
+        {
+          loader: 'solidity-loader',
+          options: {
+            // Loader options go here
+          }
+        }
+      ]
+    })
+
+    config.module.rules.push({
+      test: /\.sol$/,
       type: 'asset/source'
     });
 
