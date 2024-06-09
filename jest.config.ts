@@ -14,7 +14,7 @@ const config: Config = {
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 
   transform: {
-    "\\.sol$": "<rootDir>/fileTransformer3.js",
+    "\\.sol$": "<rootDir>/src/__tests__/utils/raw-jest-loader.js",
   },
 };
 
