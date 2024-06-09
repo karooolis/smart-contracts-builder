@@ -9,7 +9,11 @@ import solidityPlugin from "prettier-plugin-solidity/standalone";
 
 import { cn } from "@/lib/utils";
 import { getTemplate } from "@/utils/templates";
-import { SCHEMAS_MAP, formSchemaDefaultValues } from "./constants";
+import {
+  OPTIONS_FIELDS,
+  SCHEMAS_MAP,
+  formSchemaDefaultValues,
+} from "@/constants";
 import {
   Form,
   FormControl,
@@ -23,7 +27,6 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ExplanationTooltip } from "@/components/ExplanationTooltip";
-import { OPTIONS_FIELDS } from "./constants";
 import { Separator } from "../ui/separator";
 import { useStore } from "@/utils/store";
 
@@ -167,11 +170,7 @@ export const constructForm = (
                   {title}
                 </FormLabel>
                 <FormControl>
-                  <RadioGroup
-                    value={fieldValue}
-                    defaultValue={fieldValue}
-                    className="flex flex-col space-y-1"
-                  >
+                  <RadioGroup className="flex flex-col space-y-1" {...field}>
                     {options.map((id) => {
                       const label = _.startCase(id);
                       const fullKey = `${key}.${id}`;
@@ -185,10 +184,7 @@ export const constructForm = (
                           <FormControl>
                             <RadioGroupItem
                               onClick={() => {
-                                console.log(field);
-                                console.log('id', id, id);
                                 field.onChange(id);
-                                form.setValue(key, id);
                               }}
                               value={id}
                             />
