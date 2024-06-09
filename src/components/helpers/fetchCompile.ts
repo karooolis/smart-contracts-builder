@@ -5,7 +5,7 @@ type CompileProps = {
   contract: string;
 };
 
-export const compile = async ({
+export const fetchCompile = async ({
   name,
   contract,
 }: CompileProps): Promise<ResponseData> => {

@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "./ui/button";
 import { Tables } from "@/types/supabase";
 import { useStore } from "@/utils/store";
-import { update } from "./helpers/update";
+import { postUpdate } from "@/components/helpers/postUpdate";
 import { cn } from "@/lib/utils";
 
 export function Jobs() {
@@ -39,7 +39,7 @@ export function Jobs() {
       const data = await response.json();
 
       if (data.verifyData.message === "OK") {
-        await update(contract.id, {
+        await postUpdate(contract.id, {
           verified: true,
         });
       }

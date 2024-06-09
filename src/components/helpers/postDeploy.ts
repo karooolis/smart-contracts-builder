@@ -5,7 +5,7 @@ import { TransactionReceipt } from "viem";
 
 type DeployProps = any; // TODO: add types
 
-export const deploy = async ({
+export const postDeploy = async ({
   data,
   name,
   account,

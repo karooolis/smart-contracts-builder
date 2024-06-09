@@ -5,8 +5,8 @@ import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { useStore } from "@/utils/store";
-import { compile } from "./helpers/compile";
-import { deploy as deployContracts } from "./helpers/deploy";
+import { fetchCompile } from "./helpers/fetchCompile";
+import { postDeploy as deployContracts } from "./helpers/postDeploy";
 
 type Props = {
   name: string;
@@ -27,7 +27,7 @@ export function Deploy({ contract }: Props) {
     setDeploying(true);
 
     try {
-      const data = await compile({ name, contract });
+      const data = await fetchCompile({ name, contract });
       await deployContracts({
         data,
         name,
