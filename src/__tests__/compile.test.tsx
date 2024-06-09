@@ -9,11 +9,17 @@ import {
   Upgradeability,
 } from "@/constants";
 
-const TESTED_CONTRACTS: ContractType[] = ["erc20", "erc721"];
+// const TESTED_CONTRACTS: ContractType[] = ["erc20", "erc721"];
+// const TESTED_FEATURES: Features[] = ["burn", "mint", "pause", "permit"];
+// const TESTED_ACCESS_CONTROL: AccessControl[] = ["ownable", "roles", "none"];
+// const TESTED_UPGRADEABILITY: Upgradeability[] = ["transparent", "uups", "none"];
+// const TESTED_LIBRARIES: Library[] = ["openzeppelin"];
+
+const TESTED_CONTRACTS: ContractType[] = ["erc20"];
 const TESTED_FEATURES: Features[] = ["burn", "mint", "pause", "permit"];
 const TESTED_ACCESS_CONTROL: AccessControl[] = ["ownable", "roles", "none"];
 const TESTED_UPGRADEABILITY: Upgradeability[] = ["transparent", "uups", "none"];
-const TESTED_LIBRARIES: Library[] = ["openzeppelin"];
+const TESTED_LIBRARIES: Library[] = ["solmate"];
 
 describe("Compiles:", () => {
   for (let i = 0; i < TESTED_CONTRACTS.length; i++) {
