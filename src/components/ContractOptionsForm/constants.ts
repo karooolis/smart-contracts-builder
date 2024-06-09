@@ -70,13 +70,11 @@ export const ERC20_SCHEMA = z.object({
     description: "Select the additional features to add.",
   }),
   accessControl: z.enum(["ownable", "roles", "none"]),
-  upgradeability: z.enum(["transparent", "uups", "none"]),
+  // TODO: add back
+  // upgradeability: z.enum(["transparent", "uups", "none"]),
   license: z.string({
     required_error: "License is required",
   }),
-  // pragma: z.string({
-  //   required_error: "Pragma is required",
-  // }),
 });
 
 export const ERC721_SCHEMA = z.object({

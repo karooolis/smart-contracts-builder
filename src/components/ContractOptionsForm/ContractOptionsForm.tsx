@@ -32,11 +32,11 @@ export const constructForm = (
   schema: ZodObject<any>,
 ) => {
   const elements = Object.keys(schema.shape).map((key) => {
-    const field = schema.shape[key];
+    const fieldShape = schema.shape[key];
     const title = _.startCase(key);
-    const helpText = field?.description;
+    const helpText = fieldShape?.description;
 
-    if (field instanceof ZodString) {
+    if (fieldShape instanceof ZodString) {
       return (
         <FormField
           key={key}
@@ -58,7 +58,7 @@ export const constructForm = (
           )}
         />
       );
-    } else if (field instanceof ZodNumber) {
+    } else if (fieldShape instanceof ZodNumber) {
       return (
         <FormField
           key={key}
@@ -80,8 +80,8 @@ export const constructForm = (
           )}
         />
       );
-    } else if (field instanceof ZodArray) {
-      const options = field._def.type;
+    } else if (fieldShape instanceof ZodArray) {
+      const options = fieldShape._def.type;
       return (
         <Fragment key={key}>
           <FormField
@@ -151,16 +151,17 @@ export const constructForm = (
           <Separator />
         </Fragment>
       );
-    } else if (field instanceof ZodEnum) {
+    } else if (fieldShape instanceof ZodEnum) {
       // field value of key
       const fieldValue = form.getValues()[key];
+      const options = fieldShape.options;
 
       return (
         <Fragment key={key}>
           <FormField
             control={form.control}
             name={key}
-            render={() => (
+            render={({ field }) => (
               <FormItem className="space-y-4">
                 <FormLabel className="flex items-center justify-between">
                   {title}
@@ -171,20 +172,22 @@ export const constructForm = (
                     defaultValue={fieldValue}
                     className="flex flex-col space-y-1"
                   >
-                    {field.options.map((itemId, idx) => {
-                      const id = itemId;
-                      const label = _.startCase(itemId);
-                      const fullKey = `${key}.${itemId}`;
+                    {options.map((id) => {
+                      const label = _.startCase(id);
+                      const fullKey = `${key}.${id}`;
                       const info = _.get(OPTIONS_FIELDS, fullKey)?.info;
 
                       return (
                         <FormItem
-                          key={idx}
+                          key={id}
                           className="flex items-center space-x-3 space-y-0"
                         >
                           <FormControl>
                             <RadioGroupItem
                               onClick={() => {
+                                console.log(field);
+                                console.log('id', id, id);
+                                field.onChange(id);
                                 form.setValue(key, id);
                               }}
                               value={id}
@@ -213,10 +216,10 @@ export const constructForm = (
           <Separator />
         </Fragment>
       );
-    } else if (field instanceof ZodObject) {
+    } else if (fieldShape instanceof ZodObject) {
       return (
         <Fragment key={key}>
-          {constructForm(form, field)}
+          {constructForm(form, fieldShape)}
           <Separator />
         </Fragment>
       );
@@ -247,6 +250,9 @@ export const ContractOptionsForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: formSchemaDefaultValues,
   });
+
+  const vals = form.getValues();
+  console.log(formSchema.shape, vals.upgradeability);
 
   useEffect(() => {
     setOptionsForm(form);
