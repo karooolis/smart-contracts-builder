@@ -13,6 +13,8 @@ const config: Config = {
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 
+  testPathIgnorePatterns: ["<rootDir>/src/__tests__/utils"],
+
   transform: {
     "\\.sol$": "<rootDir>/src/__tests__/utils/raw-jest-loader.js",
   },

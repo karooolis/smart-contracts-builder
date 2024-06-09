@@ -5,12 +5,11 @@ import { constructForm } from "../components/ContractOptionsForm/ContractOptions
 import { SCHEMAS_MAP } from "../components/ContractOptionsForm/constants";
 import { getTemplate } from "../utils/templates";
 
-
-describe("Page", () => {
+describe("Compiler", () => {
   it("renders a heading", () => {
     const contractType = "erc721";
     const library = "openzeppelin";
-    const formSchema = SCHEMAS_MAP[contractType];
+    // const formSchema = SCHEMAS_MAP[contractType]; // TODO: create all schemas
     const values = {
       baseURI: "",
       name: "MyToken",
@@ -25,27 +24,8 @@ describe("Page", () => {
     };
 
     const contract = getTemplate(values, contractType, library);
+    const result = compile(values.name, contract);
 
-    //   const name = "MyToken";
-    //   const contract = `
-    // // SPDX-License-Identifier: MIT
-    // pragma solidity ^0.8.25;
-
-    // import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-    // contract MyToken is ERC20 {
-    //     constructor() ERC20("MyToken", "TKN") {
-    //         _mint(msg.sender, 1000000 * 10 ** decimals());
-    //     }
-
-    //     function mint(address to, uint256 amount) public {
-    //         _mint(to, amount);
-    //     }
-    // }
-    //   `;
-
-      const result = compile(name, contract);
-
-    //   expect(result.output.errors).toBe(undefined);
+    expect(result.output.errors).toBe(undefined);
   });
 });
