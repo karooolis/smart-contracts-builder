@@ -15,13 +15,13 @@ import {
   Upgradeability,
 } from "@/constants";
 
-const TESTED_CONTRACTS: ContractType[] = ["erc20"];
+const TESTED_CONTRACTS: ContractType[] = ["erc20", "erc721"];
 const TESTED_FEATURES: Features[] = ["burn", "mint", "pause", "permit"];
 const TESTED_ACCESS_CONTROL: AccessControl[] = ["ownable", "roles", "none"];
 const TESTED_UPGRADEABILITY: Upgradeability[] = ["transparent", "uups", "none"];
 const TESTED_LIBRARIES: Library[] = ["openzeppelin"];
 
-describe("Compiler", () => {
+describe("Compiles:", () => {
   for (let i = 0; i < TESTED_CONTRACTS.length; i++) {
     const contractType = TESTED_CONTRACTS[i];
 
@@ -37,7 +37,7 @@ describe("Compiler", () => {
           for (let l = 0; l < TESTED_LIBRARIES.length; l++) {
             const library = TESTED_LIBRARIES[l];
 
-            it(`(${library}) compiles: ${contractType} - ${features.join(", ")} - ${accessControl} - ${upgradeability}`, () => {
+            it(`(${library}) ${contractType.toUpperCase()}: ${features.join(", ")} - ${accessControl} - ${upgradeability}`, () => {
               const values = {
                 baseURI: "",
                 name: "Token",
