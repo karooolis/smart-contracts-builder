@@ -24,8 +24,7 @@ describe("Page", () => {
       pragma: "^0.8.25",
     };
 
-    const template = getTemplate(values, contractType, library);
-    console.log("template res", template);
+    const contract = getTemplate(values, contractType, library);
 
     //   const name = "MyToken";
     //   const contract = `
@@ -45,7 +44,7 @@ describe("Page", () => {
     // }
     //   `;
 
-    //   const result = compile(name, contract);
+      const result = compile(name, contract);
 
     //   expect(result.output.errors).toBe(undefined);
   });
