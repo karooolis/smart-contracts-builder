@@ -1,13 +1,7 @@
 import "@testing-library/jest-dom";
 import { compile } from "../pages/api/helpers/compile";
-import { constructForm } from "../components/ContractOptionsForm/ContractOptionsForm";
-import { SCHEMAS_MAP } from "../components/ContractOptionsForm/constants";
 import { getTemplate } from "../utils/templates";
 import {
-  CONTRACTS,
-  FEATURES,
-  ACCESS_CONTROLS,
-  UPGRADEABILITY,
   ContractType,
   Features,
   AccessControl,
