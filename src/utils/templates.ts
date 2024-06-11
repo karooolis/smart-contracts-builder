@@ -2,14 +2,14 @@ import _ from "lodash";
 import * as z from "zod";
 import { formSchema } from "@/constants";
   
-import ERC20_OpenZeppelin_Imports from "../templates/ERC20/OpenZeppelin/Imports.sol";
-import ERC20_OpenZeppelin from "../templates/ERC20/OpenZeppelin/ERC20.sol";
+import ERC20_OpenZeppelin_Imports from "@/templates/ERC20/OpenZeppelin/Imports.sol";
+import ERC20_OpenZeppelin from "@/templates/ERC20/OpenZeppelin/ERC20.sol";
 
-import ERC20_Solmate_Imports from "../templates/ERC20/Solmate/Imports.sol";
-import ERC20_Solmate from "../templates/ERC20/OpenZeppelin/ERC20.sol";
+import ERC20_Solmate_Imports from "@/templates/ERC20/Solmate/Imports.sol";
+import ERC20_Solmate from "@/templates/ERC20/Solmate/ERC20.sol";
 
-import ERC721_OpenZeppelin from "../templates/ERC721/OpenZeppelin/ERC721.sol";
-import ERC721_Solmate from "../templates/ERC721/Solmate/ERC721.sol";
+import ERC721_OpenZeppelin from "@/templates/ERC721/OpenZeppelin/ERC721.sol";
+import ERC721_Solmate from "@/templates/ERC721/Solmate/ERC721.sol";
 
 export const getImports = (
   values: z.infer<typeof formSchema>,
@@ -20,6 +20,17 @@ export const getImports = (
     library == "openzeppelin"
       ? ERC20_OpenZeppelin_Imports
       : ERC20_Solmate_Imports;
+
+    console.log(importsTemplate);
+    console.log({
+      mint: values.features.includes("mint"),
+      burn: values.features.includes("burn"),
+      pause: values.features.includes("pause"),
+      permit: values.features.includes("permit"),
+      ownable: values.accessControl == "ownable", // Whether to make the contract ownable
+      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions,
+      upgradeability: values.upgradeability,
+    });
 
   return _.template(importsTemplate)({
     mint: values.features.includes("mint"),

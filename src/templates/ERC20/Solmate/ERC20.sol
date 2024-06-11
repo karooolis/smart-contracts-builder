@@ -8,8 +8,8 @@ contract <%= tokenName %> is ERC20<% if (pause) { %>, Pausable<% } %><% if (owna
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     <% } %>
 
-    constructor() ERC20("<%= tokenName %>", "<%= tokenSymbol %>") {
-        <% if (premint) { %>_mint(msg.sender, <%= initialSupply %> * 10 ** decimals());<% } %>
+    constructor() ERC20("<%= tokenName %>", "<%= tokenSymbol %>", 18) {
+        <% if (premint) { %>_mint(msg.sender, <%= initialSupply %> * 10 ** 18);<% } %>
         <% if (roles) { %>
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         <% if (roles) { %>_grantRole(PAUSER_ROLE, msg.sender);<% } %>

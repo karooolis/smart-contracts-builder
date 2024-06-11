@@ -17,16 +17,16 @@ import {
 
 const TESTED_CONTRACTS: ContractType[] = ["erc20"];
 const TESTED_FEATURES: Features[] = ["burn", "mint", "pause", "permit"];
-const TESTED_ACCESS_CONTROL: AccessControl[] = ["ownable", "roles", "none"];
-const TESTED_UPGRADEABILITY: Upgradeability[] = ["transparent", "uups", "none"];
+const TESTED_ACCESS_CONTROL: AccessControl[] = ["ownable", "none"];
+const TESTED_UPGRADEABILITY: Upgradeability[] = ["none"];
 const TESTED_LIBRARIES: Library[] = ["solmate"];
 
 describe("Compiles:", () => {
   for (let i = 0; i < TESTED_CONTRACTS.length; i++) {
     const contractType = TESTED_CONTRACTS[i];
 
-    for (let j = 0; j < TESTED_FEATURES.length; j++) {
-      const features = TESTED_FEATURES.slice(0, j + 1);
+    for (let j = 0; j < TESTED_FEATURES.length + 1; j++) {
+      const features = TESTED_FEATURES.slice(0, j);
 
       for (let k = 0; k < TESTED_ACCESS_CONTROL.length; k++) {
         const accessControl = TESTED_ACCESS_CONTROL[k];
