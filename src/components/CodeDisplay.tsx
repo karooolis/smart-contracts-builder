@@ -7,10 +7,11 @@ import { Clipboard, Check } from "lucide-react";
 import { solidity } from "@replit/codemirror-lang-solidity";
 import { boysAndGirls, tomorrow } from "thememirror";
 
+import { useStore } from "@/utils/store";
 import { Button } from "@/components/ui/button";
 import { NeedHelpDialog } from "@/components/NeedHelpDialog";
 import { Deploy } from "@/components/Deploy";
-import { useStore } from "@/utils/store";
+import { LiveBlock } from "@/components/LiveBlock";
 
 function CodeDisplay() {
   const { theme, resolvedTheme } = useTheme();
@@ -28,6 +29,8 @@ function CodeDisplay() {
   return (
     <>
       <div className="relative h-full">
+        <LiveBlock />
+
         <div className="fixed bottom-6 right-0 z-10">
           {/* <Button size="sm" className="mr-4">
             <Download className="mr-2 h-4 w-4" /> Download
