@@ -1,7 +1,9 @@
 import { useBlockNumber } from "wagmi";
 
 export function LiveBlock() {
-  const blockNumber = useBlockNumber();
+  const blockNumber = useBlockNumber({
+    watch: true,
+  });
 
   if (!blockNumber.data) return null;
 
