@@ -87,14 +87,6 @@ contract <%= tokenName %> is
   }
   <% } %>
 
-  <% if (upgradeability == "uups") { %>
-  function _authorizeUpgrade(address newImplementation)
-      internal
-      onlyOwner
-      override
-  {}
-  <% } %>
-
   <% if (mint) { %>
   function mint(address to, uint256 amount) public <% if (ownable) { %> onlyOwner <% } %> <% if (roles) { %> onlyRole(MINTER_ROLE) <% } %> {
       _mint(to, amount);
@@ -114,5 +106,13 @@ contract <%= tokenName %> is
   function _update(address from, address to, uint256 value) internal override(ERC20, ERC20Pausable) {
       super._update(from, to, value);
   }
+  <% } %>
+
+  <% if (upgradeability == "uups") { %>
+  function _authorizeUpgrade(address newImplementation)
+      internal
+      onlyOwner
+      override
+  {}
   <% } %>
 }
