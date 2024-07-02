@@ -28,18 +28,18 @@ function CodeDisplay() {
 
   return (
     <>
-      <div className="relative h-full">
-        <LiveBlock />
-
-        <div className="fixed bottom-6 right-0 z-10">
+      <div className="relative h-full overflow-y-auto">
+        <div className="fixed bottom-6 right-0 z-10 flex justify-center items-center">
           {/* <Button size="sm" className="mr-4">
             <Download className="mr-2 h-4 w-4" /> Download
           </Button> */}
 
+          <LiveBlock />
+
           <Deploy name={name} contract={code} />
 
           <CopyToClipboard text={code} onCopy={() => setCopied(true)}>
-            <Button size="sm" variant="outline" className="mr-4">
+            <Button size="sm" variant="default" className="mr-4">
               {copied ? (
                 <>
                   <Check className="mr-2 h-4 w-4" /> Copied!

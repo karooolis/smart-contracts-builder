@@ -16,7 +16,7 @@ export default function handler(
   const { name, contract } = req.body;
   const { input, output } = compile(name, contract);
 
-  // console.log(input);
+  console.log(input);
   console.log(output);
 
   res.status(200).json({

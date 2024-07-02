@@ -53,7 +53,7 @@ export function Deploy({ contract }: Props) {
 
       <Button
         size="sm"
-        variant="outline"
+        variant="default"
         className="mr-4"
         onClick={() => {
           if (!isConnected) {

@@ -81,8 +81,9 @@ export function Jobs() {
                     <Badge
                       role="button"
                       variant="outline"
-                      className={cn("cursor-pointer", {
-                        "bg-lime-300": contract.verified,
+                      className={cn("cursor-pointer text-black", {
+                        "bg-lime-300 text-black": contract.verified,
+                        "bg-black text-gray-100": !contract.verified,
                       })}
                       onClick={() => {
                         if (contract.verified) {
