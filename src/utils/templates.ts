@@ -21,17 +21,6 @@ export const getImports = (
       ? ERC20_OpenZeppelin_Imports
       : ERC20_Solmate_Imports;
 
-    console.log(importsTemplate);
-    console.log({
-      mint: values.features.includes("mint"),
-      burn: values.features.includes("burn"),
-      pause: values.features.includes("pause"),
-      permit: values.features.includes("permit"),
-      ownable: values.accessControl == "ownable", // Whether to make the contract ownable
-      roles: values.accessControl == "roles", // Whether to incorporate roles for specific actions,
-      upgradeability: values.upgradeability,
-    });
-
   return _.template(importsTemplate)({
     mint: values.features.includes("mint"),
     burn: values.features.includes("burn"),

@@ -3,11 +3,11 @@ pragma solidity <%= pragma %>;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 <% if (burn) { %>import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";<% } %>
-<% if (pause) { %>import "@openzeppelin/contracts/security/Pausable.sol";<% } %>
+<% if (pause) { %>import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";<% } %>
 <% if (ownable) { %>import "@openzeppelin/contracts/access/Ownable.sol";<% } %>
 <% if (roles) { %>import "@openzeppelin/contracts/access/AccessControl.sol";<% } %>
 
-contract <%= tokenName %> is ERC721<% if (burn) { %>, ERC721Burnable<% } %><% if (pause) { %>, Pausable<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
+contract <%= tokenName %> is ERC721<% if (burn) { %>, ERC721Burnable<% } %><% if (pause) { %>, ERC721Pausable<% } %><% if (ownable) { %>, Ownable<% } %><% if (roles) { %>, AccessControl<% } %> {
     <% if (roles && pause) { %>
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     <% } %>
@@ -45,12 +45,13 @@ contract <%= tokenName %> is ERC721<% if (burn) { %>, ERC721Burnable<% } %><% if
         _unpause();
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
+    // The following functions are overrides required by Solidity.
+    function _update(address to, uint256 tokenId, address auth)
         internal
-        whenNotPaused
-        override
+        override(ERC721, ERC721Pausable)
+        returns (address)
     {
-        super._beforeTokenTransfer(from, to, tokenId);
+        return super._update(to, tokenId, auth);
     }
     <% } %>
     

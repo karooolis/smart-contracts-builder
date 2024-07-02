@@ -248,7 +248,6 @@ export const ContractOptionsForm = () => {
   });
 
   const vals = form.getValues();
-  console.log(formSchema.shape, vals.upgradeability);
 
   useEffect(() => {
     setOptionsForm(form);
