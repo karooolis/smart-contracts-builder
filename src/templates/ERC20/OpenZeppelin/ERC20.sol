@@ -14,6 +14,7 @@ contract <%= tokenName %> is
   <% } else { %>
       Initializable,
       ERC20Upgradeable
+      <% if (upgradeability == "uups") { %>, UUPSUpgradeable<% } %>
       <% if (burn) { %>, ERC20BurnableUpgradeable<% } %>
       <% if (pause) { %>, ERC20PausableUpgradeable<% } %>
       <% if (permit) { %>, ERC20PermitUpgradeable<% } %>
@@ -28,7 +29,7 @@ contract <%= tokenName %> is
   <% } %>
 
   constructor(
-      <% if (ownable) { %>address initialOwner<% } %>
+      <% if (ownable && upgradeability == "none") { %>address initialOwner<% } %>
       <% if (roles) { %>
           address defaultAdmin,
           address pauser,

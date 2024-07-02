@@ -17,8 +17,8 @@ import {
 
 const TESTED_CONTRACTS: ContractType[] = ["erc20"];
 const TESTED_FEATURES: Features[] = ["burn", "mint", "pause", "permit"];
-const TESTED_ACCESS_CONTROL: AccessControl[] = ["ownable", "none"];
-const TESTED_UPGRADEABILITY: Upgradeability[] = ["none"];
+const TESTED_ACCESS_CONTROL: AccessControl[] = ["ownable", "roles", "none"];
+const TESTED_UPGRADEABILITY: Upgradeability[] = ["uups", "none"];
 const TESTED_LIBRARIES: Library[] = ["solmate"];
 
 describe("Compiles:", () => {
