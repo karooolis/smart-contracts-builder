@@ -43,7 +43,6 @@ const formSchema = z.object({
 });
 
 export function SimulatorForm() {
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,17 +64,8 @@ export function SimulatorForm() {
     return parsedAbi.find((item: any) => item.name === fn);
   }, [abi, fn]);
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
-  }
-
-  function onABIChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    const value = event.target.value;
-    const abi = JSON.parse(value);
-    return;
   }
 
   return (
@@ -102,14 +92,7 @@ export function SimulatorForm() {
             <FormItem>
               <FormLabel>Contract ABI</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Enter ABI ..."
-                  {...field}
-                  onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-                    onABIChange(event);
-                    field.onChange(event);
-                  }}
-                />
+                <Textarea placeholder="Enter ABI ..." {...field} />
               </FormControl>
               <FormMessage />
 
