@@ -37,6 +37,7 @@ import ERC20_ABI from "./abis/ERC20.json";
 import ERC721_ABI from "./abis/ERC721.json";
 import ERC1155_ABI from "./abis/ERC1155.json";
 import { Separator } from "@/components/ui/separator";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   address: z.string().min(2, {
@@ -51,8 +52,16 @@ const formSchema = z.object({
   inputs: z.array(z.string().optional()),
 });
 
+// monkey patch BigInt - https://github.com/GoogleChromeLabs/jsbi/issues/30#issuecomment-1006086291
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 export function SimulatorForm() {
+  const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [txHash, setTxHash] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,16 +103,37 @@ export function SimulatorForm() {
     console.log(functionAbi);
 
     const readWriteFn = isView ? readContract : writeContract;
-    const result = await readWriteFn(wagmiConfig, {
-      abi,
-      address: address,
-      functionName,
-      args,
-    });
 
-    console.log(result);
+    try {
+      setLoading(true);
+      const result = await readWriteFn(wagmiConfig, {
+        abi,
+        address: address,
+        functionName,
+        args,
+      });
 
-    setResult(result.toString());
+      if (isView) {
+        setResult(result.toString());
+      } else {
+        const txHash = result;
+        setTxHash(txHash);
+
+        const transactionReceipt = await waitForTransactionReceipt(
+          wagmiConfig,
+          {
+            hash: txHash,
+          },
+        );
+        console.log(transactionReceipt);
+
+        setResult(transactionReceipt);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -258,6 +288,12 @@ export function SimulatorForm() {
           </>
         )}
 
+        {txHash && (
+          <div className="overflow-scroll">
+            Transaction Hash: <pre>{txHash}</pre>
+          </div>
+        )}
+
         {result && (
           <div className="overflow-scroll">
             Result: <pre>{JSON.stringify(result, null, 2)}</pre>
@@ -271,8 +307,14 @@ export function SimulatorForm() {
           <Button type="submit" className="w-1/3" variant="secondary">
             Simulate
           </Button>
-          <Button type="submit" className="w-1/3" onClick={onSubmit}>
-            Submit
+          <Button
+            type="submit"
+            className="w-1/3"
+            onClick={onSubmit}
+            disabled={loading}
+          >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Send
           </Button>
         </div>
       </form>
