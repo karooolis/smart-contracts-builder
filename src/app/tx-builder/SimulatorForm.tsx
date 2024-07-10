@@ -99,9 +99,6 @@ export function SimulatorForm() {
     const functionMutability = functionAbi.stateMutability;
     const isView =
       functionMutability === "view" || functionMutability === "pure";
-
-    console.log(functionAbi);
-
     const readWriteFn = isView ? readContract : writeContract;
 
     try {
@@ -125,8 +122,6 @@ export function SimulatorForm() {
             hash: txHash,
           },
         );
-        console.log(transactionReceipt);
-
         setResult(transactionReceipt);
       }
     } catch (error) {
@@ -240,8 +235,6 @@ export function SimulatorForm() {
                               return params;
                             })
                             .join(", ");
-
-                          console.log(item);
 
                           return (
                             <SelectItem key={idx} value={item.name}>
