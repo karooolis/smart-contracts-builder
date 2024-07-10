@@ -74,7 +74,10 @@ export function SimulatorForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-96 space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-[768px] space-y-8 rounded-md border p-4"
+      >
         <FormField
           control={form.control}
           name="address"
@@ -96,7 +99,7 @@ export function SimulatorForm() {
             <FormItem>
               <FormLabel>Contract ABI</FormLabel>
               <FormControl>
-                <Textarea placeholder="Enter ABI ..." {...field} />
+                <Textarea className="h-48" placeholder="Enter ABI ..." {...field} />
               </FormControl>
               <FormMessage />
 
@@ -159,10 +162,23 @@ export function SimulatorForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="max-h-60">
-                        {functions.map((item: any) => {
+                        {functions.map((item: any, idx: number) => {
+                          const inputs = item.inputs
+                            .map((input: any) => {
+                              let params = input.type;
+                              if (input.name) {
+                                params += ` ${input.name}`;
+                              }
+                              return params;
+                            })
+                            .join(", ");
+
                           return (
                             <SelectItem key={item.name} value={item.name}>
-                              {item.name}
+                              {item.name}{" "}
+                              {inputs && (
+                                <span className="opacity-70">({inputs})</span>
+                              )}
                             </SelectItem>
                           );
                         })}
