@@ -77,6 +77,9 @@ importers:
       '@uiw/react-codemirror':
         specifier: ^4.22.0
         version: 4.22.0(@babel/runtime@7.24.5)(@codemirror/autocomplete@6.16.0(@codemirror/language@6.10.1)(@codemirror/state@6.4.1)(@codemirror/view@6.26.3)(@lezer/common@1.2.1))(@codemirror/language@6.10.1)(@codemirror/lint@6.7.0)(@codemirror/search@6.5.6)(@codemirror/state@6.4.1)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.26.3)(codemirror@6.0.1(@lezer/common@1.2.1))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@wagmi/core':
+        specifier: ^2.11.7
+        version: 2.11.7(@tanstack/query-core@5.35.5)(@types/react@18.2.20)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.1.6)(viem@2.10.3(bufferutil@4.0.8)(typescript@5.1.6)(zod@3.23.8))(zod@3.23.8)
       autoprefixer:
         specifier: 10.4.15
         version: 10.4.15(postcss@8.4.28)
@@ -2789,6 +2792,18 @@ packages:
       typescript: '>=5.0.4'
       viem: 2.x
     peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  '@wagmi/core@2.11.7':
+    resolution: {integrity: sha512-O9bMbh9VebCUwoOgNhn27bX/VU8Lge9noD/ypUw3qpGGDBOv0/kwHyxJsvQipyDn55cKxpqW2KKo/7sIDgqVzA==}
+    peerDependencies:
+      '@tanstack/query-core': '>=5.0.0'
+      typescript: '>=5.0.4'
+      viem: 2.x
+    peerDependenciesMeta:
+      '@tanstack/query-core':
+        optional: true
       typescript:
         optional: true
 
@@ -10833,6 +10848,23 @@ snapshots:
       - rollup
       - supports-color
       - uWebSockets.js
+      - utf-8-validate
+      - zod
+
+  '@wagmi/core@2.11.7(@tanstack/query-core@5.35.5)(@types/react@18.2.20)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.1.6)(viem@2.10.3(bufferutil@4.0.8)(typescript@5.1.6)(zod@3.23.8))(zod@3.23.8)':
+    dependencies:
+      eventemitter3: 5.0.1
+      mipd: 0.0.5(bufferutil@4.0.8)(typescript@5.1.6)(zod@3.23.8)
+      viem: 2.10.3(bufferutil@4.0.8)(typescript@5.1.6)(zod@3.23.8)
+      zustand: 4.4.1(@types/react@18.2.20)(react@18.2.0)
+    optionalDependencies:
+      '@tanstack/query-core': 5.35.5
+      typescript: 5.1.6
+    transitivePeerDependencies:
+      - '@types/react'
+      - bufferutil
+      - immer
+      - react
       - utf-8-validate
       - zod
 

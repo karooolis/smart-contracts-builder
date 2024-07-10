@@ -23,7 +23,7 @@ import {
 } from "wagmi/chains";
 import { useTheme } from "next-themes";
 
-const wagmiConfig = getDefaultConfig({
+export const wagmiConfig = getDefaultConfig({
   appName: "Smart Contracts Builder",
   projectId:
     (process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string) ??
@@ -50,19 +50,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          theme={
-            theme == "dark" || resolvedTheme === "dark"
-              ? darkTheme()
-              : lightTheme()
-          }
-        >
-          {mounted && children}
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider
+            theme={
+              theme == "dark" || resolvedTheme === "dark"
+                ? darkTheme()
+                : lightTheme()
+            }
+          >
+            {mounted && children}
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
     </ThemeProvider>
   );
 }
