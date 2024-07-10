@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -174,7 +176,7 @@ export function SimulatorForm() {
                             .join(", ");
 
                           return (
-                            <SelectItem key={item.name} value={item.name}>
+                            <SelectItem key={idx} value={item.name}>
                               {item.name}{" "}
                               {inputs && (
                                 <span className="opacity-70">({inputs})</span>
