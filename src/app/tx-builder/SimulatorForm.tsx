@@ -6,13 +6,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Hex } from "viem";
-import { wagmiConfig } from "../providers";
 import {
   readContract,
   writeContract,
   waitForTransactionReceipt,
 } from "@wagmi/core";
+import { Coins, Eye, Loader2, Send } from "lucide-react";
 
+import { wagmiConfig } from "@/app/providers";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -32,12 +33,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 import ERC20_ABI from "./abis/ERC20.json";
 import ERC721_ABI from "./abis/ERC721.json";
 import ERC1155_ABI from "./abis/ERC1155.json";
-import { Separator } from "@/components/ui/separator";
-import { Loader2 } from "lucide-react";
+
+// monkey patch BigInt - https://github.com/GoogleChromeLabs/jsbi/issues/30#issuecomment-1006086291
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
 const formSchema = z.object({
   address: z.string().min(2, {
@@ -51,11 +56,6 @@ const formSchema = z.object({
   }),
   inputs: z.array(z.string().optional()),
 });
-
-// monkey patch BigInt - https://github.com/GoogleChromeLabs/jsbi/issues/30#issuecomment-1006086291
-(BigInt.prototype as any).toJSON = function () {
-  return this.toString();
-};
 
 export function SimulatorForm() {
   const [loading, setLoading] = useState(false);
@@ -241,8 +241,19 @@ export function SimulatorForm() {
                             })
                             .join(", ");
 
+                          console.log(item);
+
                           return (
                             <SelectItem key={idx} value={item.name}>
+                              {item.stateMutability === "payable" && (
+                                <Coins className="mr-2 inline-block h-4 w-4" />
+                              )}
+                              {(item.stateMutability === "view" || item.stateMutability === "pure") && (
+                                <Eye className="mr-2 inline-block h-4 w-4" />
+                              )}
+                              {item.stateMutability === "nonpayable" && (
+                                <Send className="mr-2 inline-block h-4 w-4" />
+                              )}
                               {item.name}{" "}
                               {inputs && (
                                 <span className="opacity-70">({inputs})</span>
