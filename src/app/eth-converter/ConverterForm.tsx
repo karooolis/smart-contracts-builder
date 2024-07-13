@@ -5,6 +5,7 @@ import _ from "lodash";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Clipboard, ClipboardIcon, CopyIcon } from "lucide-react";
 
 import {
   Form,
@@ -15,7 +16,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { CopyToClipboard } from "@/components/CopyToClipboard";
 
 // monkey patch BigInt - https://github.com/GoogleChromeLabs/jsbi/issues/30#issuecomment-1006086291
 (BigInt.prototype as any).toJSON = function () {
@@ -44,51 +48,58 @@ const FIELDS = [
 
 const PROPERTIES = {
   wei: {
-    decimals: 18,
+    decimals: 0,
   },
   kwei: {
-    decimals: 15,
+    decimals: 3,
   },
   mwei: {
-    decimals: 12,
+    decimals: 6,
   },
   gwei: {
     decimals: 9,
   },
   szabo: {
-    decimals: 6,
+    decimals: 12,
   },
   finney: {
-    decimals: 3,
+    decimals: 15,
   },
   ether: {
-    decimals: 1,
+    decimals: 18,
   },
 };
 
 export function ConverterForm() {
+  const searchParams = useSearchParams();
+  const initialWei = searchParams?.get("wei") || "1000000000000000000";
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      wei: "1000000000000000000",
-      kwei: "1000000000000000",
-      mwei: "1000000000000",
-      gwei: "1000000000",
-      szabo: "1000000",
-      finney: "1000",
-      ether: "1",
+      wei: initialWei,
+      kwei: formatUnits(BigInt(initialWei), 3).toString(),
+      mwei: formatUnits(BigInt(initialWei), 6).toString(),
+      gwei: formatUnits(BigInt(initialWei), 9).toString(),
+      szabo: formatUnits(BigInt(initialWei), 12).toString(),
+      finney: formatUnits(BigInt(initialWei), 15).toString(),
+      ether: formatUnits(BigInt(initialWei), 18).toString(),
     },
   });
 
   const onChange = (
-    key: (typeof FIELDS)[number],
+    changedField: (typeof FIELDS)[number],
     evt: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = evt.target.value;
+    const weiValue = parseUnits(
+      value,
+      PROPERTIES[changedField].decimals,
+    ).toString();
+
     for (const field of FIELDS) {
-      if (field !== key) {
-        const convertedValue = parseUnits(
-          value,
+      if (field !== changedField) {
+        const convertedValue = formatUnits(
+          BigInt(weiValue),
           PROPERTIES[field].decimals,
         ).toString();
 
@@ -99,31 +110,48 @@ export function ConverterForm() {
 
   return (
     <Form {...form}>
-      <form className="w-[600px] space-y-8 rounded-md border p-4 shadow">
-        {FIELDS.map((fieldName) => {
-          return (
-            <FormField
-              key={fieldName}
-              control={form.control}
-              name={fieldName}
-              render={({ field }) => (
-                <FormItem
-                  onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                    onChange(fieldName, evt);
-                  }}
-                >
-                  <FormLabel className="w-[80px] flex-shrink-0 font-semibold">
-                    {fieldName} ({PROPERTIES[fieldName].decimals})
-                  </FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          );
-        })}
+      <form className="relative w-[600px] rounded-md border p-4 shadow">
+        <CopyToClipboard
+          onCopy={() => {
+            const weiValue = form.getValues("wei");
+            if (weiValue) {
+              const newSearchParams = new URLSearchParams(searchParams ?? {});
+              newSearchParams.set("wei", weiValue);
+              navigator.clipboard.writeText(
+                `${window.location.origin}${window.location.pathname}?${newSearchParams.toString()}`,
+              );
+            }
+          }}
+        />
+
+        <div className="space-y-8 pt-3">
+          {FIELDS.map((fieldName) => {
+            return (
+              <FormField
+                key={fieldName}
+                control={form.control}
+                name={fieldName}
+                render={({ field }) => (
+                  <FormItem
+                    onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
+                      onChange(fieldName, evt);
+                    }}
+                  >
+                    <FormLabel className="w-[80px] flex-shrink-0 font-semibold">
+                      {fieldName} (
+                      {fieldName === "wei" ? 1 : PROPERTIES[fieldName].decimals}
+                      )
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            );
+          })}
+        </div>
       </form>
     </Form>
   );
