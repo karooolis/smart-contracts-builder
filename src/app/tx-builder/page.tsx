@@ -1,8 +1,8 @@
 import React from "react";
 import _ from "lodash";
 
-import { Navigation } from "./Navigation";
 import { SimulatorForm } from "./SimulatorForm";
+import { Navigation } from "@/components/Navigation";
 
 export default function Home() {
   return (
