@@ -9,7 +9,7 @@ export default function Home() {
     <div className="flex flex-col">
       <Navigation />
 
-      <div className="mx-auto max-w-lg py-8">
+      <div className="mx-auto py-8">
         <ConverterForm />
       </div>
     </div>

@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { parseUnits } from "viem";
 
 // monkey patch BigInt - https://github.com/GoogleChromeLabs/jsbi/issues/30#issuecomment-1006086291
 (BigInt.prototype as any).toJSON = function () {
@@ -31,6 +32,40 @@ const formSchema = z.object({
   ether: z.string().optional(),
 });
 
+const FIELDS = [
+  "wei",
+  "kwei",
+  "mwei",
+  "gwei",
+  "szabo",
+  "finney",
+  "ether",
+] as const;
+
+const PROPERTIES = {
+  wei: {
+    decimals: 18,
+  },
+  kwei: {
+    decimals: 15,
+  },
+  mwei: {
+    decimals: 12,
+  },
+  gwei: {
+    decimals: 9,
+  },
+  szabo: {
+    decimals: 6,
+  },
+  finney: {
+    decimals: 3,
+  },
+  ether: {
+    decimals: 1,
+  },
+};
+
 export function ConverterForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,108 +80,48 @@ export function ConverterForm() {
     },
   });
 
-  const onChange = (name: string, evt: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(name, evt.target.value);
-  };
+  const onChange = (
+    key: (typeof FIELDS)[number],
+    evt: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = evt.target.value;
+    for (const field of FIELDS) {
+      if (field !== key) {
+        const convertedValue = parseUnits(
+          value,
+          PROPERTIES[field].decimals,
+        ).toString();
 
-  const FIELDS = [
-    "wei",
-    "kwei",
-    "mwei",
-    "gwei",
-    "szabo",
-    "finney",
-    "ether",
-  ] as const;
-
-  const PROPERTIES = {
-    wei: {
-      decimals: 1,
-    },
-    kwei: {
-      decimals: 3,
-    },
-    mwei: {
-      decimals: 6,
-    },
-    gwei: {
-      decimals: 9,
-    },
-    szabo: {
-      decimals: 12,
-    },
-    finney: {
-      decimals: 15,
-    },
-    ether: {
-      decimals: 18,
-    },
+        form.setValue(field, convertedValue);
+      }
+    }
   };
 
   return (
     <Form {...form}>
-      <form className="w-[568px] space-y-8 rounded-md border p-4 shadow">
+      <form className="w-[600px] space-y-8 rounded-md border p-4 shadow">
         {FIELDS.map((fieldName) => {
           return (
-            <div
+            <FormField
               key={fieldName}
-              className="flex items-center justify-center gap-4"
-            >
-              <FormLabel className="flex-shrink-0 w-[80px]">
-                {fieldName} ({PROPERTIES[fieldName].decimals})
-              </FormLabel>
-
-              <FormField
-                control={form.control}
-                name={fieldName}
-                render={({ field }) => (
-                  <FormItem
-                    onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                      onChange(fieldName, evt);
-                    }}
-                  >
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={fieldName}
-                render={({ field }) => (
-                  <FormItem
-                    onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                      onChange(fieldName, evt);
-                    }}
-                  >
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={fieldName}
-                render={({ field }) => (
-                  <FormItem
-                    onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                      onChange(fieldName, evt);
-                    }}
-                  >
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+              control={form.control}
+              name={fieldName}
+              render={({ field }) => (
+                <FormItem
+                  onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
+                    onChange(fieldName, evt);
+                  }}
+                >
+                  <FormLabel className="w-[80px] flex-shrink-0 font-semibold">
+                    {fieldName} ({PROPERTIES[fieldName].decimals})
+                  </FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           );
         })}
       </form>
