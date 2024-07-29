@@ -28,8 +28,8 @@ function CodeDisplay() {
 
   return (
     <>
-      <div className="relative h-full overflow-y-auto">
-        <div className="fixed bottom-6 right-0 z-10 flex justify-center items-center">
+      <div className="relative h-full overflow-y-auto rounded border">
+        <div className="fixed bottom-6 right-0 z-10 flex items-center justify-center">
           {/* <Button size="sm" className="mr-4">
             <Download className="mr-2 h-4 w-4" /> Download
           </Button> */}

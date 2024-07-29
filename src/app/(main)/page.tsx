@@ -55,16 +55,18 @@ export default function Home() {
         </div>
       </nav>
 
-      <Separator />
-
       <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel defaultSize={size} minSize={size * 0.75}>
+        <ResizablePanel
+          defaultSize={size}
+          minSize={size * 0.75}
+          className="ml-4 mb-4 rounded border"
+        >
           <ContractOptionsForm />
         </ResizablePanel>
 
-        <ResizableHandle withHandle />
+        <ResizableHandle withHandle className="bg-transparent mr-4" />
 
-        <ResizablePanel>
+        <ResizablePanel className="mb-4">
           <CodeDisplay />
         </ResizablePanel>
       </ResizablePanelGroup>

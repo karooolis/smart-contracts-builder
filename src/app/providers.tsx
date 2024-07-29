@@ -8,7 +8,12 @@ import {
   darkTheme,
   lightTheme,
   getDefaultConfig,
+  connectorsForWallets,
 } from "@rainbow-me/rainbowkit";
+import {
+  rainbowWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 import { WagmiProvider } from "wagmi";
 import {
   mainnet,
@@ -22,6 +27,19 @@ import {
   localhost,
 } from "wagmi/chains";
 import { useTheme } from "next-themes";
+
+// const connectors = connectorsForWallets(
+//   [
+//     {
+//       groupName: 'Recommended',
+//       wallets: [rainbowWallet, walletConnectWallet],
+//     },
+//   ],
+//   {
+//     appName: 'Smart Contracts Builder',
+//     projectId: '368e129bd75ddd92d41f5bf7ac4cf1e6',
+//   }
+// );
 
 export const wagmiConfig = getDefaultConfig({
   appName: "Smart Contracts Builder",
