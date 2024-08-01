@@ -1,12 +1,17 @@
 import "./globals.css";
 import type { Metadata } from "next";
 
-import { Inconsolata } from "next/font/google";
+import { Inconsolata, Fira_Code } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
 
 import { Providers } from "./providers";
 
 const inconsolatac = Inconsolata({ subsets: ["latin"] });
+
+const firaCode = Fira_Code({
+  subsets: ["latin"],
+  variable: "--font-fira-code",
+});
 
 export const metadata: Metadata = {
   title: "Smart Contracts Builder",
@@ -20,10 +25,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inconsolatac.className}>
-        <Providers>
-          {children}
-        </Providers>
+      <body className={`${inconsolatac.className} ${firaCode.className}`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 import { ConnectButton as RainbowConnectButton } from "@rainbow-me/rainbowkit";
+import { Button } from "./ui/button";
 
 export const ConnectButton = () => {
   return (
@@ -34,24 +35,25 @@ export const ConnectButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button">
+                  <Button onClick={openConnectModal} type="button">
                     Connect Wallet
-                  </button>
+                  </Button>
                 );
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button">
+                  <Button onClick={openChainModal} type="button">
                     Wrong network
-                  </button>
+                  </Button>
                 );
               }
               return (
                 <div style={{ display: "flex", gap: 16 }}>
-                  <button
+                  <Button
                     onClick={openChainModal}
                     style={{ display: "flex", alignItems: "center" }}
                     type="button"
+                    variant="secondary"
                   >
                     {chain.hasIcon && (
                       <div
@@ -74,13 +76,13 @@ export const ConnectButton = () => {
                       </div>
                     )}
                     {chain.name}
-                  </button>
-                  <button onClick={openAccountModal} type="button">
+                  </Button>
+                  <Button onClick={openAccountModal} type="button">
                     {account.displayName}
                     {account.displayBalance
                       ? ` (${account.displayBalance})`
                       : ""}
-                  </button>
+                  </Button>
                 </div>
               );
             })()}

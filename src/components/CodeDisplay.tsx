@@ -13,6 +13,8 @@ import { NeedHelpDialog } from "@/components/NeedHelpDialog";
 import { Deploy } from "@/components/Deploy";
 import { LiveBlock } from "@/components/LiveBlock";
 
+import Editor from "@monaco-editor/react";
+
 function CodeDisplay() {
   const { theme, resolvedTheme } = useTheme();
   const [copied, setCopied] = useState(false);
@@ -55,7 +57,15 @@ function CodeDisplay() {
           <NeedHelpDialog />
         </div>
 
-        <CodeMirror
+        <Editor
+          height="100%"
+          defaultLanguage="solidity"
+          value={code}
+          defaultValue={code}
+          theme="vs-dark"
+        />
+
+        {/* <CodeMirror
           value={code}
           onChange={setCode}
           height="100%"
@@ -65,7 +75,7 @@ function CodeDisplay() {
               : tomorrow
           }
           extensions={[solidity]}
-        />
+        /> */}
       </div>
     </>
   );

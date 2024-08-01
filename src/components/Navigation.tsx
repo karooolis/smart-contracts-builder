@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ConnectButton } from "@/components/ConnectButton";
 import { ModeToggle } from "@/components/ModeToggle";
+import { ConnectButton } from "./ConnectButton";
 
 export function Navigation() {
   return (

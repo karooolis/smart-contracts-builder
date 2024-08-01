@@ -55,11 +55,9 @@ export function Jobs() {
       <PopoverTrigger>
         <Button
           variant="outline"
-          className="mr-2"
           disabled={deploying}
-          asChild={true}
         >
-          <>My contracts ({contracts?.length})</>
+          <>Contracts ({contracts?.length})</>
         </Button>
       </PopoverTrigger>
 
