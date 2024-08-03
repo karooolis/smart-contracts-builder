@@ -59,10 +59,14 @@ function CodeDisplay() {
 
         <Editor
           height="100%"
-          defaultLanguage="solidity"
+          language="sol"
           value={code}
           defaultValue={code}
-          theme="vs-dark"
+          theme={
+            theme === "dark" || resolvedTheme === "dark"
+              ? "vs-dark"
+              : "vs-light"
+          }
         />
 
         {/* <CodeMirror
