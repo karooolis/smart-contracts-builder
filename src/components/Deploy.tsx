@@ -61,7 +61,7 @@ export function Deploy({ contract }: Props) {
     <>
       <Toaster
         position="top-right"
-        duration={10000000}
+        duration={10000}
         richColors
         closeButton
       />
