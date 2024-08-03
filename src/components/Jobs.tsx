@@ -53,10 +53,7 @@ export function Jobs() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button
-          variant="outline"
-          disabled={deploying}
-        >
+        <Button variant="outline">
           <>Contracts ({contracts?.length})</>
         </Button>
       </PopoverTrigger>

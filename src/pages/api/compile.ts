@@ -7,6 +7,7 @@ export type ResponseData = {
   bytecode: any;
   input: any;
   output: any;
+  error?: string;
 };
 
 export default function handler(
@@ -31,8 +32,6 @@ export default function handler(
       output: output,
     });
   } catch (error) {
-    console.error('Error:', error);
-
-    res.status(500).json({ error: error });
+    res.status(500).json({ error: error.message });
   }
 }

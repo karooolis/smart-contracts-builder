@@ -2,6 +2,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Loader2 } from "lucide-react";
 import { useWalletClient, useAccount, usePublicClient } from "wagmi";
 import { Send } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { useStore } from "@/utils/store";
@@ -28,6 +29,9 @@ export function Deploy({ contract }: Props) {
 
     try {
       const data = await fetchCompile({ name, contract });
+
+      console.log("data", data);
+
       await deployContracts({
         data,
         name,
@@ -41,7 +45,13 @@ export function Deploy({ contract }: Props) {
 
       fetchContracts(walletAddress);
     } catch (error) {
-      console.error('Error:', error);
+      console.error(error);
+
+      toast.error(
+        <pre className="whitespace-pre-wrap">
+          <code>{error.message.replace(/\n+$/, "")}</code>
+        </pre>,
+      );
     } finally {
       setDeploying(false);
     }
@@ -49,7 +59,12 @@ export function Deploy({ contract }: Props) {
 
   return (
     <>
-      <Toaster position="top-right" duration={10000000} closeButton />
+      <Toaster
+        position="top-right"
+        duration={10000000}
+        richColors
+        closeButton
+      />
 
       <Button
         size="sm"

@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { BadgeHelp, BadgeInfo, CircleDashed, Mail, MessageCircle, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Form,

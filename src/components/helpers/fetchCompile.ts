@@ -1,3 +1,4 @@
+import ky from "ky";
 import type { ResponseData } from "@/pages/api/compile";
 
 type CompileProps = {
@@ -16,6 +17,11 @@ export const fetchCompile = async ({
     },
     body: JSON.stringify({ name, contract }),
   });
+
   const data = await response.json();
+  if (data.error) {
+    throw new Error(data.error);
+  }
+  
   return data;
 };
