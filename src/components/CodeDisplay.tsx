@@ -59,7 +59,7 @@ function CodeDisplay() {
           defaultValue={code}
           theme={
             theme === "dark" || resolvedTheme === "dark"
-              ? "vs-dark"
+              ? "hc-black"
               : "vs-light"
           }
         />
