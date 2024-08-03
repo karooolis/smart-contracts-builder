@@ -33,6 +33,7 @@ export default function Home() {
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       {/* Navigation */}
+
       <nav className="px-4 py-3">
         <div className="mx-auto flex items-center justify-between gap-8">
           <div className="flex items-center gap-3">
@@ -55,21 +56,19 @@ export default function Home() {
         </div>
       </nav>
 
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel
-          defaultSize={size}
-          minSize={size * 0.75}
-          className="ml-4 mb-4 rounded border"
-        >
-          <ContractOptionsForm />
-        </ResizablePanel>
+      <div className="mx-4 mb-4 rounded border h-full overflow-y-scroll">
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel defaultSize={size} minSize={size * 0.75}>
+            <ContractOptionsForm />
+          </ResizablePanel>
 
-        <ResizableHandle withHandle className="bg-transparent mr-4" />
+          <ResizableHandle withHandle />
 
-        <ResizablePanel className="mb-4">
-          <CodeDisplay />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+          <ResizablePanel>
+            <CodeDisplay />
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </div>
   );
 }

@@ -267,7 +267,7 @@ export const ContractOptionsForm = () => {
 
   return (
     <Form {...form}>
-      <div className="max-h-full overflow-y-auto p-4">
+      <div className="h-full overflow-y-auto p-4">
         <form onChange={onChange} className="space-y-6">
           {constructForm(form, formSchema)}
         </form>

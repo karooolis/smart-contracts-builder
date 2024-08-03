@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import _ from "lodash";
 import { useTheme } from "next-themes";
-import CodeMirror from "@uiw/react-codemirror";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { Clipboard, Check } from "lucide-react";
-import { solidity } from "@replit/codemirror-lang-solidity";
-import { boysAndGirls, tomorrow } from "thememirror";
+import { Clipboard, Check, Download } from "lucide-react";
 
 import { useStore } from "@/utils/store";
 import { Button } from "@/components/ui/button";
@@ -30,12 +27,8 @@ function CodeDisplay() {
 
   return (
     <>
-      <div className="relative h-full overflow-y-auto rounded border">
-        <div className="fixed bottom-6 right-0 z-10 flex items-center justify-center">
-          {/* <Button size="sm" className="mr-4">
-            <Download className="mr-2 h-4 w-4" /> Download
-          </Button> */}
-
+      <div className="relative h-full overflow-y-auto">
+        <div className="fixed bottom-6 right-8 z-10 flex items-center justify-center">
           <LiveBlock />
 
           <Deploy name={name} contract={code} />
@@ -58,9 +51,11 @@ function CodeDisplay() {
         </div>
 
         <Editor
+          width="100%"
           height="100%"
           language="sol"
           value={code}
+          onChange={setCode}
           defaultValue={code}
           theme={
             theme === "dark" || resolvedTheme === "dark"
