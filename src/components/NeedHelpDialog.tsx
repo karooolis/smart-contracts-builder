@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { BadgeHelp, Send } from "lucide-react";
+import { BadgeHelp, BadgeInfo, CircleDashed, Mail, MessageCircle, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -59,8 +59,8 @@ export function NeedHelpDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size="sm" variant="default" className="mr-4">
-          <BadgeHelp className="mr-2 h-4 w-4" /> Need help?
+        <Button size="sm" variant="outline" className="mr-4">
+          <Mail className="h-4 w-4" />
         </Button>
       </DialogTrigger>
 

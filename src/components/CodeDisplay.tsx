@@ -34,15 +34,11 @@ function CodeDisplay() {
           <Deploy name={name} contract={code} />
 
           <CopyToClipboard text={code} onCopy={() => setCopied(true)}>
-            <Button size="sm" variant="default" className="mr-4">
+            <Button size="sm" variant="outline" className="mr-4">
               {copied ? (
-                <>
-                  <Check className="mr-2 h-4 w-4" /> Copied!
-                </>
+                <Check className="h-4 w-4" />
               ) : (
-                <>
-                  <Clipboard className="mr-2 h-4 w-4" /> Copy
-                </>
+                <Clipboard className="h-4 w-4" />
               )}
             </Button>
           </CopyToClipboard>

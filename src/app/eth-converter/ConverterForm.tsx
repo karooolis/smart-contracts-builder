@@ -5,7 +5,6 @@ import _ from "lodash";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Clipboard, ClipboardIcon, CopyIcon } from "lucide-react";
 
 import {
   Form,
@@ -18,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { formatUnits, parseUnits } from "viem";
 import { useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { CopyToClipboard } from "@/components/CopyToClipboard";
 
 // monkey patch BigInt - https://github.com/GoogleChromeLabs/jsbi/issues/30#issuecomment-1006086291
