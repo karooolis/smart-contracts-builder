@@ -41,7 +41,7 @@ export function Deploy({ contract }: Props) {
 
       fetchContracts(walletAddress);
     } catch (error) {
-      console.error(error);
+      console.error('Error:', error);
     } finally {
       setDeploying(false);
     }
@@ -68,7 +68,7 @@ export function Deploy({ contract }: Props) {
       >
         {deploying ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deploying ...
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deploying
           </>
         ) : (
           <>

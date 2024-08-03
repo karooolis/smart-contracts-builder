@@ -63,18 +63,6 @@ function CodeDisplay() {
               : "vs-light"
           }
         />
-
-        {/* <CodeMirror
-          value={code}
-          onChange={setCode}
-          height="100%"
-          theme={
-            theme === "dark" || resolvedTheme === "dark"
-              ? boysAndGirls
-              : tomorrow
-          }
-          extensions={[solidity]}
-        /> */}
       </div>
     </>
   );
